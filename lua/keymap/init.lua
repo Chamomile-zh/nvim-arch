@@ -87,6 +87,14 @@ map.v({
 map.nx({
   -- guard
   [';f'] = cmd('Guard fmt'),
+  --  quick_substitute
+  ['<leader>ss'] = function()
+    require('internal.quick_substitute').quick_substitute()
+  end,
+  -- wildfire
+  ['<cr>'] = function()
+    require('internal.wildfire').wildfire()
+  end,
 })
 
 map.ni({
