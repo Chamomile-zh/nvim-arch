@@ -1,5 +1,6 @@
 local au = vim.api.nvim_create_autocmd
 local uc = vim.api.nvim_create_user_command
+local api = vim.api
 local group = vim.api.nvim_create_augroup('ChamomileGroup', {})
 
 ------------ auto commands ------------
@@ -44,29 +45,30 @@ au('InsertEnter', {
 })
 
 
--- au({ "InsertEnter" }, {
--- 	desc = "Disable the relative line number when enter insert mode",
--- 	group = group,
--- 	callback = function()
--- 		local buftype = vim.bo.buftype
---
--- 		if buftype == "" then
--- 			vim.wo.relativenumber = false
--- 		end
--- 	end,
--- })
---
--- au({ "InsertLeave" }, {
--- 	desc = "Enable relative line number when leave insert mode",
--- 	group = group,
--- 	callback = function()
--- 		local buftype = vim.bo.buftype
---
--- 		if buftype == "" then
--- 			vim.wo.relativenumber = true
--- 		end
--- 	end,
--- })
+-- relativenumber toogle insert
+au({ "InsertEnter" }, {
+	desc = "Disable the relative line number when enter insert mode",
+	group = group,
+	callback = function()
+		local buftype = vim.bo.buftype
+
+		if buftype == "" then
+			vim.wo.relativenumber = false
+		end
+	end,
+})
+
+au({ "InsertLeave" }, {
+	desc = "Enable relative line number when leave insert mode",
+	group = group,
+	callback = function()
+		local buftype = vim.bo.buftype
+
+		if buftype == "" then
+			vim.wo.relativenumber = true
+		end
+	end,
+})
 
 -- markdown_table_format
 au('InsertLeave', {
@@ -192,6 +194,21 @@ end, {
   end,
 })
 
+-- vim.api.nvim_create_user_command("TemplateLoad", function(opts)
+--     local tpldir = vim.fn.stdpath('config') .. '/template/'
+--     local tpl_path = tpldir  .. opts.args
+--     if vim.fn.filereadable(tpl_path) ~= 1 then
+--       vim.notify("Template not found: " .. opts.args, vim.log.levels.ERROR)
+--       return
+--     end
+--     local content = vim.fn.readfile(tpl_path)
+--     vim.api.nvim_put(content, "", true, true)
+--     vim.notify("template loaded: " .. opts.args)
+--   end, {
+--     nargs = 1,
+--     complete = require("internal.template").complete_filter,
+--     desc = "loaded template in template directory",
+--   })
 -- change directory
 uc('Chdir', function(args)
   vim.cmd('silent! lcd %:p:h')

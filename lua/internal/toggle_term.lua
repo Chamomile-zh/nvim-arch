@@ -47,7 +47,7 @@ local function new_term()
   infos.bufnr, infos.winid =
     win:new_float(float_opt, true, true):bufopt('bufhidden', 'hide'):wininfo()
   ---@diagnostic disable-next-line: param-type-mismatch
-  vim.fn.jobstart(os.getenv('SHELL'), {
+  vim.fn.jobstart("fish" or os.getenv('SHELL'), {
     term = true,
     on_exit = function()
       quit_term()
