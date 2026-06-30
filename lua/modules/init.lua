@@ -1,12 +1,71 @@
 local api = vim.api
 local conf = require('modules.config')
 
+local specs = {
+
+  {
+    'nvimdev/lspsaga.nvim',
+    events = 'BufReadPre',
+    config = conf.lspsaga,
+  },
+
+  {
+    'saghen/blink.cmp',
+    version = vim.version.range('^1'),
+    events = 'LspAttach',
+    config = conf.blink,
+  },
+
+  {
+    'nvim-treesitter/nvim-treesitter',
+    version = 'main',
+    events = { 'BufReadPre', 'BufNewFile' },
+    config = conf.treesitter,
+  },
+
+  {
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    version = 'main',
+  },
+
+  {
+    'ibhagwan/fzf-lua',
+    cmd = 'FzfLua',
+  },
+
+  {
+    'nvimdev/guard.nvim',
+    cmd = 'Guard',
+    config = conf.guard,
+  },
+
+  {
+    'lewis6991/gitsigns.nvim',
+    events = 'BufRead',
+    config = conf.gitsigens,
+  },
+
+  {
+    'nvimdev/indentmini.nvim',
+    events = 'BufReadPre',
+    config = conf.indentmini,
+  },
+}
+
 local function to_url(s)
   return s:match('^https?://') and s or 'https://github.com/' .. s
 end
 
 local function to_name(s)
   return s:sub(s:find('/') + 1)
+end
+
+local function get_root(info)
+  local name = "fzf-lua"
+  local paths = api.nvim_get_runtime_file("pack/*/*/" .. name, true)
+	if #paths > 0 then return paths[1] end
+	local glob = vim.fn.globpath(vim.o.packpath, "pack/*/*/" .. name, 0, 1)
+	return glob[1] or nil
 end
 
 local function load(pkg_name, events, cmd, config)
@@ -64,50 +123,9 @@ local function packadd(info)
   )
 end
 
-packadd({
-  'nvimdev/lspsaga.nvim',
-  events = 'BufReadPre',
-  config = conf.lspsaga,
-})
+for _,plugin in ipairs(specs) do
+  packadd(plugin)
+end
 
-packadd({
-  'saghen/blink.cmp',
-  version = vim.version.range('^1'),
-  events = 'LspAttach',
-  config = conf.blink,
-})
+get_root("fzf-lua")
 
-packadd({
-  'nvim-treesitter/nvim-treesitter',
-  version = 'main',
-  events = { 'BufReadPre', 'BufNewFile' },
-  config = conf.treesitter,
-})
-
-packadd({
-  'nvim-treesitter/nvim-treesitter-textobjects',
-  version = 'main',
-})
-
-packadd({
-  'ibhagwan/fzf-lua',
-  cmd = 'FzfLua',
-})
-
-packadd({
-  'nvimdev/guard.nvim',
-  cmd = 'Guard',
-  config = conf.guard,
-})
-
-packadd({
-  'lewis6991/gitsigns.nvim',
-  events = 'BufRead',
-  config = conf.gitsigens,
-})
-
-packadd({
-  'nvimdev/indentmini.nvim',
-  events = 'BufReadPre',
-  config = conf.indentmini,
-})

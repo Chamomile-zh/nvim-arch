@@ -44,30 +44,29 @@ au('InsertEnter', {
   end,
 })
 
-
 -- relativenumber toogle insert
-au({ "InsertEnter" }, {
-	desc = "Disable the relative line number when enter insert mode",
-	group = group,
-	callback = function()
-		local buftype = vim.bo.buftype
+au({ 'InsertEnter' }, {
+  desc = 'Disable the relative line number when enter insert mode',
+  group = group,
+  callback = function()
+    local buftype = vim.bo.buftype
 
-		if buftype == "" then
-			vim.wo.relativenumber = false
-		end
-	end,
+    if buftype == '' then
+      vim.wo.relativenumber = false
+    end
+  end,
 })
 
-au({ "InsertLeave" }, {
-	desc = "Enable relative line number when leave insert mode",
-	group = group,
-	callback = function()
-		local buftype = vim.bo.buftype
+au({ 'InsertLeave' }, {
+  desc = 'Enable relative line number when leave insert mode',
+  group = group,
+  callback = function()
+    local buftype = vim.bo.buftype
 
-		if buftype == "" then
-			vim.wo.relativenumber = true
-		end
-	end,
+    if buftype == '' then
+      vim.wo.relativenumber = true
+    end
+  end,
 })
 
 -- markdown_table_format
@@ -113,7 +112,6 @@ au('TextYankPost', {
     end
   end,
 })
-
 
 au('BufRead', {
   group = group,
@@ -177,6 +175,68 @@ au('PackChanged', {
 
 ------------ user commands ------------
 
+-- vim.pack
+-- 获取所有已安装插件的名称列表
+local function get_plugin_names(arg_lead)
+	local installed = vim.pack.get(nil, { info = false })
+	local names = {}
+	for _, p in ipairs(installed) do
+		local name = p.spec.name
+		-- 只添加匹配开头字符串的插件
+		if name:lower():find(arg_lead:lower(), 1, true) == 1 then
+			table.insert(names, name)
+		end
+	end
+	-- 排序让补全列表更整洁
+	table.sort(names)
+	return names
+end
+
+uc('PackUpdate', function(opts)
+  local targets = #opts.fargs > 0 and opts.fargs or nil
+  local force = opts.bang -- 如果输入了 PackUpdate! 则 opts.bang 为 true
+  if targets then
+    vim.notify('Checking updates for: ' .. table.concat(targets, ', '), vim.log.levels.INFO)
+  else
+    vim.notify('Checking updates for all plugins...', vim.log.levels.INFO)
+  end
+  vim.pack.update(targets, { force = force })
+end, {
+  nargs = '*',
+  bang = true, -- 声明支持 ! 符号
+  complete = get_plugin_names,
+  desc = 'Update plugins (use ! to skip confirmation)',
+})
+
+-- :PackStatus 命令查看插件当前状态和版本
+uc('PackStatus', function(opts)
+  local targets = #opts.fargs > 0 and opts.fargs or nil
+  vim.pack.update(targets, { offline = true })
+end, {
+  nargs = '*',
+  complete = get_plugin_names,
+  desc = 'Check plugin status without downloading',
+})
+uc('PackDelete', function(opts)
+  if #opts.fargs == 0 then
+    vim.notify("⚠️ Please input the plugin name", vim.log.levels.WARN)
+    return
+  end
+
+  local targets = opts.fargs
+  vim.notify("🗑️ deleting: " .. table.concat(targets, ", "), vim.log.levels.INFO)
+  local ok, err = pcall(vim.pack.del, targets)
+  if ok then
+    vim.notify("✅ delete finished！(restart Neovim to see)", vim.log.levels.INFO)
+  else
+    vim.notify("❌ delete failed: " .. tostring(err), vim.log.levels.ERROR)
+  end
+end, {
+  nargs = "+", -- 允许传入一个或多个参数 (空格分隔，支持批量删除)
+  complete = get_plugin_names,
+  desc = "delete the Neovim plugin",
+})
+
 -- code_running
 uc('Run', function(args)
   require('internal.code_running.code_running').running(args.args)
@@ -194,26 +254,11 @@ end, {
   end,
 })
 
--- vim.api.nvim_create_user_command("TemplateLoad", function(opts)
---     local tpldir = vim.fn.stdpath('config') .. '/template/'
---     local tpl_path = tpldir  .. opts.args
---     if vim.fn.filereadable(tpl_path) ~= 1 then
---       vim.notify("Template not found: " .. opts.args, vim.log.levels.ERROR)
---       return
---     end
---     local content = vim.fn.readfile(tpl_path)
---     vim.api.nvim_put(content, "", true, true)
---     vim.notify("template loaded: " .. opts.args)
---   end, {
---     nargs = 1,
---     complete = require("internal.template").complete_filter,
---     desc = "loaded template in template directory",
---   })
 -- change directory
 uc('Chdir', function(args)
   vim.cmd('silent! lcd %:p:h')
   if args.args == 'silent' then
     return
   end
-  vim.notify(('Form: %s\nTo: %s'):format(vim.fn.getcwd(), vim.fn.expand('%:p:h')))
+  vim.notify(('From: %s\nTo: %s'):format(vim.fn.getcwd(), vim.fn.expand('%:p:h')))
 end, { nargs = '?' })

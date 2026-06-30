@@ -58,9 +58,13 @@ map.n({
   ['<c-f>'] = function()
     require('internal.toggle_term').toggle_term()
   end,
+  --invert word
+  ['<leader>iw'] = function ()
+    require("internal.invert_word").inver_word()
+  end
 })
 
-map.a({
+map.nx({
   -- quick jump
   ['s'] = function()
     require('internal.jump').jump()

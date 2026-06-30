@@ -33,11 +33,11 @@ config.blink = function()
       },
       ['<s-tab>'] = { 'select_prev', 'snippet_backward', 'fallback' },
       ['<cr>'] = { 'accept', 'fallback' },
-      ['<c-o>'] = {
-        function(cmp)
-          return cmp.show()
-        end,
-      },
+      -- ['<c-space>'] = {
+      --   function(cmp)
+      --     return cmp.show()
+      --   end,
+      -- },
     },
     appearance = { kind_icons = icons },
     completion = {
@@ -94,14 +94,14 @@ config.guard = function()
     cmd = 'stylua',
     args = { '-' },
     stdin = true,
-    find = 'stylua.toml',
+    find = 'stylua.toml', -- must have the file in your directory
   })
   ft('sh'):fmt({
     cmd = 'shfmt',
     args = { '-' },
     stdin = true,
   })
-  ft('go', 'html', 'css', 'javascript', 'json'):fmt('lsp')
+  ft('go', 'html', 'css', 'javascript', 'json', 'rust'):fmt('lsp')
 
   vim.g.guard_config = {
     fmt_on_save = false,
@@ -132,6 +132,19 @@ config.indentmini = function()
       'lazy',
       'markdown',
       'text',
+    },
+  })
+end
+
+config.noice = function()
+  vim.cmd.packadd('nui')
+  require('noice').setup({
+    presets = {
+      bottom_search = true, -- use a classic bottom cmdline for search
+      command_palette = true, -- position the cmdline and popupmenu together
+      long_message_to_split = true, -- long messages will be sent to a split
+      inc_rename = false, -- enables an input dialog for inc-rename.nvim
+      lsp_doc_border = false, -- add a border to hover docs and signature help
     },
   })
 end

@@ -50,6 +50,16 @@ local commands = {
     command = 'typora "$filename"',
     modus = 'job',
   },
+  ['rust'] = {
+    command = {
+      'rustc "$filename" -o "$runfile"',
+      './"$runfile"',
+      'rm -rf "$runfile"',
+    },
+  },
+  ['typescript'] = {
+    command = 'deno run "$filename"',
+  },
 }
 
 function running_commands.get_commands()
