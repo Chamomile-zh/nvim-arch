@@ -15,8 +15,8 @@ map.n({
   ['<leader>sc'] = cmd('set spell!'),
   ['<leader>sw'] = cmd('set wrap!'),
   ['<leader><leader>'] = '/<++><cr>:noh<cr>"_c4l',
-  -- ['j'] = 'gj',
-  -- ['k'] = 'gk',
+  ['j'] = 'gj',
+  ['k'] = 'gk',
   ['J'] = '<c-d>',
   ['K'] = '<c-u>',
   -- window

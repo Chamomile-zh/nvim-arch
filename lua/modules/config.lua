@@ -109,6 +109,27 @@ config.guard = function()
   }
 end
 
+config.fzflua = function()
+  require('fzf-lua').setup({
+    lsp = { symbols = { symbol_style = 3 } },
+    grep = {
+      rg_opts = "--column --line-number --no-heading --color=always --smart-case --colors 'path:fg:blue'",
+    },
+    live_grep = {
+      rg_opts = "--column --line-number --no-heading --color=always --smart-case --colors 'path:fg:blue'",
+    },
+    winopts = {
+      preview = {
+        default = true,
+        builtin = {
+          treesitter = { enabled = false },
+        },
+      },
+    },
+    files = { file_icons = false },
+  })
+end
+
 config.gitsigens = function()
   require('gitsigns').setup({
     signs = {

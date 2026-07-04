@@ -60,7 +60,7 @@ local function to_name(s)
   return s:sub(s:find('/') + 1)
 end
 
-local function get_root(info)
+local function get_root()
   local name = "fzf-lua"
   local paths = api.nvim_get_runtime_file("pack/*/*/" .. name, true)
 	if #paths > 0 then return paths[1] end
@@ -127,5 +127,4 @@ for _,plugin in ipairs(specs) do
   packadd(plugin)
 end
 
-get_root("fzf-lua")
 

@@ -24,7 +24,7 @@ return {
       runtime = { version = 'LuaJIT' },
       workspace = {
         library = {
-          vim.env.VIMRUNTIME .. '/lua',
+          vim.env.VIMRUNTIME,
           '${3rd}/busted/library',
           '${3rd}/luv/library',
         },
