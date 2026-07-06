@@ -25,7 +25,9 @@ vim.schedule(function()
     },
     float = {
       border = 'rounded',
+      header = '',
     },
+    severity_sort = true,
   })
 
   vim.lsp.document_color.enable(true, {}, { style = 'virtual' })

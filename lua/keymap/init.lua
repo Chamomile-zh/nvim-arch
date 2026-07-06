@@ -5,17 +5,22 @@ local api = vim.api
 
 map.n({
   -- fzflua
+  ['<Leader>d'] = cmd('FzfLua diagnostics_document'),
+  ['<Leader>D'] = cmd('FzfLua diagnostics_workspace'),
   ['<leader>ff'] = cmd('FzfLua files'),
-  ['<leader>fw'] = cmd('FzfLua live_grep'),
+  ['<leader>fw'] = cmd('FzfLua live_grep_native'),
   ['<leader>fh'] = cmd('FzfLua helptags'),
   ['<leader>fo'] = cmd('FzfLua oldfiles'),
   ['<leader>fb'] = cmd('FzfLua buffers'),
   ['<leader>fk'] = cmd('FzfLua keymaps'),
+  ['<Leader>o'] = cmd('FzfLua lsp_document_symbols'),
   -- lspsaga
   ['<leader>pd'] = cmd('Lspsaga peek_definition'),
+  ['<leader>gp'] = cmd('Lspsaga goto_definition'),
+  ['<leader>gh'] = cmd('Lspsaga finder'),
   ['<leader>pr'] = cmd('Lspsaga finder ref'),
-  ['<Leader>dw'] = cmd('Lspsaga show_workspace_diagnostics'),
-  ['<Leader>db'] = cmd('Lspsaga show_buf_diagnostics'),
+  -- ['<Leader>dw'] = cmd('Lspsaga show_workspace_diagnostics'),
+  -- ['<Leader>db'] = cmd('Lspsaga show_buf_diagnostics'),
   ['<leader>K'] = cmd('Lspsaga hover_doc'),
   ['<leader>rn'] = cmd('Lspsaga rename'),
   ['<leader>ca'] = cmd('Lspsaga code_action'),
@@ -60,23 +65,23 @@ map.n({
     require('internal.toggle_term').toggle_term()
   end,
   --invert word
-  ['<leader>iw'] = function ()
-    require("internal.invert_word").inver_word()
+  ['<leader>iw'] = function()
+    require('internal.invert_word').inver_word()
   end,
 
   -- jump
-  ['f'] = function ()
+  ['f'] = function()
     local j = require('internal.jump')
     if j.charForward then
       j.charForward()
     end
   end,
-  ['F'] = function ()
+  ['F'] = function()
     local j = require('internal.jump')
     if j.charBackward then
       j.charBackward()
     end
-  end
+  end,
 })
 
 map.t({
@@ -138,6 +143,7 @@ map.xo({
     require('nvim-treesitter-textobjects.select').select_textobject('@local.scope', 'locals')
   end,
 })
+
 -- gX: Web search
 map.n('gX', function()
   vim.ui.open(('https://cn.bing.com/search?q=%s'):format(vim.fn.expand('<cword>')))
@@ -150,25 +156,26 @@ map.x('gX', function()
 end)
 
 map.n('gs', function()
-  local bufnr = api.nvim_create_buf(false, false)
-  vim.bo[bufnr].buftype = 'prompt'
-  vim.fn.prompt_setprompt(bufnr, ' ')
+  local bufnr = api.nvim_create_buf(false, false) -- false代表可编辑，false代表不是scratch临时缓冲区，支持prompt输入回调
+  vim.bo[bufnr].buftype = 'prompt' -- 缓冲区类型为prompt交互
+  vim.fn.prompt_setprompt(bufnr, ' ') -- 输入框最前面显示的文字
+  -- 独立高亮命名空间
   api.nvim_buf_set_extmark(bufnr, api.nvim_create_namespace('WebSearch'), 0, 0, {
     line_hl_group = 'String',
   })
-  local width = math.floor(vim.o.columns * 0.5)
-  local winid = api.nvim_open_win(bufnr, true, {
-    relative = 'editor',
-    row = 5,
+  local width = math.floor(vim.o.columns * 0.5) -- 弹窗宽度
+  local winid = api.nvim_open_win(bufnr, true, { -- 打开悬浮窗口 绑定刚刚的bufnr缓冲区
+    relative = 'editor', -- 相对于整个编辑器窗口定位
+    row = 5, -- 距离编辑器顶部5行
     width = width,
-    height = 5,
-    col = math.floor(vim.o.columns / 2) - math.floor(width / 2),
-    border = 'rounded',
-    title = 'cn.bing Search',
-    title_pos = 'center',
+    height = 5, -- 弹窗5行高度
+    col = math.floor(vim.o.columns / 2) - math.floor(width / 2), -- 居中
+    border = 'rounded', -- 圆角边框
+    title = 'Bing Search', -- 标题
+    title_pos = 'center', -- 标题居中
   })
-  vim.cmd.startinsert()
-  vim.wo[winid].number = false
+  vim.cmd.startinsert() -- 自动进入插入模式
+  vim.wo[winid].number = false -- 关闭状态列
   vim.wo[winid].stc = ''
   vim.wo[winid].lcs = 'trail: '
   vim.wo[winid].wrap = true

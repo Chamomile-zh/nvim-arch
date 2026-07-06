@@ -5,7 +5,8 @@ local specs = {
 
   {
     'nvimdev/lspsaga.nvim',
-    events = 'BufReadPre',
+    -- events = {'BufReadPost','BufNewFile'},
+    events  = 'LspAttach',
     config = conf.lspsaga,
   },
 
@@ -31,6 +32,7 @@ local specs = {
   {
     'ibhagwan/fzf-lua',
     cmd = 'FzfLua',
+    config = conf.fzflua,
   },
 
   {
@@ -50,6 +52,12 @@ local specs = {
     events = 'BufReadPre',
     config = conf.indentmini,
   },
+  -- {
+  --   'nvimdev/phoenix.nvim',
+  --   config = function ()
+  --     require('phoenix').setup()
+  --   end
+  -- }
 }
 
 local function to_url(s)
@@ -61,15 +69,17 @@ local function to_name(s)
 end
 
 local function get_root()
-  local name = "fzf-lua"
-  local paths = api.nvim_get_runtime_file("pack/*/*/" .. name, true)
-	if #paths > 0 then return paths[1] end
-	local glob = vim.fn.globpath(vim.o.packpath, "pack/*/*/" .. name, 0, 1)
-	return glob[1] or nil
+  local name = 'fzf-lua'
+  local paths = api.nvim_get_runtime_file('pack/*/*/' .. name, true)
+  if #paths > 0 then
+    return paths[1]
+  end
+  local glob = vim.fn.globpath(vim.o.packpath, 'pack/*/*/' .. name, 0, 1)
+  return glob[1] or nil
 end
 
 local function load(pkg_name, events, cmd, config)
-  if not config then
+  if not config then -- disable the plugin by not set the config
     return false
   end
   return function()
@@ -123,8 +133,6 @@ local function packadd(info)
   )
 end
 
-for _,plugin in ipairs(specs) do
+for _, plugin in ipairs(specs) do
   packadd(plugin)
 end
-
-

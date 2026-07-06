@@ -4,6 +4,25 @@ local api = vim.api
 local group = vim.api.nvim_create_augroup('Chamomile.events', {})
 
 ------------ auto commands ------------
+--- debug
+vim.api.nvim_create_user_command('ShowAutoPlugins', function()
+  local plugins = vim.pack.get()
+  local loaded_auto = vim
+    .iter(plugins)
+    :filter(function(p)
+      return p.active
+    end)
+    :totable()
+
+  print('===== Startup auto loaded plugins =====')
+  if #loaded_auto == 0 then
+    print('  No auto load plugins')
+    return
+  end
+  for _, p in ipairs(loaded_auto) do
+    print('- ' .. p.spec.name)
+  end
+end, { desc = 'Print plugins loaded automatically on startup (p.active = true)' })
 
 -- initialization
 local function startuptime()
@@ -57,6 +76,13 @@ au('UIEnter', {
       uc('LspDebug', function()
         vim.lsp.log.set_level(vim.log.levels.WARN)
       end, { desc = 'enable lsp log' })
+
+      -- for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      --   if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].filetype ~= '' then
+      --     vim.api.nvim_exec_autocmds('BufReadPre', { buffer = buf })
+      --   end
+      -- end
+      vim.cmd.packadd('nvim.undotree')
     end)
   end,
   desc = 'Initializer',
@@ -162,14 +188,6 @@ au('BufRead', {
 
 au('LspAttach', {
   group = group,
-  callback = function()
-    -- work tools
-    require('internal.work_tools').wt()
-  end,
-})
-
-au('LspAttach', {
-  group = group,
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if client and client.server_capabilities then
@@ -187,9 +205,29 @@ au('BufLeave', {
   end,
 })
 
+-- treesitter
+local ensure_installed = {
+  'bash',
+  'c',
+  'cpp',
+  'go',
+  'html',
+  'javascript',
+  'lua',
+  'markdown',
+  'markdown_inline',
+  'python',
+  'typescript',
+  'rust',
+  'vim',
+  'json',
+  'vimdoc',
+}
+
 au('PackChanged', {
   group = group,
   once = true,
+  pattern = ensure_installed,
   callback = function(ev)
     local name, active, kind = ev.data.spec.name, ev.data.spec.active, ev.data.spec.kind
     if name == 'nvim-treesitter' then
@@ -197,26 +235,36 @@ au('PackChanged', {
         vim.cmd.packadd(name)
       end
       if kind == 'install' or kind == 'update' then
-        require(name).install({
-          'bash',
-          -- 'c',
-          'cpp',
-          'go',
-          'html',
-          'javascript',
-          -- 'lua',
-          -- 'markdown',
-          -- 'markdown_inline',
-          'python',
-          'typescript',
-          'rust',
-          -- 'vim',
-          'json',
-          -- 'vimdoc',
-        }, { summary = true })
+        require(name).install(ensure_installed, { summary = true })
       end
     end
   end,
+})
+
+local augroup = vim.api.nvim_create_augroup('treesitter_auto_start', { clear = true })
+vim.api.nvim_create_autocmd('FileType', {
+  group = augroup,
+  pattern = ensure_installed,
+  callback = function(args)
+    local buf = args.buf
+    if not vim.api.nvim_buf_is_loaded(buf) then
+      return
+    end
+
+    if vim.treesitter.highlighter.active[buf] then
+      return
+    end
+
+    local bufname = vim.api.nvim_buf_get_name(buf)
+    local max_filesize = 300 * 1024
+    local ok, stats = pcall(vim.uv.fs_stat, bufname)
+    if ok and stats and stats.size > max_filesize then
+      return
+    end
+
+    pcall(vim.treesitter.start, buf)
+  end,
+  desc = 'Auto start treesitter highlight when filetype is set',
 })
 
 ------------ user commands ------------
@@ -263,9 +311,12 @@ end, {
   complete = get_plugin_names,
   desc = 'Check plugin status without downloading',
 })
+
 uc('PackLoaded', function()
   local plugins = vim.pack.get()
-  local loaded = vim.tbl_filter(function(p) return p.active end, plugins)
+  local loaded = vim.tbl_filter(function(p)
+    return p.active
+  end, plugins)
 
   print(string.format('\nPlugin status：loaded %d / total %d\n', #loaded, #plugins))
   print('Loaded plugins：')
@@ -273,19 +324,20 @@ uc('PackLoaded', function()
     print('  ✓ ' .. p.spec.name)
   end
 end, { desc = 'find vim.pack plugin load' })
+
 uc('PackDelete', function(opts)
   if #opts.fargs == 0 then
-    vim.notify('⚠️ Please input the plugin name', vim.log.levels.WARN)
+    vim.notify('Please input the plugin name', vim.log.levels.WARN)
     return
   end
 
   local targets = opts.fargs
-  vim.notify('🗑️ deleting: ' .. table.concat(targets, ', '), vim.log.levels.INFO)
+  vim.notify('deleting: ' .. table.concat(targets, ', '), vim.log.levels.INFO)
   local ok, err = pcall(vim.pack.del, targets)
   if ok then
-    vim.notify('✅ delete finished！(restart Neovim to see)', vim.log.levels.INFO)
+    vim.notify('delete finished！(restart Neovim to see)', vim.log.levels.INFO)
   else
-    vim.notify('❌ delete failed: ' .. tostring(err), vim.log.levels.ERROR)
+    vim.notify('delete failed: ' .. tostring(err), vim.log.levels.ERROR)
   end
 end, {
   nargs = '+', -- 允许传入一个或多个参数 (空格分隔，支持批量删除)
