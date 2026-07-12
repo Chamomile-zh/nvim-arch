@@ -1,28 +1,8 @@
 local au = vim.api.nvim_create_autocmd
 local uc = vim.api.nvim_create_user_command
-local api = vim.api
 local group = vim.api.nvim_create_augroup('Chamomile.events', {})
 
 ------------ auto commands ------------
---- debug
-vim.api.nvim_create_user_command('ShowAutoPlugins', function()
-  local plugins = vim.pack.get()
-  local loaded_auto = vim
-    .iter(plugins)
-    :filter(function(p)
-      return p.active
-    end)
-    :totable()
-
-  print('===== Startup auto loaded plugins =====')
-  if #loaded_auto == 0 then
-    print('  No auto load plugins')
-    return
-  end
-  for _, p in ipairs(loaded_auto) do
-    print('- ' .. p.spec.name)
-  end
-end, { desc = 'Print plugins loaded automatically on startup (p.active = true)' })
 
 -- initialization
 local function startuptime()
@@ -56,6 +36,9 @@ au('UIEnter', {
 
       -- lsp
       require('internal.lsp')
+
+      -- modules
+      require('modules')
 
       -- keymap
       require('keymap')

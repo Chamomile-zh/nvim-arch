@@ -64,4 +64,3 @@ _G.icons = {
 _G.diagnostic_signs = { 'E', 'W', 'I', 'H' }
 
 require('core.options')
-require('modules')

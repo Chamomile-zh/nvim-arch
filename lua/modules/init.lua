@@ -52,12 +52,6 @@ local specs = {
     events = 'BufReadPre',
     config = conf.indentmini,
   },
-  -- {
-  --   'nvimdev/phoenix.nvim',
-  --   config = function ()
-  --     require('phoenix').setup()
-  --   end
-  -- }
 }
 
 local function to_url(s)

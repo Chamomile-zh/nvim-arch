@@ -16,7 +16,7 @@ local colors = {
   yellow = '#fabd2f',
   dyellow = '#d79921',
   lyellow = '#d8ff1f',
-  blue = '#88abda',
+  blue = '#458588',
   dblue = '#83a598',
   cyan = '#1fd8ff', -- 青蓝色
   dcyan = '#a59aca', -- 雪青色
@@ -183,7 +183,8 @@ local function setcolor()
     SagaShadow = { fg = colors.bg0 },
     -- Indent
     IndentLine = { fg = colors.bg2 },
-    IndentLineCurrent = { link = 'Comment' },
+    -- IndentLineCurrent = { link = 'Comment' },
+    IndentLineCurrent = { fg = colors.violet, italic = true },
     -- StatusLine
     StatusLineMode = { fg = colors.fg2 },
     StatusLineFileInfo = { fg = colors.fg2 },
@@ -210,7 +211,7 @@ local function setcolor()
     BlinkCmpDoc = { link = 'Cmp' },
     BlinkCmpDocBorder = { link = 'CmpBorder' },
     BlinkCmpLabel = { link = 'Cmp' },
-    BlinkCmpLabelMatch = { fg = colors.cyan, bold = true },
+    BlinkCmpLabelMatch = { fg = colors.dblue, bold = true },
     BlinkCmpKind = { link = 'Cmp' },
 
     -- nvim-treesitter

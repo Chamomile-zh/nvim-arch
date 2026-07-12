@@ -37,18 +37,20 @@ local config = {
   },
   shortcuts = {
     { key = 'f', desc = 'Open File', action = '<cmd>FzfLua files<CR>' },
+    { key = 'e', desc = 'New File', action = '<cmd>enew<CR>' },
+    -- {
+    --   key = 't',
+    --   desc = 'Yazi',
+    --   action = function()
+    --     require('internal.yazi').yazi('edit')
+    --   end,
+    -- },
     { key = 'o', desc = 'Recent Files', action = '<cmd>FzfLua oldfiles<CR>' },
     {
-      key = 't',
+      key = 'n',
       desc = 'Dotfiles',
       action = '<cmd>FzfLua files cwd=~/.config fd_opts=--type\\ f<CR>',
     },
-    {
-      key = 'n',
-      desc = 'Nvim Config',
-      action = '<cmd>edit $MYVIMRC | Chdir silent<CR>',
-    },
-    { key = 'e', desc = 'New File', action = '<cmd>enew<CR>' },
     {
       key = 'u',
       desc = 'Pack Status',
@@ -74,7 +76,6 @@ local config = {
   },
 }
 
--- 辅助函数：计算文本水平居中的左偏移列数
 local function center_left(text)
   local width = vim.fn.strdisplaywidth(text)
   return math.max(1, math.floor((vim.o.columns - width) / 2))
@@ -84,14 +85,12 @@ local function calculate_positions()
   local screen_width = vim.o.columns
   local spacing = string.rep(' ', config.layout.key_desc_spacing)
 
-  --  图案居中
   local lambda_max_width = 0
   for _, line in ipairs(config.lambda_art) do
     lambda_max_width = math.max(lambda_max_width, vim.fn.strdisplaywidth(line))
   end
   local lambda_left = math.max(1, math.floor((screen_width - lambda_max_width) / 2))
 
-  -- 快捷方式整体居中（按最长一行计算）
   local shortcuts_max_width = 0
   for _, s in ipairs(config.shortcuts) do
     local text = string.format('[%s]%s%s', s.key, spacing, s.desc)
@@ -99,7 +98,6 @@ local function calculate_positions()
   end
   local shortcuts_left = math.max(1, math.floor((screen_width - shortcuts_max_width) / 2))
 
-  -- 垂直行号计算
   local top = config.layout.top_offset
   local lambda_lines = #config.lambda_art
   local date_line = top + lambda_lines + config.layout.art_date_gap
@@ -199,7 +197,6 @@ local function render_dashboard(buf)
 
   local plugins = vim.pack.get()
   local rtp_set = {}
-  -- print(vim.inspect(vim.opt.rtp:get()))
   for _, path in ipairs(vim.opt.rtp:get()) do
     rtp_set[path] = true
   end
@@ -209,10 +206,6 @@ local function render_dashboard(buf)
       return rtp_set[p.path] ~= nil
     end)
     :totable()
-  -- print('===== Startup auto loaded plugins =====')
-  -- for _, p in ipairs(loaded_now) do
-  --   print('- ' .. p.spec.name)
-  -- end
   local startup_time = vim.g.nvim_startup_time or '0'
   local plugin_info_str =
     string.format('load %d/%d plugins in %sms', #loaded_now or 0, #plugins or 0, startup_time)
@@ -279,7 +272,7 @@ local function render_dashboard(buf)
 end
 
 local function setup_keymaps(buf)
-  local opts = { noremap = true, silent = true, buffer = buf }
+  local opts = { noremap = true, silent = true, buffer = buf } -- 仅在当前缓冲区有效
 
   for _, shortcut in ipairs(config.shortcuts) do
     vim.keymap.set('n', shortcut.key, shortcut.action, opts)
@@ -287,9 +280,9 @@ local function setup_keymaps(buf)
 
   vim.keymap.set('n', '<Esc>', ':q<CR>', opts)
   vim.keymap.set('n', 'q', ':q<CR>', opts)
-  -- vim.keymap.set('n', 'r', function()
-  --   render_dashboard(buf)
-  -- end, vim.tbl_extend('force', opts, { desc = 'Refresh dashboard' }))
+  vim.keymap.set('n', 't', function()
+    render_dashboard(buf)
+  end, vim.tbl_extend('force', opts, { desc = 'Refresh dashboard' }))
 end
 
 local function opt_handler()

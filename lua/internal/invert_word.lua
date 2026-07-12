@@ -89,7 +89,7 @@ local function change_line(sr,er,word)
 
 end
 local function inver_word()
-    local cursor = api.nvim_win_get_cursor(0) --获取当前cursor位置
+    -- local cursor = api.nvim_win_get_cursor(0) --获取当前cursor位置
     local oldword,sr,er = get_cursor_word_info() --start row,end row
     local word_map = get_word_map()
     if word_map[oldword] then
