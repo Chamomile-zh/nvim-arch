@@ -37,9 +37,6 @@ au('UIEnter', {
       -- lsp
       require('internal.lsp')
 
-      -- modules
-      require('modules')
-
       -- keymap
       require('keymap')
 
@@ -224,9 +221,9 @@ au('PackChanged', {
   end,
 })
 
-local augroup = vim.api.nvim_create_augroup('treesitter_auto_start', { clear = true })
+-- local augroup = vim.api.nvim_create_augroup('treesitter_auto_start', { clear = true })
 vim.api.nvim_create_autocmd('FileType', {
-  group = augroup,
+  group = group,
   pattern = ensure_installed,
   callback = function(args)
     local buf = args.buf

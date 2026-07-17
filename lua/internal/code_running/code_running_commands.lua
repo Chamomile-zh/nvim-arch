@@ -51,11 +51,13 @@ local commands = {
     modus = 'job',
   },
   ['rust'] = {
-    command = {
-      'rustc "$filename" -o "$runfile"',
-      './"$runfile"',
-      'rm -rf "$runfile"',
-    },
+    command = 
+    -- {
+    --   'rustc "$filename" -o "$runfile"',
+    --   './"$runfile"',
+    --   'rm -rf "$runfile"',
+    -- },
+    'cargo run',
   },
   ['typescript'] = {
     command = 'deno run "$filename"',

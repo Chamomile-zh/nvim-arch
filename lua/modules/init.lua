@@ -5,7 +5,6 @@ local specs = {
 
   {
     'nvimdev/lspsaga.nvim',
-    -- events = {'BufReadPost','BufNewFile'},
     events  = 'LspAttach',
     config = conf.lspsaga,
   },

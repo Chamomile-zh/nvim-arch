@@ -81,7 +81,7 @@ local function setcolor()
     vCursor = { link = 'Cursor' },
     iCursor = { link = 'Cursor' },
     lCursor = { link = 'Cursor' },
-    Special = { fg = colors.orange },
+    Special = { fg = colors.dorange },
     Comment = { fg = colors.gray, italic = true },
     Error = { fg = colors.red, bold = true, reverse = true },
     Done = { fg = colors.orange, bold = true, italic = true },

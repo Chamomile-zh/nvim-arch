@@ -18,6 +18,7 @@ g.c_syntax_for_h = 1
 g.loaded_matchparen=1
 g.browser = 'firefox'
 g.workspace = ''
+g.python3_host_prog = "/usr/bin/python3" --to solve the provider load slowly
 _G.wsl = vim.fn.has('wsl') == 1
 _G.lsp_fts = {
   'c',
@@ -64,3 +65,4 @@ _G.icons = {
 _G.diagnostic_signs = { 'E', 'W', 'I', 'H' }
 
 require('core.options')
+require('modules')
