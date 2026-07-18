@@ -5,7 +5,7 @@ local specs = {
 
   {
     'nvimdev/lspsaga.nvim',
-    events  = 'LspAttach',
+    events = 'LspAttach',
     config = conf.lspsaga,
   },
 
@@ -21,11 +21,13 @@ local specs = {
     version = 'main',
     events = { 'BufReadPre', 'BufNewFile' },
     config = conf.treesitter,
-  },
+    dep = {
 
-  {
-    'nvim-treesitter/nvim-treesitter-textobjects',
-    version = 'main',
+      {
+        'nvim-treesitter/nvim-treesitter-textobjects', -- just load without config
+        version = 'main',
+      },
+    },
   },
 
   {
@@ -50,6 +52,15 @@ local specs = {
     'nvimdev/indentmini.nvim',
     events = 'BufReadPre',
     config = conf.indentmini,
+  },
+  {
+    'folke/noice.nvim',
+    events = 'BufReadPre',
+    config = conf.noice,
+    dep = {
+      { 'MunifTanjim/nui.nvim' },
+      { 'rcarriga/nvim-notify' },
+    },
   },
 }
 
@@ -127,5 +138,11 @@ local function packadd(info)
 end
 
 for _, plugin in ipairs(specs) do
+  if plugin.dep then
+    -- vim.notify(string.format("dep:%s",#plugin.dep))
+    for i = 1, #plugin.dep do
+      packadd(plugin.dep[i])
+    end
+  end
   packadd(plugin)
 end

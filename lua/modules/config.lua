@@ -64,7 +64,7 @@ config.blink = function()
     sources = { default = { 'snippets', 'lsp', 'path', 'buffer' } },
     cmdline = {
       completion = {
-        menu = { auto_show = false },
+        menu = { auto_show = true },
         list = { selection = { preselect = false } },
       },
     },
@@ -153,6 +153,41 @@ config.indentmini = function()
       'lazy',
       'markdown',
       'text',
+    },
+  })
+end
+
+config.noice = function()
+  require('notify').setup({
+    background_colour = '#000000',
+  })
+  require('noice').setup({
+    popmenu = { enabled = true },
+    presets = {
+      bottom_search = true, -- use a classic bottom cmdline for search
+      command_palette = true, -- position the cmdline and popupmenu together
+      long_message_to_split = true, -- long messages will be sent to a split
+      inc_rename = false, -- enables an input dialog for inc-rename.nvim
+      lsp_doc_border = false, -- add a border to hover docs and signature help
+    },
+    lsp = {
+      override = {
+        ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+        ['vim.lsp.util.stylize_markdown'] = true,
+      },
+      progress = { enabled = false }, -- 依旧关闭烦人的 LSP 进度条提示
+    },
+    -- 需要过滤的信息
+    routes = {
+      -- {
+      --   -- 过滤打开rust文件不影响使用的错误提示
+      --   filter = {
+      --     event = 'msg_show',
+      --     kind = 'emsg',
+      --     find = 'Error in decoration provider',
+      --   },
+      --   opts = { skip = true },
+      -- },
     },
   })
 end

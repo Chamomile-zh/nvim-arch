@@ -43,9 +43,9 @@ au('UIEnter', {
       -- cursor word
       require('internal.cursor_word')
 
-      if vim.version().minor >= 12 then
-        require('vim._core.ui2').enable({ msg = { target = 'cmd' } })
-      end
+      -- if vim.version().minor >= 12 then
+      --   require('vim._core.ui2').enable({ msg = { target = 'cmd' } })
+      -- end
       vim.lsp.log.set_level(vim.log.levels.OFF)
       uc('LspLog', function()
         vim.cmd(string.format('tabnew %s', vim.lsp.log.get_filename()))
@@ -294,15 +294,23 @@ end, {
 
 uc('PackLoaded', function()
   local plugins = vim.pack.get()
-  local loaded = vim.tbl_filter(function(p)
-    return p.active
-  end, plugins)
-
-  print(string.format('\nPlugin status：loaded %d / total %d\n', #loaded, #plugins))
-  print('Loaded plugins：')
-  for _, p in ipairs(loaded) do
-    print('  ✓ ' .. p.spec.name)
+  local rtp_set = {}
+  for _, path in ipairs(vim.opt.rtp:get()) do
+    rtp_set[path] = true
   end
+  local loaded_now = vim
+    .iter(plugins)
+    :filter(function(p)
+      return rtp_set[p.path] ~= nil
+    end)
+    :totable()
+
+  local result = {}
+  for _, p in ipairs(loaded_now) do
+    table.insert(result, p.spec.name)
+  end
+  vim.notify(string.format('\nPlugin status：loaded %d / total %d\n', #result, #plugins))
+  vim.notify(string.format('loaded plugins： %s', vim.inspect(result)))
 end, { desc = 'find vim.pack plugin load' })
 
 uc('PackDelete', function(opts)

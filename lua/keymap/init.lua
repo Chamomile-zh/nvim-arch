@@ -14,6 +14,8 @@ map.n({
   ['<leader>fb'] = cmd('FzfLua buffers'),
   ['<leader>fk'] = cmd('FzfLua keymaps'),
   ['<Leader>o'] = cmd('FzfLua lsp_document_symbols'),
+  -- noice
+  ['<leader>n'] = cmd('Noice fzf'),
   -- lspsaga
   ['<leader>pd'] = cmd('Lspsaga peek_definition'),
   ['<leader>gp'] = cmd('Lspsaga goto_definition'),
@@ -80,6 +82,20 @@ map.n({
     local j = require('internal.jump')
     if j.charBackward then
       j.charBackward()
+    end
+  end,
+})
+
+-- noice
+map.nis({
+  ['<c-f>'] = function()
+    if not require('noice.lsp').scroll(4) then
+      return '<c-f>'
+    end
+  end,
+  ['<c-b>'] = function()
+    if not require('noice.lsp').scroll(-4) then
+      return '<c-b>'
     end
   end,
 })

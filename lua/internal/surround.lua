@@ -105,7 +105,7 @@ local function surround(mode)
 
   fn.setreg('"', char, 'c')
 
-  vim.notify(fn.line('.') .. ' ' .. fn.line('.'))
+  -- vim.notify(fn.line('.') .. ' ' .. fn.line('.'))
   if fn.col("'[") > #api.nvim_get_current_line() or fn.line("'[") > fn.line('.') then
     vim.cmd('normal! $p')
   else
