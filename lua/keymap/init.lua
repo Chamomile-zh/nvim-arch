@@ -15,7 +15,12 @@ map.n({
   ['<leader>fk'] = cmd('FzfLua keymaps'),
   ['<Leader>o'] = cmd('FzfLua lsp_document_symbols'),
   -- noice
-  ['<leader>n'] = cmd('Noice fzf'),
+  ['<leader>n'] = function()
+    if not package.loaded['fzf-lua'] then
+      vim.cmd('packadd fzf-lua')
+    end
+    vim.cmd('Noice fzf')
+  end, -- need to load the Fzflua
   -- lspsaga
   ['<leader>pd'] = cmd('Lspsaga peek_definition'),
   ['<leader>gp'] = cmd('Lspsaga goto_definition'),

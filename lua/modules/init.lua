@@ -24,8 +24,10 @@ local specs = {
     dep = {
 
       {
-        'nvim-treesitter/nvim-treesitter-textobjects', -- just load without config
+        'nvim-treesitter/nvim-treesitter-textobjects',
         version = 'main',
+        events = 'BufReadPre'
+        -- events = 'BufModifiedSet'
       },
     },
   },
@@ -44,7 +46,7 @@ local specs = {
 
   {
     'lewis6991/gitsigns.nvim',
-    events = 'BufRead',
+    events = 'LspAttach',
     config = conf.gitsigens,
   },
 
@@ -58,8 +60,8 @@ local specs = {
     events = 'BufReadPre',
     config = conf.noice,
     dep = {
-      { 'MunifTanjim/nui.nvim' },
-      { 'rcarriga/nvim-notify' },
+      { 'MunifTanjim/nui.nvim' ,events="BufReadPre"},
+      { 'rcarriga/nvim-notify',events = "BufReadPre" },
     },
   },
 }
@@ -83,7 +85,7 @@ local function get_root()
 end
 
 local function load(pkg_name, events, cmd, config)
-  if not config then -- disable the plugin by not set the config
+  if not events and not cmd then
     return false
   end
   return function()
@@ -138,11 +140,13 @@ local function packadd(info)
 end
 
 for _, plugin in ipairs(specs) do
-  if plugin.dep then
-    -- vim.notify(string.format("dep:%s",#plugin.dep))
-    for i = 1, #plugin.dep do
-      packadd(plugin.dep[i])
+  if plugin.enabled ~= false then -- set the enabled to false to disable  the plugin
+    if plugin.dep then
+      -- vim.notify(string.format("dep:%s",#plugin.dep))
+      for i = 1, #plugin.dep do
+        packadd(plugin.dep[i])
+      end
     end
+    packadd(plugin)
   end
-  packadd(plugin)
 end

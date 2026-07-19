@@ -1,4 +1,5 @@
 local group = vim.api.nvim_create_augroup('Dashboard', { clear = true })
+local cmd = require("core.keymap").cmd
 
 local M = {}
 
@@ -36,8 +37,8 @@ local config = {
     -- ' ⠜⠋⢠⣷⢻⣿⣿⣶⣾⣿⣿⣿⣿⠿⣛⣥⣾⣿⠿⠟⠛⠉            ',
   },
   shortcuts = {
-    { key = 'f', desc = 'Open File', action = '<cmd>FzfLua files<CR>' },
-    { key = 'e', desc = 'New File', action = '<cmd>enew<CR>' },
+    { key = 'f', desc = 'Open File', action = cmd("FzfLua files") },
+    { key = 'e', desc = 'New File', action = cmd("enew") },
     -- {
     --   key = 't',
     --   desc = 'Yazi',
@@ -45,18 +46,18 @@ local config = {
     --     require('internal.yazi').yazi('edit')
     --   end,
     -- },
-    { key = 'o', desc = 'Recent Files', action = '<cmd>FzfLua oldfiles<CR>' },
+    { key = 'o', desc = 'Recent Files', action = cmd("FzfLua oldfiles") },
     {
       key = 'n',
-      desc = 'Dotfiles',
-      action = '<cmd>FzfLua files cwd=~/.config fd_opts=--type\\ f<CR>',
+      desc = 'Nvim Config',
+      action = cmd("FzfLua files cwd=~/.config/nvim fd_opts=--type\\ f"),
     },
     {
       key = 'u',
       desc = 'Pack Status',
-      action = '<cmd>:PackStatus<CR>',
+      action = cmd("PackStatus"),
     },
-    { key = 'q', desc = 'Quit', action = '<cmd>qa<CR>' },
+    { key = 'q', desc = 'Quit', action = cmd("qa") },
   },
 
   highlights = {
@@ -132,7 +133,7 @@ local function get_datetime()
   local datetime = os.date('*t')
   local weekdays = { 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' }
   local months =
-    { 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec' }
+    { 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' }
 
   local weekday = weekdays[datetime.wday]
   local year = datetime.year

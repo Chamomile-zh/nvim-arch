@@ -37,13 +37,15 @@ au('UIEnter', {
       -- lsp
       require('internal.lsp')
 
+      -- require("modules")
+
       -- keymap
       require('keymap')
 
       -- cursor word
       require('internal.cursor_word')
 
-      -- if vim.version().minor >= 12 then
+      -- if vim.version().minor >= 12 then -- conflict with noice cmdline
       --   require('vim._core.ui2').enable({ msg = { target = 'cmd' } })
       -- end
       vim.lsp.log.set_level(vim.log.levels.OFF)
@@ -56,12 +58,6 @@ au('UIEnter', {
       uc('LspDebug', function()
         vim.lsp.log.set_level(vim.log.levels.WARN)
       end, { desc = 'enable lsp log' })
-
-      -- for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-      --   if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].filetype ~= '' then
-      --     vim.api.nvim_exec_autocmds('BufReadPre', { buffer = buf })
-      --   end
-      -- end
       vim.cmd.packadd('nvim.undotree')
     end)
   end,
@@ -221,7 +217,6 @@ au('PackChanged', {
   end,
 })
 
--- local augroup = vim.api.nvim_create_augroup('treesitter_auto_start', { clear = true })
 vim.api.nvim_create_autocmd('FileType', {
   group = group,
   pattern = ensure_installed,
@@ -309,8 +304,15 @@ uc('PackLoaded', function()
   for _, p in ipairs(loaded_now) do
     table.insert(result, p.spec.name)
   end
-  vim.notify(string.format('\nPlugin status：loaded %d / total %d\n', #result, #plugins))
-  vim.notify(string.format('loaded plugins： %s', vim.inspect(result)))
+  -- vim.notify(string.format('\nPlugin status：loaded %d / total %d\n', #result, #plugins))
+  vim.notify(
+    string.format(
+      'Plugin status：loaded %d / total %d\nloaded plugins： %s',
+      #result,
+      #plugins,
+      vim.inspect(result)
+    )
+  )
 end, { desc = 'find vim.pack plugin load' })
 
 uc('PackDelete', function(opts)

@@ -119,7 +119,13 @@ local function setcolor()
     SpellRare = { undercurl = true, sp = colors.purple },
     Whitespace = { fg = colors.bg2 },
     Delimiter = { fg = colors.orange },
-    SnippetTabstop = { link = 'Normal' },
+    -- SnippetTabstop = { link = 'Normal' },
+    -- SnippetTabstop = { underline = true },
+    -- SnippetTabstopActive = { underline = true },
+    -- SnippetTabstop = {bg=colors.bg1},
+    -- SnippetTabstopActive = {bg=colors.bg2},
+    SnippetTabstop = {}, -- set to null to avoid the function snippet highlight error
+    SnippetTabstopActive = {},
     -- LSP Diagnostic
     DiagnosticError = { fg = colors.red },
     DiagnosticSignError = { fg = colors.red },
