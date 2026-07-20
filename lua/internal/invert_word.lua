@@ -1,5 +1,5 @@
 local api = vim.api
-local get_visual_pos = require("internal.get_surround").visual
+local get_visual_pos = require("internal.util.get_surround").visual
 
 
 local function feedkeys(keys,mode)

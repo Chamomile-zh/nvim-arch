@@ -13,7 +13,7 @@ local function update_position(pos)
 end
 
 local function wildfire()
-  local pos = require('internal.get_surround').get_surround()
+  local pos = require('internal.util.get_surround').get_surround()
   if not pos or #pos == 0 then
     changemode()
     return

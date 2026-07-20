@@ -52,6 +52,8 @@ map.n({
   -- code_running
   ['<F5>'] = cmd('Run'),
   ['<F10>'] = cmd('Run center'),
+  ['<F6>'] = cmd('Build'), -- 默认悬浮小窗看编译状态
+  ['<F11>'] = cmd('Build center'), -- 居中大窗看复杂编译日志
   -- yazi
   ['<leader>ra'] = function()
     require('internal.yazi').yazi('edit')
@@ -93,7 +95,7 @@ map.n({
 
 -- noice
 map.nis({
-  ['<c-f>'] = function()
+  ['<c-n>'] = function()
     if not require('noice.lsp').scroll(4) then
       return '<c-f>'
     end

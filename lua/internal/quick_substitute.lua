@@ -1,4 +1,4 @@
-local get_surround = require('internal.get_surround')
+local get_surround = require('internal.util.get_surround')
 local pchar = { '/', '#' }
 
 ---check if oldword or newword is nil

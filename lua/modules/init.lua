@@ -5,28 +5,28 @@ local specs = {
 
   {
     'nvimdev/lspsaga.nvim',
-    events = 'LspAttach',
+    events = {'LspAttach','BufModifiedSet'},
     config = conf.lspsaga,
   },
 
   {
     'saghen/blink.cmp',
     version = vim.version.range('^1'),
-    events = 'LspAttach',
+    events = {'LspAttach','BufModifiedSet'},
     config = conf.blink,
   },
 
   {
     'nvim-treesitter/nvim-treesitter',
     version = 'main',
-    events = { 'BufReadPre', 'BufNewFile' },
+    events = { 'BufReadPre', 'BufNewFile','BufModifiedSet' },
     config = conf.treesitter,
     dep = {
 
       {
         'nvim-treesitter/nvim-treesitter-textobjects',
         version = 'main',
-        events = 'BufReadPre'
+        events = {'BufReadPre','BufModifiedSet'},
         -- events = 'BufModifiedSet'
       },
     },
@@ -46,22 +46,22 @@ local specs = {
 
   {
     'lewis6991/gitsigns.nvim',
-    events = 'LspAttach',
+    events = {'LspAttach','BufModifiedSet'},
     config = conf.gitsigens,
   },
 
   {
     'nvimdev/indentmini.nvim',
-    events = 'BufReadPre',
+    events = {'BufReadPre','BufModifiedSet'},
     config = conf.indentmini,
   },
   {
     'folke/noice.nvim',
-    events = 'BufReadPre',
+    events = {'LspAttach','BufModifiedSet'},
     config = conf.noice,
     dep = {
-      { 'MunifTanjim/nui.nvim' ,events="BufReadPre"},
-      { 'rcarriga/nvim-notify',events = "BufReadPre" },
+      { 'MunifTanjim/nui.nvim' ,events= {'LspAttach','BufModifiedSet'}},
+      { 'rcarriga/nvim-notify',events =  {'LspAttach','BufModifiedSet'}},
     },
   },
 }

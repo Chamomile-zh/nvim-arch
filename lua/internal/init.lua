@@ -351,6 +351,28 @@ end, {
     end, list)
   end,
 })
+uc('Build', function(args)
+  -- 如果用户没传参数，自动补上 '_build'，比如 cpp 变成 cpp_build
+  local target = args.args
+  if target == '' then
+    target = vim.bo.filetype .. '_build'
+  elseif target=='center' then
+    target = vim.bo.filetype .. '_build center'
+  end
+  require('internal.code_running.code_running').running(target)
+end, {
+  nargs = '?',
+  complete = function(arg)
+    -- 过滤出所有以 '_build' 结尾的命令供补全
+    local list = require('internal.code_running.code_running_commands').commands_list()
+    local build_list = vim.tbl_filter(function(s)
+      return s:match('_build$')
+    end, list)
+    return vim.tbl_filter(function(s)
+      return string.match(s, '^' .. arg)
+    end, build_list)
+  end,
+})
 
 -- change directory
 uc('Chdir', function(args)
