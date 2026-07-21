@@ -13,7 +13,23 @@ map.n({
   ['<leader>fo'] = cmd('FzfLua oldfiles'),
   ['<leader>fb'] = cmd('FzfLua buffers'),
   ['<leader>fk'] = cmd('FzfLua keymaps'),
+  ['<leader>fm'] = cmd('FzfLua manpages'),
   ['<Leader>o'] = cmd('FzfLua lsp_document_symbols'),
+  ['<leader>fd'] = function()
+    local input_path = vim.fn.input('Search directory: ','','dir')
+    if input_path == '' then
+      return
+    end
+    local target_dir = vim.fn.expand(input_path)
+    if vim.fn.isdirectory(target_dir) == 0 then
+      vim.notify('路径不存在或不是文件夹：' .. target_dir, vim.log.levels.ERROR)
+      return
+    end
+    require('fzf-lua').files({
+      cwd = target_dir,
+      cwd_prompt = true,
+    })
+  end,
   -- noice
   ['<leader>n'] = function()
     if not package.loaded['fzf-lua'] then

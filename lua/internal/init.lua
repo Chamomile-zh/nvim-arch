@@ -375,10 +375,10 @@ end, {
 })
 
 -- change directory
-uc('Chdir', function(args)
-  vim.cmd('silent! lcd %:p:h')
-  if args.args == 'silent' then
-    return
-  end
-  vim.notify(('From: %s\nTo: %s'):format(vim.fn.getcwd(), vim.fn.expand('%:p:h')))
-end, { nargs = '?' })
+-- uc('Chdir', function(args)
+--   vim.cmd('silent! lcd %:p:h')
+--   if args.args == 'silent' then
+--     return
+--   end
+--   vim.notify(('From: %s\nTo: %s'):format(vim.fn.getcwd(), vim.fn.expand('%:p:h')))
+-- end, { nargs = '?' })

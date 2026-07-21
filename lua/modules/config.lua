@@ -24,6 +24,7 @@ config.lspsaga = function()
 end
 
 config.blink = function()
+  -- require('blink.cmp').build():pwait()
   require('blink.cmp').setup({
     keymap = {
       ['<tab>'] = {
