@@ -36,7 +36,7 @@ local function find_pos(str, pattern)
          and (char_after_str == '' or char_after_str:match('[^%w_]'))
       then
         -- str:find 返回的是 1-based 的字节索引
-        -- extmark 需要的是 0-based 的字节索引，直接减 1 即可！完美替代之前的复杂转换。
+        -- extmark 需要的是 0-based 的字节索引，直接减 1 
         return found_pos - 1
       end
     end

@@ -53,6 +53,11 @@ local config = {
       action = cmd("FzfLua files cwd=~/.config/nvim fd_opts=--type\\ f"),
     },
     {
+      key = 'w',
+      desc = 'Git Diff',
+      action = cmd("FzfLua git_diff")
+    },
+    {
       key = 'u',
       desc = 'Pack Status',
       action = cmd("PackStatus"),

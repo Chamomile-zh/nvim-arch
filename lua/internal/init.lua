@@ -181,6 +181,15 @@ au('BufLeave', {
   end,
 })
 
+-- -- Chdir always in current buffer directory
+-- au("BufEnter", {
+--   callback = function()
+--     if vim.api.nvim_buf_get_name(0) ~= "" then
+--       vim.cmd("Chdir silent")
+--     end
+--   end
+-- })
+--
 -- treesitter
 local ensure_installed = {
   'bash',
@@ -217,7 +226,7 @@ au('PackChanged', {
   end,
 })
 
-vim.api.nvim_create_autocmd('FileType', {
+au('FileType', {
   group = group,
   pattern = ensure_installed,
   callback = function(args)
@@ -375,10 +384,11 @@ end, {
 })
 
 -- change directory
--- uc('Chdir', function(args)
---   vim.cmd('silent! lcd %:p:h')
---   if args.args == 'silent' then
---     return
---   end
---   vim.notify(('From: %s\nTo: %s'):format(vim.fn.getcwd(), vim.fn.expand('%:p:h')))
--- end, { nargs = '?' })
+uc('Chdir', function(args)
+  local old_dir = vim.fn.getcwd()
+  vim.cmd('silent! lcd %:p:h')
+  if args.args == 'silent' then
+    return
+  end
+  vim.notify(('From: %s\nTo: %s'):format(old_dir, vim.fn.expand('%:p:h')))
+end, { nargs = '?' })
