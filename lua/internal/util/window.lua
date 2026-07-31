@@ -140,7 +140,7 @@ function win:new_float(float_opt, enter, force)
   return setmetatable(win, obj)
 end
 
---- quick set position
+--- quick set position 
 --- +-------------+--+-------------+--+--------------+
 --- |             |  |             |  |              |
 --- |     tl      |  |     tc      |  |      tr      |

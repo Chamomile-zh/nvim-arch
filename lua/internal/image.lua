@@ -23,7 +23,7 @@ local function paste()
 
   if check_have_img() then
     local imagename = vim.fn.input('Enter image name: ')
-    vim.fn.system('xclip -selection clipboard -t image/png -o > ' .. path .. imagename .. '.png')
+    vim.fn.system('wlclipboard -selection clipboard -t image/png -o > ' .. path .. imagename .. '.png')
 
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
     local line = vim.api.nvim_get_current_line()

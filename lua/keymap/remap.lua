@@ -15,8 +15,8 @@ map.n({
   ['<leader>sc'] = cmd('set spell!'),
   ['<leader>sw'] = cmd('set wrap!'),
   ['<leader><leader>'] = '/<++><cr>:noh<cr>"_c4l',
-  -- ['j'] = 'gj',
-  -- ['k'] = 'gk',
+  ['j'] = 'gj',
+  ['k'] = 'gk',
   ['J'] = '<c-d>',
   ['K'] = '<c-u>',
   -- window
@@ -36,13 +36,14 @@ map.n({
   ['<left>'] = cmd('vertical res -5'),
   ['<right>'] = cmd('vertical res +5'),
   -- open vim config
-  ['<leader>vim'] = cmd('edit $MYVIMRC | Chdir silent'),
+  ['<leader>vim'] = cmd('edit $MYVIMRC | chdir ~/.config/nvim'),
 })
 
 map.nox({
   ['L'] = '$',
   ['H'] = '^',
   ['Y'] = '"+y',
+  ['P'] = '"+p"'
 })
 
 -- map.v({

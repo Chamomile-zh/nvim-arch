@@ -20,6 +20,14 @@
     ],
     "description": "Code snippet for 'for' loop"
   },
+
+  "template": {
+    "prefix": "temp",
+    "body": [
+      "template <typename ${1:T}>"
+    ],
+    "description": "Code snippet for 'for' loop"
+  },
   "forr": {
     "prefix": "forr",
     "body": [

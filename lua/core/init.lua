@@ -9,13 +9,16 @@ g.loaded_getscript = 1
 g.loaded_getscriptPlugin = 1
 g.loaded_vimball = 1
 g.loaded_vimballPlugin = 1
+g.loaded_matchit=1
 g.loaded_2html_plugin = 1
 g.loaded_logiPat = 1
 g.loaded_rrhelper = 1
 g.loaded_netrwPlugin = 1
 g.c_syntax_for_h = 1
-g.browser = 'chromium'
+g.loaded_matchparen=1
+g.browser = 'firefox'
 g.workspace = ''
+g.python3_host_prog = "/usr/bin/python3" --to solve the provider load slowly
 _G.wsl = vim.fn.has('wsl') == 1
 _G.lsp_fts = {
   'c',

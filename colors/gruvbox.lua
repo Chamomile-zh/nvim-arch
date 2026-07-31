@@ -16,7 +16,7 @@ local colors = {
   yellow = '#fabd2f',
   dyellow = '#d79921',
   lyellow = '#d8ff1f',
-  blue = '#88abda',
+  blue = '#458588',
   dblue = '#83a598',
   cyan = '#1fd8ff', -- 青蓝色
   dcyan = '#a59aca', -- 雪青色
@@ -81,7 +81,7 @@ local function setcolor()
     vCursor = { link = 'Cursor' },
     iCursor = { link = 'Cursor' },
     lCursor = { link = 'Cursor' },
-    Special = { fg = colors.orange },
+    Special = { fg = colors.dorange },
     Comment = { fg = colors.gray, italic = true },
     Error = { fg = colors.red, bold = true, reverse = true },
     Done = { fg = colors.orange, bold = true, italic = true },
@@ -119,7 +119,13 @@ local function setcolor()
     SpellRare = { undercurl = true, sp = colors.purple },
     Whitespace = { fg = colors.bg2 },
     Delimiter = { fg = colors.orange },
-    SnippetTabstop = { link = 'Normal' },
+    -- SnippetTabstop = { link = 'Normal' },
+    -- SnippetTabstop = { underline = true },
+    -- SnippetTabstopActive = { underline = true },
+    -- SnippetTabstop = {bg=colors.bg1},
+    -- SnippetTabstopActive = {bg=colors.bg2},
+    SnippetTabstop = {}, -- set to null to avoid the function snippet highlight error
+    SnippetTabstopActive = {},
     -- LSP Diagnostic
     DiagnosticError = { fg = colors.red },
     DiagnosticSignError = { fg = colors.red },
@@ -183,7 +189,8 @@ local function setcolor()
     SagaShadow = { fg = colors.bg0 },
     -- Indent
     IndentLine = { fg = colors.bg2 },
-    IndentLineCurrent = { link = 'Comment' },
+    -- IndentLineCurrent = { link = 'Comment' },
+    IndentLineCurrent = { fg = colors.violet, italic = true },
     -- StatusLine
     StatusLineMode = { fg = colors.fg2 },
     StatusLineFileInfo = { fg = colors.fg2 },
@@ -210,7 +217,7 @@ local function setcolor()
     BlinkCmpDoc = { link = 'Cmp' },
     BlinkCmpDocBorder = { link = 'CmpBorder' },
     BlinkCmpLabel = { link = 'Cmp' },
-    BlinkCmpLabelMatch = { fg = colors.cyan, bold = true },
+    BlinkCmpLabelMatch = { fg = colors.dblue, bold = true },
     BlinkCmpKind = { link = 'Cmp' },
 
     -- nvim-treesitter

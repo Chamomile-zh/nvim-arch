@@ -77,6 +77,8 @@ return {
     '.clang-format',
     'compile_commands.json',
     'compile_flags.txt',
+    'Makefile',
+    'CMakeLists.txt',
     '.git',
   },
   capabilities = {
