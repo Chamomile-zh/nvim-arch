@@ -14,7 +14,7 @@ local specs = {
     'saghen/blink.cmp',
     version = vim.version.range('^1'),
     -- version = "main", -- slove the :Man https://github.com/saghen/blink.cmp/issues/2546
-    events = { 'LspAttach' },
+    events = { 'InsertEnter','CmdlineEnter' },
     config = conf.blink,
     -- dep = {
     --   {"saghen/blink.lib",events = {'LspAttach','BufModifiedSet'},}
