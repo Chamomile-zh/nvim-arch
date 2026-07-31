@@ -39,13 +39,6 @@ local config = {
   shortcuts = {
     { key = 'f', desc = 'Open File', action = cmd("FzfLua files") },
     { key = 'e', desc = 'New File', action = cmd("enew") },
-    -- {
-    --   key = 't',
-    --   desc = 'Yazi',
-    --   action = function()
-    --     require('internal.yazi').yazi('edit')
-    --   end,
-    -- },
     { key = 'o', desc = 'Recent Files', action = cmd("FzfLua oldfiles") },
     {
       key = 'n',
@@ -54,8 +47,8 @@ local config = {
     },
     {
       key = 'w',
-      desc = 'Git Diff',
-      action = cmd("FzfLua git_diff")
+      desc = 'Git Status',
+      action = cmd("FzfLua git_status")
     },
     {
       key = 'u',

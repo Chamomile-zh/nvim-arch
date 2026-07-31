@@ -25,7 +25,7 @@ local function default()
     p.lsp(),
     p.pad(),
     --right
-    p.search(),
+    -- p.search(),
     p.diagnostic(vim.diagnostic.severity.E),
     p.diagnostic(vim.diagnostic.severity.W),
     p.diagnostic(vim.diagnostic.severity.I),

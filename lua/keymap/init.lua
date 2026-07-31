@@ -7,8 +7,18 @@ map.n({
   -- fzflua
   ['<Leader>d'] = cmd('FzfLua diagnostics_document'),
   ['<Leader>D'] = cmd('FzfLua diagnostics_workspace'),
-  ['<leader>ff'] = cmd('FzfLua files'),
-  ['<leader>fw'] = cmd('FzfLua live_grep_native'),
+  ['<leader>ff'] = function()
+    local workspace_folders = vim.lsp.buf.list_workspace_folders()
+    local root = workspace_folders[1] or vim.fn.getcwd()
+
+    vim.cmd(('FzfLua files cwd=%s'):format(vim.fn.fnameescape(root)))
+  end,
+  ['<leader>fw'] = function()
+    local workspace_folders = vim.lsp.buf.list_workspace_folders()
+    local root = workspace_folders[1] or vim.fn.getcwd()
+
+    vim.cmd(('FzfLua live_grep_native cwd=%s'):format(vim.fn.fnameescape(root)))
+  end,
   ['<leader>fh'] = cmd('FzfLua helptags'),
   ['<leader>fo'] = cmd('FzfLua oldfiles'),
   ['<leader>fb'] = cmd('FzfLua buffers'),
@@ -22,7 +32,7 @@ map.n({
     end
     local target_dir = vim.fn.expand(input_path)
     if vim.fn.isdirectory(target_dir) == 0 then
-      vim.notify('路径不存在或不是文件夹：' .. target_dir, vim.log.levels.ERROR)
+      vim.notify('Directory not found：' .. target_dir, vim.log.levels.ERROR)
       return
     end
     if not package.loaded['fzf-lua'] then
