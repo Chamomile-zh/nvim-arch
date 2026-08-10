@@ -198,6 +198,7 @@ local function setcolor()
     StatusLineBranch = { fg = colors.violet },
     StatusLineLsp = { fg = colors.fg4 },
     StatusLineFilesize = { fg = colors.fg4 },
+    StatusLineFileType = { fg = colors.fg4 },
     StatusLineEncoding = { fg = colors.fg4 },
     StatlsLineLnum = { fg = colors.fg2 },
     -- pmenu

@@ -33,6 +33,8 @@ local function default()
     p.recording(),
     p.vnumber(),
     p.sepr(),
+    p.filetype(),
+    p.sepr(),
     p.filesize(),
     p.sepr(),
     p.encoding(),
@@ -70,35 +72,55 @@ local function render(comps, events, pieces)
   return co.create(function(args)
     while true do
       local event = args.event == 'User' and args.event .. ' ' .. args.match or args.event
-      for _, idx in ipairs(events[event]) do
-        pieces[idx] = stl_format(comps[idx].name, comps[idx].stl(args))
+      -- 只更新触发事件对应的组件，而非全量重绘
+      for _, idx in ipairs(events[event] or {}) do
+        local comp = comps[idx]
+        if type(comp.stl) == 'function' then
+          pieces[idx] = stl_format(comp.name, comp.stl(args))
+        end
       end
       vim.opt.stl = table.concat(pieces)
-      args = co.yield()
+      args = coroutine.yield()
     end
   end)
 end
 
 vim.defer_fn(function()
-  -- statuscolumn
+  -- 状态列
   vim.opt.stc = '%!v:lua.require("internal.status.stc").stc()'
-  -- statusline
+
+  -- 状态栏初始化
   local comps, events, pieces = default()
   local stl_render = render(comps, events, pieces)
-  for _, e in ipairs(vim.tbl_keys(events)) do
-    local tmp = e
-    local pattern
-    if e:find('User') then
-      pattern = vim.split(e, '%s')[2]
-      tmp = 'User'
+
+  -- 窗口切换事件：全量重绘，更新活动/非活动样式
+  local win_events = { 'WinEnter', 'WinLeave', 'BufWinEnter' }
+  for _, ev in ipairs(win_events) do
+    if not events[ev] then
+      events[ev] = {}
     end
-    api.nvim_create_autocmd(tmp, {
+    -- 窗口切换时全量重绘所有组件
+    for i = 1, #comps do
+      table.insert(events[ev], i)
+    end
+  end
+
+  -- 注册所有事件监听
+  for event, _ in pairs(events) do
+    local pattern = nil
+    local event_name = event
+    if event:find('^User ') then
+      event_name = 'User'
+      pattern = vim.split(event, '%s')[2]
+    end
+
+    api.nvim_create_autocmd(event_name, {
       pattern = pattern,
       callback = function(args)
         vim.schedule(function()
-          local ok, res = co.resume(stl_render, args)
+          local ok, err = coroutine.resume(stl_render, args)
           if not ok then
-            vim.notify('[StatusLine] render failed ' .. res, vim.log.levels.ERROR)
+            vim.notify('[StatusLine] render failed: ' .. err, vim.log.levels.ERROR)
           end
         end)
       end,

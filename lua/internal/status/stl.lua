@@ -1,19 +1,29 @@
 local api, lsp = vim.api, vim.lsp
 local pd = {}
 
+-- 缓存状态栏背景色，避免重复查询
+local stl_bg = nil
 local function get_stl_bg()
+  if stl_bg then
+    return stl_bg
+  end
   local res = api.nvim_get_hl(0, { name = 'StatusLine' })
   if vim.tbl_isempty(res) then
-    return
+    return nil
   end
-  return res.bg
+  stl_bg = res.bg
+  return stl_bg
 end
 
-local stl_bg = get_stl_bg()
+-- 统一获取高亮属性，带异常降级
 local function stl_attr(group)
-  local color = api.nvim_get_hl(0, { name = group, link = false })
+  local bg = get_stl_bg()
+  local ok, color = pcall(api.nvim_get_hl, 0, { name = group, link = false })
+  if not ok or vim.tbl_isempty(color) then
+    return { bg = bg, fg = 'NONE' }
+  end
   return {
-    bg = stl_bg,
+    bg = bg,
     fg = color.fg,
   }
 end
@@ -132,13 +142,27 @@ function pd.fileinfo()
   return result
 end
 
+function pd.filetype()
+  local result = {
+    stl = function()
+      local ft = vim.bo.filetype
+      return ft == '' and 'none' or ft
+    end,
+    name = 'filetype',
+    event = { 'BufEnter', 'FileType' },
+  }
+  result.attr = stl_attr('StatusLineFileType')
+  result.attr.italic = true
+  return result
+end
+
 function pd.modified()
   local result = {
     name = 'modified',
     stl = '%{&modified?"[+]":""}',
     event = { 'BufModifiedSet' },
   }
-  result.attr = stl_attr('StatusLineFileInfo')
+
   return result
 end
 
@@ -152,6 +176,7 @@ function pd.readonly()
   return result
 end
 
+local default_branch_cache = nil
 local function gitsigns_data(git_t)
   local signs = {
     ['added'] = '+',
@@ -168,16 +193,25 @@ local function gitsigns_data(git_t)
     then
       return ''
     end
-    if git_t == 'head' and dict[git_t] == '' then
-      local obj = vim
-        .system({ 'git', 'config', '--get', 'init.defaultBranch' }, { text = true })
-        :wait()
-      if #obj.stdout > 0 then
-        dict[git_t] = vim.trim(obj.stdout)
-      end
-    end
     if git_t == 'head' then
-      return ('<%s>%s'):format(dict[git_t], ' ')
+      if dict[git_t] == '' then
+        if not default_branch_cache then
+          vim.system(
+            { 'git', 'config', '--get', 'init.defaultBranch' },
+            { text = true },
+            function(obj)
+              if obj.code == 0 and #obj.stdout > 0 then
+                default_branch_cache = vim.trim(obj.stdout)
+                vim.schedule(function()
+                  vim.cmd('redrawstatus')
+                end)
+              end
+            end
+          )
+        end
+        return default_branch_cache and (' %s '):format(default_branch_cache) or ''
+      end
+      return (' %s '):format(dict[git_t])
     end
     return ('%s%s%s'):format(signs[git_t], dict[git_t], ' ')
   end
