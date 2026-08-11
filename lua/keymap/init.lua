@@ -21,7 +21,7 @@ map.n({
   end,
   ['<leader>fh'] = cmd('FzfLua helptags'),
   ['<leader>fo'] = cmd('FzfLua oldfiles'),
-  ['<leader>fb'] = cmd('FzfLua buffers'),
+  ['<leader>b'] = cmd('FzfLua buffers'),
   ['<leader>fk'] = cmd('FzfLua keymaps'),
   ['<leader>fm'] = cmd('FzfLua manpages'),
   ['<Leader>o'] = cmd('FzfLua lsp_document_symbols'),
@@ -35,13 +35,7 @@ map.n({
       vim.notify('Directory not found：' .. target_dir, vim.log.levels.ERROR)
       return
     end
-    if not package.loaded['fzf-lua'] then
-      vim.cmd.packadd('fzf-lua')
-    end
-    require('fzf-lua').files({
-      cwd = target_dir,
-      cwd_prompt = true,
-    })
+    vim.cmd(('FzfLua files cwd=%s'):format(target_dir))
   end,
   -- noice
   ['<leader>n'] = function()
