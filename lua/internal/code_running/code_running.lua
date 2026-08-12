@@ -97,6 +97,21 @@ local function running_window(opt, center)
   })
 
   vim.cmd.term(opt)
+  api.nvim_create_autocmd('TermClose', {
+    buffer = infos.bufnr,
+    callback = function()
+      vim.schedule(function()
+        -- 强制退出终端输入模式，回到 Normal 模式
+        vim.cmd('stopinsert')
+      end)
+      vim.keymap.set(
+        'n',
+        'q',
+        '<Cmd>bd!<CR>',
+        { buffer = infos.bufnr, silent = true, noremap = true }
+      )
+    end,
+  })
 end
 
 ---split a string by last space

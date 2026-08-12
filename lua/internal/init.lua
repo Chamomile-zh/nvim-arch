@@ -38,6 +38,7 @@ au('UIEnter', {
       require('internal.lsp')
 
       -- require("modules")
+      require('internal.compile')
 
       -- keymap
       require('keymap')
@@ -106,6 +107,12 @@ au({ 'InsertLeave' }, {
   end,
 })
 
+au('BufWritePre', {
+  group = group,
+  pattern = { '/tmp/*', 'COMMIT_EDITMSG', 'MERGE_MSG', '*.tmp', '*.bak' },
+  command = 'setlocal noundofile',
+})
+
 -- markdown_table_format
 au('InsertLeave', {
   group = group,
@@ -138,7 +145,15 @@ au('InsertEnter', {
   end,
 })
 
-au('TermOpen', { group = group, command = 'startinsert' })
+-- au('TermOpen', { group = group, command = 'startinsert' })
+au('TermOpen', {
+  group = group,
+  callback = function()
+    vim.opt_local.stc = ''
+    vim.wo.number = false
+    vim.cmd.startinsert()
+  end,
+})
 
 au('TextYankPost', {
   group = group,
@@ -170,6 +185,37 @@ au('LspAttach', {
       client.server_capabilities.semanticTokensProvider = nil
     end
   end,
+})
+
+local timer = nil --[[uv_timer_t]]
+local function reset_timer()
+  if timer then
+    timer:stop()
+    timer:close()
+  end
+  timer = nil
+end
+
+au('LspDetach', {
+  callback = function(args)
+    local client_id = args.data.client_id
+    local client = vim.lsp.get_clients({ client_id = client_id })[1]
+    if not client or not vim.tbl_isempty(client.attached_buffers) then
+      return
+    end
+    reset_timer()
+    timer = assert(vim.uv.new_timer())
+    timer:start(200, 0, function()
+      reset_timer()
+      vim.schedule(function()
+        local current_client = vim.lsp.get_clients({ client_id = client_id })[1]
+        if current_client then
+          current_client:stop(true) -- 这里的 true 代表 force stop（强制关闭）
+        end
+      end)
+    end)
+  end,
+  desc = 'Auto stop client when no buffer atttached',
 })
 
 au('BufLeave', {
@@ -365,7 +411,7 @@ uc('Build', function(args)
   local target = args.args
   if target == '' then
     target = vim.bo.filetype .. '_build'
-  elseif target=='center' then
+  elseif target == 'center' then
     target = vim.bo.filetype .. '_build center'
   end
   require('internal.code_running.code_running').running(target)

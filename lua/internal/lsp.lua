@@ -16,6 +16,7 @@ vim.schedule(function()
   vim.diagnostic.config({
     virtual_text = {
       prefix = '❯',
+      virt_text_pos = 'eol_right_align',
     },
   })
 
