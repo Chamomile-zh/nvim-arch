@@ -70,7 +70,6 @@ local function get_float_opt(center)
     width = center and 0.8 or 0.25,
     height = center and 0.8 or 0.9,
     relative = 'editor',
-    title = ' Code Running ',
     row = center and 'c' or 't',
     col = center and 'c' or 'r',
   }
@@ -97,11 +96,22 @@ local function running_window(opt, center)
   })
 
   vim.cmd.term(opt)
+
+  local chan_id = vim.b[infos.bufnr].terminal_job_id
+
+  if chan_id then
+    local success,pid = pcall(vim.fn.jobpid, chan_id)
+    if success then
+      api.nvim_win_set_config(infos.winid,{
+        title = string.format(' Code Running: %d ', pid)
+      })
+    end
+  end
+
   api.nvim_create_autocmd('TermClose', {
     buffer = infos.bufnr,
     callback = function()
       vim.schedule(function()
-        -- 强制退出终端输入模式，回到 Normal 模式
         vim.cmd('stopinsert')
       end)
       vim.keymap.set(
@@ -135,33 +145,6 @@ local function split_by_last_space(str)
   return first_part, second_part
 end
 
--- ---quick running code
--- ---@param args string
--- local function running(args)
---   vim.cmd('w')
---
---   local workpath = vim.fn.getcwd()
---   local center = false
---   args, center = split_by_last_space(args)
---   args = #args == 0 and vim.bo.filetype or args
---   vim.cmd('silent! lcd %:p:h')
---
---   local opt = get_commands(args)
---   if opt then
---     if opt.modus == 'job' then
---       vim.fn.jobstart(opt.command)
---     elseif opt.modus == 'cmd' then
---       vim.cmd(opt.command)
---     else
---       center = center or opt.modus == 'center'
---       running_window(opt.command, center)
---     end
---   else
---     vim.notify(string.format("%s's running command is undefined\n", args), vim.log.levels.WARN)
---   end
---
---   vim.cmd('silent! lcd ' .. workpath)
--- end
 
 ---quick running code
 ---@param args string

@@ -37,7 +37,6 @@ au('UIEnter', {
       -- lsp
       require('internal.lsp')
 
-      -- require("modules")
       require('internal.compile')
 
       -- keymap
