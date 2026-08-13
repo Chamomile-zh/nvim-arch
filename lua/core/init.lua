@@ -20,6 +20,7 @@ g.browser = 'firefox'
 g.workspace = ''
 g.python3_host_prog = "/usr/bin/python3" --to solve the provider load slowly
 _G.wsl = vim.fn.has('wsl') == 1
+_G.terminal = "zsh"
 _G.lsp_fts = {
   'c',
   'cpp',

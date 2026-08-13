@@ -1,61 +1,31 @@
 local group = vim.api.nvim_create_augroup('Dashboard', { clear = true })
-local cmd = require("core.keymap").cmd
+local cmd = require('core.keymap').cmd
+local art = require('internal.util.art')
 
 local M = {}
 
 local config = {
-  lambda_art = {
-    '⣿⠟⣽⣿⣿⣿⣿⣿⢣⠟⠋⡜⠄⢸⣿⣿⡟⣬⢁⠠⠁⣤⠄⢰⠄⠇⢻⢸',
-    '⢏⣾⣿⣿⣿⠿⣟⢁⡴⡀⡜⣠⣶⢸⣿⣿⢃⡇⠂⢁⣶⣦⣅⠈⠇⠄⢸⢸',
-    '⣹⣿⣿⣿⡗⣾⡟⡜⣵⠃⣴⣿⣿⢸⣿⣿⢸⠘⢰⣿⣿⣿⣿⡀⢱⠄⠨⢸',
-    '⣿⣿⣿⣿⡇⣿⢁⣾⣿⣾⣿⣿⣿⣿⣸⣿⡎⠐⠒⠚⠛⠛⠿⢧⠄⠄⢠⣼',
-    '⣿⣿⣿⣿⠃⠿⢸⡿⠭⠭⢽⣿⣿⣿⢂⣿⠃⣤⠄⠄⠄⠄⠄⠄⠄⠄⣿⡾',
-    '⣼⠏⣿⡏⠄⠄⢠⣤⣶⣶⣾⣿⣿⣟⣾⣾⣼⣿⠒⠄⠄⠄⡠⣴⡄⢠⣿⣵',
-    '⣳⠄⣿⠄⠄⢣⠸⣹⣿⡟⣻⣿⣿⣿⣿⣿⣿⡿⡻⡖⠦⢤⣔⣯⡅⣼⡿⣹',
-    '⡿⣼⢸⠄⠄⣷⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣕⡜⡌⡝⡸⠙⣼⠟⢱⠏',
-    '⡇⣿⣧⡰⡄⣿⣿⣿⣿⡿⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣋⣪⣥⢠⠏⠄',
-    '⣧⢻⣿⣷⣧⢻⣿⣿⣿⡇⠄⢀⣀⣀⡙⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠂⠄⠄',
-    '⢹⣼⣿⣿⣿⣧⡻⣿⣿⣇⣴⣿⣿⣿⣷⢸⣿⣿⣿⣿⣿⣿⣿⣿⣰⠄⠄⠄',
-    '⣼⡟⡟⣿⢸⣿⣿⣝⢿⣿⣾⣿⣿⣿⢟⣾⣿⣿⣿⣿⣿⣿⣿⣿⠟⠄⡀⡀',
-    '⣿⢰⣿⢹⢸⣿⣿⣿⣷⣝⢿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠉⠄⠄⣸⢰⡇',
-    '⣿⣾⣹⣏⢸⣿⣿⣿⣿⣿⣷⣍⡻⣛⣛⣛⡉⠁⠄⠄⠄⠄⠄⠄⢀⢇⡏⠄',
-
-    -- '        ⢀⣴⡾⠃⠄⠄⠄⠄⠄⠈⠺⠟⠛⠛⠛⠛⠻⢿⣿⣿⣿⣿⣶⣤⡀  ',
-    -- '      ⢀⣴⣿⡿⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⣸⣿⣿⣿⣿⣿⣿⣿⣷ ',
-    -- '     ⣴⣿⡿⡟⡼⢹⣷⢲⡶⣖⣾⣶⢄⠄⠄⠄⠄⠄⢀⣼⣿⢿⣿⣿⣿⣿⣿⣿⣿ ',
-    -- '    ⣾⣿⡟⣾⡸⢠⡿⢳⡿⠍⣼⣿⢏⣿⣷⢄⡀⠄⢠⣾⢻⣿⣸⣿⣿⣿⣿⣿⣿⣿ ',
-    -- '  ⣡⣿⣿⡟⡼⡁⠁⣰⠂⡾⠉⢨⣿⠃⣿⡿⠍⣾⣟⢤⣿⢇⣿⢇⣿⣿⢿⣿⣿⣿⣿⣿ ',
-    -- ' ⣱⣿⣿⡟⡐⣰⣧⡷⣿⣴⣧⣤⣼⣯⢸⡿⠁⣰⠟⢀⣼⠏⣲⠏⢸⣿⡟⣿⣿⣿⣿⣿⣿ ',
-    -- ' ⣿⣿⡟⠁⠄⠟⣁⠄⢡⣿⣿⣿⣿⣿⣿⣦⣼⢟⢀⡼⠃⡹⠃⡀⢸⡿⢸⣿⣿⣿⣿⣿⡟ ',
-    -- ' ⣿⣿⠃⠄⢀⣾⠋⠓⢰⣿⣿⣿⣿⣿⣿⠿⣿⣿⣾⣅⢔⣕⡇⡇⡼⢁⣿⣿⣿⣿⣿⣿⢣ ',
-    -- ' ⣿⡟⠄⠄⣾⣇⠷⣢⣿⣿⣿⣿⣿⣿⣿⣭⣀⡈⠙⢿⣿⣿⡇⡧⢁⣾⣿⣿⣿⣿⣿⢏⣾ ',
-    -- ' ⣿⡇⠄⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⢻⠇⠄⠄⢿⣿⡇⢡⣾⣿⣿⣿⣿⣿⣏⣼⣿ ',
-    -- ' ⣿⣷⢰⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⢰⣧⣀⡄⢀⠘⡿⣰⣿⣿⣿⣿⣿⣿⠟⣼⣿⣿ ',
-    -- ' ⢹⣿⢸⣿⣿⠟⠻⢿⣿⣿⣿⣿⣿⣿⣿⣶⣭⣉⣤⣿⢈⣼⣿⣿⣿⣿⣿⣿⠏⣾⣹⣿⣿ ',
-    -- ' ⢸⠇⡜⣿⡟⠄⠄⠄⠈⠙⣿⣿⣿⣿⣿⣿⣿⣿⠟⣱⣻⣿⣿⣿⣿⣿⠟⠁⢳⠃⣿⣿⣿ ',
-    -- '  ⣰⡗⠹⣿⣄⠄⠄⠄⢀⣿⣿⣿⣿⣿⣿⠟⣅⣥⣿⣿⣿⣿⠿⠋  ⣾⡌⢠⣿⡿⠃ ',
-    -- ' ⠜⠋⢠⣷⢻⣿⣿⣶⣾⣿⣿⣿⣿⠿⣛⣥⣾⣿⠿⠟⠛⠉            ',
-  },
+  lambda_art = art.lambda_art,
   shortcuts = {
-    { key = 'f', desc = 'Open File', action = cmd("FzfLua files") },
-    { key = 'e', desc = 'New File', action = cmd("enew") },
-    { key = 'o', desc = 'Recent Files', action = cmd("FzfLua oldfiles") },
+    { key = 'f', desc = 'Open File', action = cmd('FzfLua files') },
+    { key = 'e', desc = 'New File', action = cmd('enew') },
+    { key = 'o', desc = 'Recent Files', action = cmd('FzfLua oldfiles') },
     {
       key = 'n',
       desc = 'Nvim Config',
-      action = cmd("FzfLua files cwd=~/.config/nvim fd_opts=--type\\ f"),
+      action = cmd('FzfLua files cwd=~/.config/nvim fd_opts=--type\\ f'),
     },
     {
       key = 'w',
       desc = 'Git Status',
-      action = cmd("FzfLua git_status")
+      action = cmd('FzfLua git_status'),
     },
     {
       key = 'u',
       desc = 'Pack Status',
-      action = cmd("PackStatus"),
+      action = cmd('PackStatus'),
     },
-    { key = 'q', desc = 'Quit', action = cmd("qa") },
+    { key = 'q', desc = 'Quit', action = cmd('qa') },
   },
 
   highlights = {
@@ -64,6 +34,7 @@ local config = {
     desc = 'DashboardDesc',
     date = 'DashboardDate',
     footer = 'DashboardFooter',
+    greeting = 'DashboardGreeting',
   },
 
   layout = {
@@ -72,8 +43,11 @@ local config = {
     date_plugin_gap = 1,
     plugin_shortcuts_gap = 2,
     key_desc_spacing = 4,
+    shortcuts_greeting_gap = 3,
   },
 }
+
+local selected_art = {}
 
 local function center_left(text)
   local width = vim.fn.strdisplaywidth(text)
@@ -85,7 +59,7 @@ local function calculate_positions()
   local spacing = string.rep(' ', config.layout.key_desc_spacing)
 
   local lambda_max_width = 0
-  for _, line in ipairs(config.lambda_art) do
+  for _, line in ipairs(selected_art) do
     lambda_max_width = math.max(lambda_max_width, vim.fn.strdisplaywidth(line))
   end
   local lambda_left = math.max(1, math.floor((screen_width - lambda_max_width) / 2))
@@ -98,10 +72,13 @@ local function calculate_positions()
   local shortcuts_left = math.max(1, math.floor((screen_width - shortcuts_max_width) / 2))
 
   local top = config.layout.top_offset
-  local lambda_lines = #config.lambda_art
+  local lambda_lines = #selected_art
   local date_line = top + lambda_lines + config.layout.art_date_gap
   local plugin_line = date_line + config.layout.date_plugin_gap
   local shortcuts_start = plugin_line + config.layout.plugin_shortcuts_gap
+
+  local shortcuts_end = shortcuts_start + #config.shortcuts - 1
+  local greeting_line = shortcuts_end + config.layout.shortcuts_greeting_gap
 
   return {
     lambda_left = lambda_left,
@@ -109,7 +86,9 @@ local function calculate_positions()
     date_line = date_line,
     plugin_line = plugin_line,
     shortcuts_start = shortcuts_start,
-    total_lines = shortcuts_start + #config.shortcuts,
+
+    greeting_line = greeting_line,
+    total_lines = greeting_line,
   }
 end
 
@@ -120,6 +99,7 @@ local function setup_highlights()
     DashboardDesc = { link = 'Function' },
     DashboardDate = { link = 'PreProc' },
     DashboardFooter = { link = 'Keyword' },
+    DashboardGreeting = { link = 'IndentLineCurrent' },
   }
 
   for g, opts in pairs(highlights) do
@@ -162,7 +142,7 @@ local function render_dashboard(buf)
     table.insert(lines, '')
   end
 
-  for i, lambda_line in ipairs(config.lambda_art) do
+  for i, lambda_line in ipairs(selected_art) do
     local line_idx = config.layout.top_offset + i
     if line_idx <= #lines then
       local new_line = string.rep(' ', pos.lambda_left - 1) .. lambda_line
@@ -177,6 +157,21 @@ local function render_dashboard(buf)
         hl_group = config.highlights.lambda,
       })
     end
+  end
+
+  local greeting_str = 'Hello Chamomile!'
+  local greeting_left = center_left(greeting_str)
+
+  if pos.greeting_line <= #lines then
+    local new_line = string.rep(' ', greeting_left - 1) .. greeting_str
+    lines[pos.greeting_line] = new_line
+
+    table.insert(highlights_to_apply, {
+      line = pos.greeting_line - 1,
+      col_start = greeting_left - 1,
+      col_end = greeting_left - 1 + #greeting_str,
+      hl_group = config.highlights.greeting,
+    })
   end
 
   local datetime_str = get_datetime()
@@ -318,6 +313,10 @@ function M.show()
     return
   end
 
+  math.randomseed(os.time())
+  selected_art = config.lambda_art[math.random(#config.lambda_art)]
+  -- selected_art = config.lambda_art[1]
+
   local buf = create_dashboard_buffer()
   vim.api.nvim_set_current_buf(buf)
   render_dashboard(buf)
@@ -355,6 +354,10 @@ function M.show()
       restore_opt()
     end,
   })
+
+  vim.schedule(function()
+    vim.api.nvim_exec_autocmds('User', { pattern = 'DashboardLoaded', modeline = false })
+  end)
 end
 
 -- vim.api.nvim_create_autocmd('VimEnter', {

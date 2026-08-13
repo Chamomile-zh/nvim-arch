@@ -14,7 +14,7 @@ local specs = {
     'saghen/blink.cmp',
     version = vim.version.range('^1'),
     -- version = "main", -- slove the :Man https://github.com/saghen/blink.cmp/issues/2546
-    events = {'LspAttach', 'InsertEnter','CmdlineEnter' },
+    events = { 'LspAttach', 'InsertEnter', 'CmdlineEnter' },
     config = conf.blink,
     -- dep = {
     --   {"saghen/blink.lib",events = {'LspAttach','BufModifiedSet'},}
@@ -51,7 +51,7 @@ local specs = {
 
   {
     'lewis6991/gitsigns.nvim',
-    events = { 'LspAttach','BufReadPre' },
+    events = { 'LspAttach', 'BufReadPre' },
     config = conf.gitsigens,
   },
 
@@ -62,11 +62,11 @@ local specs = {
   },
   {
     'folke/noice.nvim',
-    events = { 'LspAttach' },
+    events = { 'LspAttach','User DashboardLoaded' },
     config = conf.noice,
     dep = {
-      { 'MunifTanjim/nui.nvim', events = { 'LspAttach' } },
-      { 'rcarriga/nvim-notify', events = { 'LspAttach' } },
+      { 'MunifTanjim/nui.nvim' },
+      { 'rcarriga/nvim-notify' },
     },
   },
 }
@@ -146,21 +146,53 @@ local function run_build(build, pkg_name)
 end
 
 local function load(pkg_name, events, cmd, config)
-  if not events and not cmd then
+  if not events and not cmd then -- directly load without events and cmd
     return false
   end
   return function()
     if events then
-      api.nvim_create_autocmd(events, {
-        group = group,
-        once = true,
-        callback = function()
-          vim.cmd.packadd(pkg_name)
-          if config then
-            config()
-          end
-        end,
-      })
+      -- 1. 统一转换成数组，方便后续统一遍历 (应对传单字符串和传数组两种情况)
+      if type(events) == 'string' then
+        events = { events }
+      end
+
+      local standard_events = {}
+
+      -- 2. 遍历事件列表，分流处理
+      for _, ev in ipairs(events) do
+        if type(ev) == 'string' and ev:match('^User%s') then
+          -- 处理 User 事件 (提取 pattern)
+          local pattern_name = ev:sub(6)
+          api.nvim_create_autocmd('User', {
+            pattern = pattern_name,
+            group = group,
+            once = true,
+            callback = function()
+              vim.cmd.packadd(pkg_name)
+              if config then
+                config()
+              end
+            end,
+          })
+        else
+          -- 收集原生事件
+          table.insert(standard_events, ev)
+        end
+      end
+
+      -- 3. 如果有原生事件，统一注册
+      if #standard_events > 0 then
+        api.nvim_create_autocmd(standard_events, {
+          group = group,
+          once = true,
+          callback = function()
+            vim.cmd.packadd(pkg_name)
+            if config then
+              config()
+            end
+          end,
+        })
+      end
     end
     if cmd then
       api.nvim_create_user_command(cmd, function(data)
@@ -202,6 +234,12 @@ local function packadd(info)
       { confirm = false }
     )
   )
+  if not info.events and not info.cmd then
+    local ok, _ = pcall(vim.cmd.packadd, pkg_name)
+    if ok and info.config then
+      info.config()
+    end
+  end
 
   if not already_built and info.build then
     -- print(('Building: %s'):format(pkg_name))

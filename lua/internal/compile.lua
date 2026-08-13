@@ -301,9 +301,10 @@ local function open_qf_now(cmd_text)
 
   local curwin
   local qf_win = vim.fn.getqflist({ winid = 0 }).winid
+  local qf_height = math.floor(vim.o.lines*0.3)
   if qf_win == 0 then
     curwin = api.nvim_get_current_win()
-    vim.cmd.copen()
+    vim.cmd('copen' .. qf_height)
     qf_win = api.nvim_get_current_win()
     api.nvim_win_set_hl_ns(qf_win, ansi_ns)
     vim.opt_local.number = false
@@ -639,6 +640,15 @@ api.nvim_create_autocmd('FileType', {
       end
       api.nvim_chan_send(chan_id, '\x04')
     end, { buffer = ev.buf, nowait = true, desc = 'Send EOF to compile job' })
+
+    vim.keymap.set('n', '<C-c>', function()
+      if not chan_alive() then
+        vim.notify('No running job to interrupt', vim.log.levels.WARN)
+        return
+      end
+      -- \x03 在 ASCII 码中代表 Ctrl+C (End of Text / SIGINT)
+      api.nvim_chan_send(chan_id, '\x03')
+    end, { buffer = ev.buf, nowait = true, desc = 'Send SIGINT (Ctrl+C) to job' })
   end,
 })
 
@@ -700,6 +710,32 @@ api.nvim_create_user_command('CompileSet', function(args)
   -- No `complete = 'file'` here either: we want a literal `%s` placeholder
   -- written to .env, not Vim's current-file expansion.
 end, { nargs = '?' })
+
+api.nvim_create_user_command('Shell', function(args)
+  if not ansi_ns then
+    ansi_ns = api.nvim_create_namespace('ansi_colors')
+  end
+  close_running()
+  local cmd = vim.trim(args.args)
+  if cmd == '' then
+    local ok, input = pcall(vim.fn.input, { prompt = '<M-x> ', completion = 'shellcmd' })
+    cmd = ok and vim.trim(input) or ''
+  end
+
+  if cmd == '' then
+    return
+  end
+  local silent
+  cmd, silent = strip_silent(cmd)
+
+  -- 直接调用核心编译引擎
+  -- 传入当前文件名，这意味着你在执行 `:Shell ls -l %s` 时，%s 依然会自动替换为当前文件！
+  compiler(cmd, api.nvim_buf_get_name(0), { silent = silent })
+end, {
+  nargs = '?',
+  complete = 'shellcmd',
+  desc = 'Run an async shell command and pipe output to Quickfix',
+})
 
 return {
   custom = function(opts)

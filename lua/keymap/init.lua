@@ -44,6 +44,10 @@ map.n({
     end
     vim.cmd('Noice fzf')
   end, -- need to load the Fzflua
+
+  -- Shell
+  ['<M-x>'] = cmd('Shell'),
+
   -- lspsaga
   ['<leader>pd'] = cmd('Lspsaga peek_definition'),
   ['<leader>gp'] = cmd('Lspsaga goto_definition'),
@@ -96,6 +100,14 @@ map.n({
   ['<c-f>'] = function()
     require('internal.toggle_term').toggle_term()
   end,
+  ['<A-f>'] = function ()
+    require('internal.toggle_term').toggle_term('focus')
+  end,
+  ['<A-m>'] = function ()
+    if vim.bo.buftype == 'terminal' then
+      vim.cmd('startinsert')
+    end
+  end,
   --invert word
   ['<leader>iw'] = function()
     require('internal.invert_word').inver_word()
@@ -138,6 +150,13 @@ map.t({
   ['<c-r>'] = function()
     require('internal.toggle_term').toggle_term('pos')
   end,
+  ['<A-f>'] = function ()
+    require('internal.toggle_term').toggle_term('focus')
+  end,
+  ['<A-q>'] = function ()
+    require('internal.toggle_term').toggle_term('kill')
+  end,
+  ['<A-m>'] = '<C-\\><C-n>',
 })
 
 map.v({

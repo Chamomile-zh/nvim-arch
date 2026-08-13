@@ -127,7 +127,7 @@ config.fzflua = function()
         },
       },
     },
-    files = { file_icons = false },
+    files = { file_icons = false, hidden = false },
   })
 end
 

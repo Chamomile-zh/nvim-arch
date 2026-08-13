@@ -3,29 +3,6 @@ local command = require('internal.code_running.code_running_commands').get_comma
 local api, expand = vim.api, vim.fn.expand
 local infos = {}
 
--- ---get running command and running modus by filetype
--- ---@return table {command: string, modus: string}
--- local function get_commands(args)
---   local filename = expand('%')
---   local runfile = expand('%<')
---   local workspace = vim.lsp.buf.list_workspace_folders()[1] or ''
---
---   local opt = vim.deepcopy(command[args])
---
---   if not opt then
---     return opt
---   end
---
---   if type(opt.command) == 'table' then
---     ---@diagnostic disable-next-line: param-type-mismatch
---     opt.command = table.concat(opt.command, ' && ')
---   end
---
---   opt.command =
---     opt.command:gsub('$filename', filename):gsub('$runfile', runfile):gsub('$workspace', workspace)
---
---   return opt
--- end
 
 ---get running command and running modus by filetype
 ---@param args string
@@ -67,8 +44,8 @@ end
 ---@return table
 local function get_float_opt(center)
   return {
-    width = center and 0.8 or 0.25,
-    height = center and 0.8 or 0.9,
+    width = center and 0.7 or 0.25,
+    height = center and 0.5 or 0.9,
     relative = 'editor',
     row = center and 'c' or 't',
     col = center and 'c' or 'r',

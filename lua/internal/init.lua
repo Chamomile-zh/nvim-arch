@@ -37,6 +37,7 @@ au('UIEnter', {
       -- lsp
       require('internal.lsp')
 
+      -- compile commands
       require('internal.compile')
 
       -- keymap
@@ -106,6 +107,28 @@ au({ 'InsertLeave' }, {
   end,
 })
 
+
+-- make zsh files recognized as sh for bash-ls & treesitter
+vim.filetype.add({
+	extension = {
+		zsh = "sh",
+		sh = "sh", -- force sh-files with zsh-shebang to still get sh as filetype
+	},
+	filename = {
+		[".zshrc"] = "sh",
+		["zshrc"] = "sh",
+		[".zshenv"] = "sh",
+	},
+})
+
+-- Auto-resize splits when window is resized
+au("VimResized", {
+	group = group,
+	pattern = "*",
+	command = "wincmd =",
+	desc = "Auto-resize splits",
+})
+
 au('BufWritePre', {
   group = group,
   pattern = { '/tmp/*', 'COMMIT_EDITMSG', 'MERGE_MSG', '*.tmp', '*.bak' },
@@ -164,11 +187,11 @@ au('TextYankPost', {
   end,
 })
 
-au('BufRead', {
+au('BufEnter', {
   group = group,
   callback = function()
     vim.cmd.setlocal('formatoptions-=cro')
-    -- last plase
+    -- last place
     local pos = vim.fn.getpos('\'"')
     if pos[2] > 0 and pos[2] <= vim.fn.line('$') then
       vim.api.nvim_win_set_cursor(0, { pos[2], pos[3] - 1 })

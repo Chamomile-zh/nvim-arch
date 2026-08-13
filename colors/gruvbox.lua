@@ -189,7 +189,6 @@ local function setcolor()
     SagaShadow = { fg = colors.bg0 },
     -- Indent
     IndentLine = { fg = colors.bg2 },
-    -- IndentLineCurrent = { link = 'Comment' },
     IndentLineCurrent = { fg = colors.violet, italic = true },
     -- StatusLine
     StatusLineMode = { fg = colors.fg2 },
