@@ -6,14 +6,14 @@ local specs = {
 
   {
     'nvimdev/lspsaga.nvim',
-    events = { 'BufReadPost', 'BufNewFile' },
+    events = { 'BufReadPost', 'BufNewFile','User DashboardLoaded' },
     config = conf.lspsaga,
   },
 
   {
     'saghen/blink.cmp',
     version = vim.version.range('^1'),
-    -- version = "main", -- slove the :Man https://github.com/saghen/blink.cmp/issues/2546
+    -- version = "main", -- slove the :Man https://github.com/saghen/blink.cmp/issues/2546 use FzfLua manpages
     events = { 'LspAttach', 'InsertEnter', 'CmdlineEnter' },
     config = conf.blink,
     -- dep = {
@@ -39,6 +39,7 @@ local specs = {
 
   {
     'ibhagwan/fzf-lua',
+    events = {'User DashboardLoaded'},
     cmd = 'FzfLua',
     config = conf.fzflua,
   },
@@ -51,7 +52,7 @@ local specs = {
 
   {
     'lewis6991/gitsigns.nvim',
-    events = { 'LspAttach', 'BufReadPre' },
+    events = { 'LspAttach', 'BufReadPre','User DashboardLoaded' },
     config = conf.gitsigens,
   },
 
@@ -79,15 +80,6 @@ local function to_name(s)
   return s:sub(s:find('/') + 1)
 end
 
-local function get_root()
-  local name = 'fzf-lua'
-  local paths = api.nvim_get_runtime_file('pack/*/*/' .. name, true)
-  if #paths > 0 then
-    return paths[1]
-  end
-  local glob = vim.fn.globpath(vim.o.packpath, 'pack/*/*/' .. name, 0, 1)
-  return glob[1] or nil
-end
 
 local function get_pkg_path(pkg_name)
   local paths = api.nvim_get_runtime_file('pack/*/*/' .. pkg_name, true)

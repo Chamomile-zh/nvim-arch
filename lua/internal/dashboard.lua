@@ -1,11 +1,26 @@
 local group = vim.api.nvim_create_augroup('Dashboard', { clear = true })
 local cmd = require('core.keymap').cmd
-local art = require('internal.util.art')
+
+local function get_color_modules()
+  local modules = {}
+  -- 获取配置根目录，拼接出绝对路径
+  local art_dir = vim.fn.stdpath('config') .. '/lua/internal/util/color_arts'
+  -- 扫描所有的 .lua 文件
+  local files = vim.fn.globpath(art_dir, '*.lua', false, true)
+
+  for _, file in ipairs(files) do
+    -- 提取纯文件名（不含路径和扩展名），例如 "raze-1"
+    local name = vim.fn.fnamemodify(file, ':t:r')
+    table.insert(modules, 'internal.util.color_arts.' .. name)
+  end
+  return modules
+end
+
+local color_modules = get_color_modules()
 
 local M = {}
 
 local config = {
-  lambda_art = art.lambda_art,
   shortcuts = {
     { key = 'f', desc = 'Open File', action = cmd('FzfLua files') },
     { key = 'e', desc = 'New File', action = cmd('enew') },
@@ -38,7 +53,7 @@ local config = {
   },
 
   layout = {
-    top_offset = 6,
+    top_offset = 3,
     art_date_gap = 2,
     date_plugin_gap = 1,
     plugin_shortcuts_gap = 2,
@@ -142,23 +157,40 @@ local function render_dashboard(buf)
     table.insert(lines, '')
   end
 
+  -- ✨ 3. 渲染核心：支持逐字高亮的黑魔法
   for i, lambda_line in ipairs(selected_art) do
     local line_idx = config.layout.top_offset + i
     if line_idx <= #lines then
-      local new_line = string.rep(' ', pos.lambda_left - 1) .. lambda_line
+      local offset = pos.lambda_left - 1
+      local new_line = string.rep(' ', offset) .. lambda_line
       lines[line_idx] = new_line
 
-      local lambda_byte_start = pos.lambda_left - 1
-      local lambda_byte_end = lambda_byte_start + #lambda_line
-      table.insert(highlights_to_apply, {
-        line = line_idx - 1,
-        col_start = lambda_byte_start,
-        col_end = lambda_byte_end,
-        hl_group = config.highlights.lambda,
-      })
+      -- 检查全局变量 M.color_hl_map 中是否有当前行的高亮数据
+      if M.color_hl_map and M.color_hl_map[i] then
+        for _, hl_chunk in ipairs(M.color_hl_map[i]) do
+          local hl_group = hl_chunk[1]
+          local col_start = hl_chunk[2]
+          local col_end = hl_chunk[3]
+
+          table.insert(highlights_to_apply, {
+            line = line_idx - 1,
+            col_start = offset + col_start,
+            col_end = offset + col_end,
+            hl_group = hl_group,
+          })
+        end
+      else
+        -- 退路：如果没有彩色数据，应用统一的单色高亮
+        local lambda_byte_end = offset + #lambda_line
+        table.insert(highlights_to_apply, {
+          line = line_idx - 1,
+          col_start = offset,
+          col_end = lambda_byte_end,
+          hl_group = config.highlights.lambda,
+        })
+      end
     end
   end
-
   local greeting_str = 'Hello Chamomile!'
   local greeting_left = center_left(greeting_str)
 
@@ -189,7 +221,7 @@ local function render_dashboard(buf)
     })
   end
 
-  local plugins = vim.pack.get()
+  local plugins = vim.pack.get(nil,{info=false})
   local rtp_set = {}
   for _, path in ipairs(vim.opt.rtp:get()) do
     rtp_set[path] = true
@@ -312,10 +344,30 @@ function M.show()
     vim.o.laststatus = 2
     return
   end
-
+  -- 将摇号结果赋给全局供渲染器使用
   math.randomseed(os.time())
-  selected_art = config.lambda_art[math.random(#config.lambda_art)]
-  -- selected_art = config.lambda_art[1]
+  local chosen_art = {}
+
+  if #color_modules > 0 then
+    -- 如果有彩色文件
+    local selected_mod_name = color_modules[math.random(#color_modules)]
+    local ok, c_art = pcall(require, selected_mod_name)
+
+    if ok and c_art then
+      chosen_art = {
+        val = c_art.val,
+        hl = c_art.opts.hl,
+      }
+    else
+      -- 防止脚本写错导致白屏，给出报错提示
+      chosen_art = { val = { 'ERROR: Failed to load ' .. selected_mod_name }, hl = nil }
+    end
+  else
+    -- 防止文件夹为空导致白屏
+    chosen_art = { val = { 'NO COLOR ART FOUND IN FOLDER!' }, hl = nil }
+  end
+  selected_art = chosen_art.val
+  M.color_hl_map = chosen_art.hl
 
   local buf = create_dashboard_buffer()
   vim.api.nvim_set_current_buf(buf)

@@ -46,7 +46,7 @@ map.n({
   end, -- need to load the Fzflua
 
   -- Shell
-  ['<M-x>'] = cmd('Shell'),
+  ['<A-x>'] = cmd('Shell'),
 
   -- lspsaga
   ['<leader>pd'] = cmd('Lspsaga peek_definition'),

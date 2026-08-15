@@ -129,6 +129,7 @@ au("VimResized", {
 	desc = "Auto-resize splits",
 })
 
+-- not undo for temp file
 au('BufWritePre', {
   group = group,
   pattern = { '/tmp/*', 'COMMIT_EDITMSG', 'MERGE_MSG', '*.tmp', '*.bak' },
@@ -168,6 +169,7 @@ au('InsertEnter', {
 })
 
 -- au('TermOpen', { group = group, command = 'startinsert' })
+-- open term then insert
 au('TermOpen', {
   group = group,
   callback = function()
@@ -177,6 +179,7 @@ au('TermOpen', {
   end,
 })
 
+-- highlight the yank post for a while
 au('TextYankPost', {
   group = group,
   callback = function()
@@ -187,6 +190,7 @@ au('TextYankPost', {
   end,
 })
 
+-- dont automatically comment for the next line
 au('BufEnter', {
   group = group,
   callback = function()
@@ -381,7 +385,6 @@ uc('PackLoaded', function()
   for _, p in ipairs(loaded_now) do
     table.insert(result, p.spec.name)
   end
-  -- vim.notify(string.format('\nPlugin status：loaded %d / total %d\n', #result, #plugins))
   vim.notify(
     string.format(
       'Plugin status：loaded %d / total %d\nloaded plugins： %s',
