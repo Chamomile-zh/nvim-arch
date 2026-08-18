@@ -28,8 +28,8 @@ local function get_float_opt(opt)
     }
   end
   return {
-    width = 0.5,
-    height = 0.5,
+    width = 0.7,
+    height = 0.7,
     title = get_title(),
     relative = 'editor',
     row = 'c',

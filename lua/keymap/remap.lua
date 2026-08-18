@@ -54,10 +54,6 @@ map.nx('<leader>cc', function()
   return require('vim._comment').operator() .. '_'
 end, { expr = true })
 
-map.t({
-  ['<c-o>'] = '<c-\\><c-n>',
-})
-
 map.ic({
   ['<c-h>'] = '<left>',
   ['<c-j>'] = '<down>',

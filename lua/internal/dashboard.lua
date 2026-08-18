@@ -101,7 +101,6 @@ local function calculate_positions()
     date_line = date_line,
     plugin_line = plugin_line,
     shortcuts_start = shortcuts_start,
-
     greeting_line = greeting_line,
     total_lines = greeting_line,
   }
@@ -191,7 +190,7 @@ local function render_dashboard(buf)
       end
     end
   end
-  local greeting_str = 'Hello Chamomile!'
+  local greeting_str = '就算是开玩笑也请不要这么说'
   local greeting_left = center_left(greeting_str)
 
   if pos.greeting_line <= #lines then
@@ -234,7 +233,7 @@ local function render_dashboard(buf)
     :totable()
   local startup_time = vim.g.nvim_startup_time or '0'
   local plugin_info_str =
-    string.format('load %d/%d plugins in %sms', #loaded_now or 0, #plugins or 0, startup_time)
+    string.format('Neovim loaded %d/%d plugins in %sms', #loaded_now or 0, #plugins or 0, startup_time)
 
   local plugin_left = center_left(plugin_info_str)
 

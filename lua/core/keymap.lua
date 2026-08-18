@@ -144,25 +144,40 @@ local function index(self, key)
         map(mode, arg1, arg2, opts)
       end
     else
-      for lhs, rhs in pairs(maps) do
-        if type(rhs) == 'function' then
-          opts.callback = rhs
-          rhs = ''
-          if opts.expr and replace_keycodes == nil then
-            opts.replace_keycodes = true
-          end
-        elseif type(rhs) == 'string' then
-          opts.callback = nil
-          if opts.expr and replace_keycodes == nil then
-            opts.replace_keycodes = false
+      -- 批量映射：支持字符串/函数/带desc的表三种格式
+      for lhs, rhs_entry in pairs(maps) do
+        -- 每个映射独立的选项副本，避免 desc 互相污染
+        local loop_opts = {}
+        merge(loop_opts, opts)
+
+        local rhs
+        -- 支持 { rhs = xxx, desc = 'xxx' } 格式
+        if type(rhs_entry) == 'table' then
+          rhs = rhs_entry.rhs
+          if rhs_entry.desc then
+            loop_opts.desc = rhs_entry.desc
           end
         else
-          error('expected string or function as rhs')
+          rhs = rhs_entry
+        end
+
+        if type(rhs) == 'function' then
+          loop_opts.callback = rhs
+          rhs = ''
+          if loop_opts.expr and replace_keycodes == nil then
+            loop_opts.replace_keycodes = true
+          end
+        elseif type(rhs) == 'string' then
+          loop_opts.callback = nil
+          if loop_opts.expr and replace_keycodes == nil then
+            loop_opts.replace_keycodes = false
+          end
+        else
+          error('expected string, function or table with rhs field as mapping value')
         end
 
         for mode in pairs(modes) do
-          -- print(vim.inspect(opts))
-          map(mode, lhs, rhs, opts)
+          map(mode, lhs, rhs, loop_opts)
         end
       end
     end

@@ -97,13 +97,13 @@ map.n({
     require('internal.surround').surround('remove')
   end,
   -- toggle term
-  ['<c-f>'] = function()
+  ['<A-t>'] = function()
     require('internal.toggle_term').toggle_term()
   end,
-  ['<A-f>'] = function ()
+  ['<A-f>'] = function()
     require('internal.toggle_term').toggle_term('focus')
   end,
-  ['<A-m>'] = function ()
+  ['<A-m>'] = function()
     if vim.bo.buftype == 'terminal' then
       vim.cmd('startinsert')
     end
@@ -114,18 +114,24 @@ map.n({
   end,
 
   -- jump
-  ['f'] = function()
-    local j = require('internal.jump')
-    if j.charForward then
-      j.charForward()
-    end
-  end,
+  ['f'] = {
+    rhs = function()
+      local j = require('internal.jump')
+      if j.charForward then
+        j.charForward()
+      end
+    end,
+    desc = 'jump to the character with a letter',
+  },
   ['F'] = function()
     local j = require('internal.jump')
     if j.charBackward then
       j.charBackward()
     end
   end,
+
+  -- template
+  ['<leader>tm'] = cmd('Template'),
 })
 
 -- noice
@@ -142,21 +148,36 @@ map.nis({
   end,
 })
 
+-- toggle_term
 map.t({
-  -- toggle term
-  ['<c-f>'] = function()
-    require('internal.toggle_term').toggle_term()
-  end,
-  ['<c-r>'] = function()
-    require('internal.toggle_term').toggle_term('pos')
-  end,
-  ['<A-f>'] = function ()
-    require('internal.toggle_term').toggle_term('focus')
-  end,
-  ['<A-q>'] = function ()
-    require('internal.toggle_term').toggle_term('kill')
-  end,
-  ['<A-m>'] = '<C-\\><C-n>',
+  ['<A-t>'] = {
+    rhs = function()
+      require('internal.toggle_term').toggle_term()
+    end,
+    desc = 'Toggle terminal window',
+  },
+  ['<A-r>'] = {
+    rhs = function()
+      require('internal.toggle_term').toggle_term('pos')
+    end,
+    desc = 'Toggle terminal position',
+  },
+  ['<A-f>'] = {
+    rhs = function()
+      require('internal.toggle_term').toggle_term('focus')
+    end,
+    desc = 'Focus terminal window',
+  },
+  ['<A-q>'] = {
+    rhs = function()
+      require('internal.toggle_term').toggle_term('kill')
+    end,
+    desc = 'Kill terminal process',
+  },
+  ['<A-m>'] = {
+    rhs = '<C-\\><C-n>',
+    desc = 'Exit terminal insert mode',
+  },
 })
 
 map.v({

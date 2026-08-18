@@ -21,8 +21,12 @@ local function get_visual_words(sl, sr, el, er)
     local end_col = #line
 
     -- 首尾行按选中范围截断
-    if lnum == sl then start_col = sr end
-    if lnum == el then end_col = er end
+    if lnum == sl then
+      start_col = sr
+    end
+    if lnum == el then
+      end_col = er
+    end
 
     local text = line:sub(start_col, end_col)
     for word in text:gmatch(pattern) do
@@ -48,28 +52,25 @@ _G.SubstituteWordComplete = function(ArgLead, CmdLine, CursorPos)
   return matches
 end
 
---- 注册补全单词列表
+--- 注册补全单词列表（空表则清空）
 local function register_word_completion(words)
-  _G._substitute_complete_words = words
+  _G._substitute_complete_words = words or {}
 end
 
 ---同步获取输入，带单词补全
 local function input_str(oldword, completion_words)
+  -- 每次调用强制刷新补全列表，空列表直接清空，杜绝上一次残留
+  register_word_completion(completion_words)
+
   if not oldword then
-    if completion_words and #completion_words > 0 then
-      register_word_completion(completion_words)
-      -- 调用全局Lua函数作为补全源，避免v:lua变量访问问题
-      oldword = vim.fn.input('Enter word old: ', '', 'customlist,v:lua.SubstituteWordComplete')
-    else
-      oldword = vim.fn.input('Enter word old: ')
-    end
+    oldword = vim.fn.input('Enter word old: ', '', 'customlist,v:lua.SubstituteWordComplete')
   end
 
   local newword = vim.fn.input('Enter word new: ')
   local char = '/'
   local vis = true
   for _, c in ipairs(pchar) do
-    if not oldword:find(c,1,true) and not newword:find(c,1,true) then
+    if not oldword:find(c, 1, true) and not newword:find(c, 1, true) then
       char = c
       vis = false
       break
@@ -78,6 +79,9 @@ local function input_str(oldword, completion_words)
   if vis then
     char = vim.fn.input('Enter char: ')
   end
+
+  -- 输入完成后清空全局补全缓存
+  register_word_completion({})
 
   return oldword, newword, char
 end
@@ -88,15 +92,18 @@ local function quick_substitute()
     local sl, sr, el, er = getpos()
     local oldword, newword, char
 
+    -- 统一提取当前选中区域的所有单词，用于补全
+    local words = get_visual_words(sl, sr, el, er)
+
     if sl == el then
       oldword = vim.fn.getline(sl):sub(sr, er)
-      oldword, newword, char = input_str(oldword)
-    else
-      local words = get_visual_words(sl, sr, el, er)
-      oldword, newword, char = input_str(nil, words)
     end
 
-    if check(oldword, newword) then return end
+    oldword, newword, char = input_str(oldword, words)
+
+    if check(oldword, newword) then
+      return
+    end
 
     local cmd_opt
     if sl == el then

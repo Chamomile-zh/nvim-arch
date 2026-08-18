@@ -1,38 +1,51 @@
--- NOTE: only available under x11
----check if the clipboard contains an imageq
+---检查剪贴板中是否包含 PNG 图片
 ---@return boolean
 local function check_have_img()
-  local has_image = vim.fn.system('xclip -selection clipboard -t TARGETS -o')
-  if has_image == nil then
+  -- wl-paste --list-types 会列出当前剪贴板中数据的所有 MIME 类型
+  local types = vim.fn.system('wl-paste --list-types')
+  if types == nil or types == '' then
     return false
   end
-  local val = string.find(has_image, 'image/png')
-  if val == nil then
-    return false
+  -- 查找是否包含 image/png
+  if string.find(types, 'image/png') then
+    return true
   end
-  return true
+  return false
 end
 
 local function paste()
-  local path = vim.fn.expand('%:p:~:h') .. '/img/'
+  -- 获取当前文件所在目录，并拼接 /img/
+  local path = vim.fn.expand('%:p:h') .. '/img/'
 
-  -- if there is no img folder here, create it
+  -- 如果没有 img 文件夹，自动创建
   if vim.fn.isdirectory(path) == 0 then
-    vim.cmd('silent !mkdir -p ' .. path)
+    vim.fn.mkdir(path, 'p')
   end
 
   if check_have_img() then
     local imagename = vim.fn.input('Enter image name: ')
-    vim.fn.system('wlclipboard -selection clipboard -t image/png -o > ' .. path .. imagename .. '.png')
+
+    if vim.trim(imagename) == '' then
+      vim.notify(' Image paste canceled.', vim.log.levels.INFO)
+      return
+    end
+
+    local cmd = string.format("wl-paste --type image/png > '%s%s.png'", path, imagename)
+    vim.fn.system(cmd)
 
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
     local line = vim.api.nvim_get_current_line()
     local line_before = string.sub(line, 0, col)
     local line_end = string.sub(line, col + 1)
+
     line = line_before .. '![](./img/' .. imagename .. '.png)' .. line_end
     vim.api.nvim_set_current_line(line)
+
+    -- 光标定位到 [] 括号中间，并进入插入模式
     vim.api.nvim_win_set_cursor(0, { row, col + 2 })
     vim.cmd('startinsert')
+  else
+    vim.notify('No image found in clipboard!', vim.log.levels.WARN)
   end
 end
 

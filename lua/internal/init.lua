@@ -46,6 +46,8 @@ au('UIEnter', {
       -- cursor word
       require('internal.cursor_word')
 
+      require('internal.template').setup()
+
       -- if vim.version().minor >= 12 then -- conflict with noice cmdline
       --   require('vim._core.ui2').enable({ msg = { target = 'cmd' } })
       -- end
@@ -82,6 +84,17 @@ au('InsertEnter', {
   end,
 })
 
+-- image
+au('FileType', {
+  group = group,
+  pattern = { 'markdown', 'md' },
+  callback = function(ev)
+    vim.keymap.set('n', '<leader>l', function()
+      require('internal.image').paste()
+    end, { buffer = ev.buf, desc = 'Paste image to Markdown' })
+  end,
+})
+
 -- relativenumber toogle insert
 au({ 'InsertEnter' }, {
   desc = 'Disable the relative line number when enter insert mode',
@@ -107,26 +120,25 @@ au({ 'InsertLeave' }, {
   end,
 })
 
-
 -- make zsh files recognized as sh for bash-ls & treesitter
 vim.filetype.add({
-	extension = {
-		zsh = "sh",
-		sh = "sh", -- force sh-files with zsh-shebang to still get sh as filetype
-	},
-	filename = {
-		[".zshrc"] = "sh",
-		["zshrc"] = "sh",
-		[".zshenv"] = "sh",
-	},
+  extension = {
+    zsh = 'sh',
+    sh = 'sh', -- force sh-files with zsh-shebang to still get sh as filetype
+  },
+  filename = {
+    ['.zshrc'] = 'sh',
+    ['zshrc'] = 'sh',
+    ['.zshenv'] = 'sh',
+  },
 })
 
 -- Auto-resize splits when window is resized
-au("VimResized", {
-	group = group,
-	pattern = "*",
-	command = "wincmd =",
-	desc = "Auto-resize splits",
+au('VimResized', {
+  group = group,
+  pattern = '*',
+  command = 'wincmd =',
+  desc = 'Auto-resize splits',
 })
 
 -- not undo for temp file

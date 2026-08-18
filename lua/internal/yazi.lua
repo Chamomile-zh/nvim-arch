@@ -4,7 +4,7 @@ local infos = {}
 
 local float_opt = {
   width = 0.7,
-  height = 0.5,
+  height = 0.7,
   title = ' Yazi ',
   relative = 'editor',
   row = 'c',

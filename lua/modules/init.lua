@@ -13,7 +13,7 @@ local specs = {
   {
     'saghen/blink.cmp',
     version = vim.version.range('^1'),
-    -- version = "main", -- slove the :Man https://github.com/saghen/blink.cmp/issues/2546 use FzfLua manpages
+    -- version = "main", -- slove the :Man https://github.com/saghen/blink.cmp/issues/2546 Instead use FzfLua manpages
     events = { 'LspAttach', 'InsertEnter', 'CmdlineEnter' },
     config = conf.blink,
     -- dep = {
