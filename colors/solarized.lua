@@ -36,44 +36,44 @@ local c = {
   base02 = oklab_to_srgb(0.322000, -0.038500, -0.032000),
   base01 = oklab_to_srgb(0.523013, -0.020000, -0.010000),
   base00 = oklab_to_srgb(0.568165, -0.019000, -0.010000),
-  base0  = oklab_to_srgb(0.702000, -0.016000, -0.005000),
-  base1  = oklab_to_srgb(0.698000, -0.014000, -0.002000),
-  base2  = oklab_to_srgb(0.930609, -0.001000, 0.026000),
-  base3  = oklab_to_srgb(0.973528, 0.000000, 0.026000),
+  base0 = oklab_to_srgb(0.702000, -0.016000, -0.005000),
+  base1 = oklab_to_srgb(0.698000, -0.014000, -0.002000),
+  base2 = oklab_to_srgb(0.930609, -0.001000, 0.026000),
+  base3 = oklab_to_srgb(0.973528, 0.000000, 0.026000),
 
   -- Accents
-  yellow  = oklab_to_srgb(0.654000, 0.010000, 0.134000),
-  red     = oklab_to_srgb(0.610000, 0.118000, 0.030000),
-  orange  = oklab_to_srgb(0.635000, 0.082000, 0.090000),
+  yellow = oklab_to_srgb(0.654000, 0.010000, 0.134000),
+  red = oklab_to_srgb(0.610000, 0.118000, 0.030000),
+  orange = oklab_to_srgb(0.635000, 0.082000, 0.090000),
   magenta = oklab_to_srgb(0.600000, 0.124000, -0.009000),
-  blue    = oklab_to_srgb(0.630000, -0.047000, -0.101000),
-  violet  = oklab_to_srgb(0.597000, 0.016000, -0.100000),
-  cyan    = oklab_to_srgb(0.643664, -0.101063, -0.013097),
-  green   = oklab_to_srgb(0.648000, -0.068000, 0.125000),
+  blue = oklab_to_srgb(0.630000, -0.047000, -0.101000),
+  violet = oklab_to_srgb(0.597000, 0.016000, -0.100000),
+  cyan = oklab_to_srgb(0.643664, -0.101063, -0.013097),
+  green = oklab_to_srgb(0.648000, -0.068000, 0.125000),
 
   -- Special elements
   cursorline_bg = oklab_to_srgb(0.298000, -0.038000, -0.031500),
-  float_bg      = oklab_to_srgb(0.289370, -0.037339, -0.031128),
+  float_bg = oklab_to_srgb(0.289370, -0.037339, -0.031128),
   statusline_bg = oklab_to_srgb(0.440000, -0.022000, -0.010000),
 
   -- Diagnostic Variants (Statusline)
   sl_diag_error = oklab_to_srgb(0.490000, 0.115000, 0.055000),
-  sl_diag_warn  = oklab_to_srgb(0.520000, 0.008000, 0.115000),
-  sl_diag_info  = oklab_to_srgb(0.510000, -0.040000, -0.086000),
-  sl_diag_hint  = oklab_to_srgb(0.510000, -0.070000, -0.011000),
+  sl_diag_warn = oklab_to_srgb(0.520000, 0.008000, 0.115000),
+  sl_diag_info = oklab_to_srgb(0.510000, -0.040000, -0.086000),
+  sl_diag_hint = oklab_to_srgb(0.510000, -0.070000, -0.011000),
 
   -- Diff variants
-  diff_plus  = oklab_to_srgb(0.490000, -0.080000, 0.115000),
+  diff_plus = oklab_to_srgb(0.490000, -0.080000, 0.115000),
   diff_minus = oklab_to_srgb(0.480000, 0.118000, 0.055000),
   diff_delta = oklab_to_srgb(0.500000, 0.085000, 0.095000),
 }
 
 -- Resolve logical roles based on background mode
-c.bg           = is_dark and c.base03 or c.base3
+c.bg = is_dark and c.base03 or c.base3
 c.bg_highlight = is_dark and c.base02 or c.base2
-c.fg_comment   = is_dark and c.base01 or c.base1
-c.fg           = is_dark and c.base0  or c.base00
-c.fg_emphasis  = is_dark and c.base1  or c.base01
+c.fg_comment = is_dark and c.base01 or c.base1
+c.fg = is_dark and c.base0 or c.base00
+c.fg_emphasis = is_dark and c.base1 or c.base01
 c.selection_bg = is_dark and c.base02 or c.base2
 
 -- ─── 3. Blend Utilities ──────────────────────────────────────────────
@@ -155,8 +155,8 @@ local function setcolor()
     Comment = { fg = c.fg_comment, italic = true },
 
     -- UI Components
-    StatusLine = { bg = c.base1, fg = c.bg_highlight },
-    StatusLineNC = { bg = c.fg_comment, fg = c.bg_highlight },
+    StatusLine = { fg = c.fg_comment, bg = c.bg },
+    StatusLineNC = { fg = c.bg_highlight, bg = c.bg },
     WildMenu = { fg = c.bg, bg = c.blue },
     ColorColumn = { bg = c.bg_highlight },
     WhiteSpace = { fg = c.base04 },
@@ -167,6 +167,15 @@ local function setcolor()
     PmenuSbar = { bg = c.base02 },
     PmenuThumb = { bg = c.base01 },
     PmenuBorder = { fg = c.fg_comment },
+    -- Winbar
+    WinBar = { fg = c.fg_comment, bg = c.bg },
+    WinBarNC = { fg = c.bg_highlight, bg = c.bg },
+
+    -- Lspsaga Winbar
+    LspSagaWinbarWord = { fg = c.fg }, -- 文字颜色
+    LspSagaWinbarSep = { fg = c.cyan }, -- 分隔符颜色（比如 > ）
+    LspSagaWinbarFile = { fg = c.fg_emphasis }, -- 文件名
+    LspSagaWinbarFolder = { fg = c.blue }, -- 文件夹
 
     -- Float & Borders
     NormalFloat = { bg = c.base02 },
@@ -287,7 +296,7 @@ local function setcolor()
     ['@tag.attribute'] = { fg = c.fg },
     ['@tag.delimiter'] = { fg = c.fg },
     ['@tag.builtin'] = { link = 'Special' },
-    
+
     ['@constant.comment'] = { link = 'SpecialComment' },
     ['@number.comment'] = { link = 'Comment' },
     ['@punctuation.bracket.comment'] = { link = 'SpecialComment' },
@@ -295,7 +304,7 @@ local function setcolor()
     ['@label.vimdoc'] = { link = 'String' },
     ['@markup.heading.1.delimiter.vimdoc'] = { link = '@markup.heading.1' },
     ['@markup.heading.2.delimiter.vimdoc'] = { link = '@markup.heading.2' },
-    
+
     ['@class'] = { fg = c.yellow },
     ['@method'] = { fg = c.blue },
     ['@interface'] = { fg = c.yellow },
@@ -325,7 +334,7 @@ local function setcolor()
     ['@lsp.type.type'] = { link = '@type' },
     ['@lsp.type.typeParameter'] = { link = '@type.definition' },
     ['@lsp.type.variable'] = { link = '@variable' },
-    
+
     ['@lsp.mod.abstract'] = {},
     ['@lsp.mod.async'] = {},
     ['@lsp.mod.declaration'] = {},
@@ -342,22 +351,22 @@ local function setcolor()
     DiagnosticWarn = { fg = c.yellow },
     DiagnosticInfo = { fg = c.blue },
     DiagnosticHint = { fg = c.cyan },
-    
-    DiagnosticVirtualTextError = { bg = blend(c.red, 0.4) },
-    DiagnosticVirtualTextWarn = { bg = blend(c.yellow, 0.4) },
-    DiagnosticVirtualTextInfo = { bg = blend(c.blue, 0.4) },
-    DiagnosticVirtualTextHint = { bg = blend(c.cyan, 0.4) },
-    
+
+    DiagnosticVirtualTextError = { fg = c.red, bg = 'NONE' },
+    DiagnosticVirtualTextWarn = { fg = c.yellow, bg = 'NONE' },
+    DiagnosticVirtualTextInfo = { fg = c.blue, bg = 'NONE' },
+    DiagnosticVirtualTextHint = { fg = c.cyan, bg = 'NONE' },
+
     DiagnosticPrefixError = { fg = c.red, bg = blend(c.red, 0.25) },
     DiagnosticPrefixWarn = { fg = c.yellow, bg = blend(c.yellow, 0.25) },
     DiagnosticPrefixInfo = { fg = c.blue, bg = blend(c.blue, 0.25) },
     DiagnosticPrefixHint = { fg = c.cyan, bg = blend(c.cyan, 0.25) },
-    
+
     DiagnosticUnderlineError = { undercurl = true, sp = c.red },
     DiagnosticUnderlineWarn = { undercurl = true, sp = c.yellow },
     DiagnosticUnderlineInfo = { undercurl = true, sp = c.blue },
     DiagnosticUnderlineHint = { undercurl = true, sp = c.cyan },
-    
+
     YankHighlight = { fg = c.bg, bg = c.fg },
 
     -- Statusline Diagnostics
@@ -377,7 +386,7 @@ local function setcolor()
     LspSignatureActiveParameter = { link = 'LspReferenceText' },
 
     IndentLine = { link = 'Comment' },
-    IndentLineCurrent = { link = 'Comment' },
+    IndentLineCurrent = { fg = c.cyan },
 
     GitSignsAdd = { fg = c.green },
     GitSignsChange = { fg = c.orange },
@@ -386,7 +395,7 @@ local function setcolor()
     DashboardHeader = { fg = c.green },
     ModeLineFileName = { fg = c.bg_highlight, bold = true },
   }
-  
+
   return groups
 end
 

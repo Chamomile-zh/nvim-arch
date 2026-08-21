@@ -6,7 +6,7 @@ local specs = {
 
   {
     'nvimdev/lspsaga.nvim',
-    events = { 'BufReadPost', 'BufNewFile','User DashboardLoaded' },
+    events = { 'BufReadPost', 'BufNewFile', 'User DashboardLoaded' },
     config = conf.lspsaga,
   },
 
@@ -39,7 +39,7 @@ local specs = {
 
   {
     'ibhagwan/fzf-lua',
-    events = {'User DashboardLoaded'},
+    events = { 'User DashboardLoaded' },
     cmd = 'FzfLua',
     config = conf.fzflua,
   },
@@ -52,7 +52,7 @@ local specs = {
 
   {
     'lewis6991/gitsigns.nvim',
-    events = { 'LspAttach', 'BufReadPre','User DashboardLoaded' },
+    events = { 'LspAttach', 'BufReadPre', 'User DashboardLoaded' },
     config = conf.gitsigens,
   },
 
@@ -63,7 +63,7 @@ local specs = {
   },
   {
     'folke/noice.nvim',
-    events = { 'LspAttach','User DashboardLoaded' },
+    events = { 'LspAttach', 'User DashboardLoaded' },
     config = conf.noice,
     dep = {
       { 'MunifTanjim/nui.nvim' },
@@ -79,7 +79,6 @@ end
 local function to_name(s)
   return s:sub(s:find('/') + 1)
 end
-
 
 local function get_pkg_path(pkg_name)
   local paths = api.nvim_get_runtime_file('pack/*/*/' .. pkg_name, true)
@@ -137,8 +136,8 @@ local function run_build(build, pkg_name)
   end
 end
 
-local function load(pkg_name, events, cmd, config)
-  if not events and not cmd then -- directly load without events and cmd
+local function load(pkg_name, events, cmd,ft, config)
+  if not events and not cmd and not ft then -- directly load without events and cmd and ft
     return false
   end
   return function()
@@ -196,6 +195,24 @@ local function load(pkg_name, events, cmd, config)
         vim.cmd(('%s %s'):format(cmd, data.args))
       end, { nargs = '?' })
     end
+
+    if ft then
+      if type(ft) == 'string' then
+        ft = { ft }
+      end
+      api.nvim_create_autocmd('FileType', {
+        pattern = ft,
+        group = group,
+        once = true,
+        callback = function()
+          vim.cmd.packadd(pkg_name)
+          if config then
+            config()
+          end
+        end,
+      })
+    end
+
   end
 end
 
@@ -222,11 +239,11 @@ local function packadd(info)
     pkg_url,
     vim.tbl_extend(
       'keep',
-      { load = load(pkg_name, info.events, info.cmd, info.config) } or {},
+      { load = load(pkg_name, info.events, info.cmd, info.ft, info.config) } or {},
       { confirm = false }
     )
   )
-  if not info.events and not info.cmd then
+  if not info.events and not info.cmd and not info.ft then
     local ok, _ = pcall(vim.cmd.packadd, pkg_name)
     if ok and info.config then
       info.config()

@@ -26,7 +26,7 @@ au('UIEnter', {
     startuptime()
     vim.schedule(function()
       -- colorscheme
-      vim.cmd.colorscheme('solarized')
+      vim.cmd.colorscheme('mariana')
 
       -- status ui
       require('internal.status')
@@ -213,6 +213,20 @@ au('BufEnter', {
       vim.api.nvim_win_set_cursor(0, { pos[2], pos[3] - 1 })
     end
   end,
+})
+
+au('BufWritePre', {
+  pattern = '*',
+  callback = function(args)
+    local fname = vim.api.nvim_buf_get_name(args.buf)
+    if vim.bo[args.buf].filetype == 'vim' and fname:find('test') then
+      return
+    end
+    local view = vim.fn.winsaveview()
+    vim.cmd([[silent! keepjumps keeppatterns %s/\s\+$//e]])
+    vim.fn.winrestview(view)
+  end,
+  desc = 'remove tail space',
 })
 
 au('LspAttach', {

@@ -49,10 +49,10 @@ local function setcolor()
     CurSearch = { link = 'IncSearch' },
     QuickFixLine = { fg = colors.nord8, bold = true },
     Underlined = { underline = true },
-    StatusLine = { fg = colors.nord4, bg = colors.nord2 },
-    StatusLineNC = { fg = colors.nord3, bg = colors.nord1 },
-    WinBar = { fg = colors.nord4, bg = colors.nord1 },
-    WinBarNC = { fg = colors.nord3, bg = colors.nord1 },
+    StatusLine = { fg = colors.nord4, bg = colors.nord0 },
+    StatusLineNC = { fg = colors.nord3, bg = colors.nord0 },
+    WinBar = { fg = colors.nord4, bg = colors.nord0 },
+    WinBarNC = { fg = colors.nord3, bg = colors.nord0 },
     WinSeparator = { fg = colors.nord2, bg = colors.nord0 },
     WildMenu = { fg = colors.nord0, bg = colors.nord8 },
     Directory = { fg = colors.nord8 },
@@ -108,10 +108,10 @@ local function setcolor()
     SpellRare = { sp = colors.nord15, undercurl = true },
     Whitespace = { fg = colors.nord2 },
     Delimiter = { fg = colors.nord4 },
-    
-    SnippetTabstop = {}, 
+
+    SnippetTabstop = {},
     SnippetTabstopActive = {},
-    
+
     -- LSP Diagnostic
     DiagnosticError = { fg = colors.nord11 },
     DiagnosticSignError = { fg = colors.nord11 },
@@ -129,20 +129,20 @@ local function setcolor()
     DiagnosticFloatingWarn = { fg = colors.nord13 },
     DiagnosticFloatingInfo = { fg = colors.nord8 },
     DiagnosticFloatingHint = { fg = colors.nord7 },
-    DiagnosticVirtualTextError = { fg = colors.nord11, bg = colors.nord1, italic = true },
-    DiagnosticVirtualTextWarn = { fg = colors.nord13, bg = colors.nord1, italic = true },
-    DiagnosticVirtualTextInfo = { fg = colors.nord8, bg = colors.nord1, italic = true },
-    DiagnosticVirtualTextHint = { fg = colors.nord7, bg = colors.nord1, italic = true },
+    DiagnosticVirtualTextError = { fg = colors.nord11, bg = 'NONE', italic = true },
+    DiagnosticVirtualTextWarn = { fg = colors.nord13, bg = 'NONE', italic = true },
+    DiagnosticVirtualTextInfo = { fg = colors.nord8, bg = 'NONE', italic = true },
+    DiagnosticVirtualTextHint = { fg = colors.nord7, bg = 'NONE', italic = true },
     LspReferenceRead = { bg = colors.nord2 },
     LspReferenceText = { bg = colors.nord2 },
     LspReferenceWrite = { bg = colors.nord2, bold = true },
     LspCodeLens = { fg = colors.nord3, italic = true },
     LspSignatureActiveParameter = { fg = colors.nord13, bold = true },
-    
+
     -- gitcommit
     gitcommitSelectedFile = { fg = colors.nord14 },
     gitcommitDiscardedFile = { fg = colors.nord11 },
-    
+
     -- gitsigns.nvim
     GitSignsAdd = { fg = colors.nord14 },
     GitSignsChange = { fg = colors.nord13 },
@@ -150,7 +150,7 @@ local function setcolor()
     GitSignsAddLn = { fg = colors.nord14 },
     GitSignsChangeLn = { fg = colors.nord13 },
     GitSignsDeleteLn = { fg = colors.nord11 },
-    
+
     -- diff
     diffAdded = { fg = colors.nord14 },
     diffRemoved = { fg = colors.nord11 },
@@ -160,7 +160,7 @@ local function setcolor()
     diffOldFile = { fg = colors.nord11 },
     diffLine = { fg = colors.nord8 },
     diffIndexLine = { link = 'diffChanged' },
-    
+
     -- lspsaga.nvim
     LspSagaCodeActionTitle = { link = 'Title' },
     LspSagaCodeActionBorder = { fg = colors.nord4 },
@@ -177,11 +177,10 @@ local function setcolor()
     LspSagaDiagnosticHeader = { fg = colors.nord14 },
     LspSagaSignatureHelpBorder = { fg = colors.nord14 },
     SagaShadow = { fg = colors.nord0 },
-    
+
     -- Indent
-    IndentLine = { fg = colors.nord2 },
-    IndentLineCurrent = { fg = colors.nord9, italic = true },
-    
+    IndentLine = { fg = colors.nord3 },
+    IndentLineCurrent = { fg = colors.nord8 },
     -- StatusLine
     StatusLineMode = { fg = colors.nord4 },
     StatusLineFileInfo = { fg = colors.nord4 },
@@ -192,7 +191,7 @@ local function setcolor()
     StatusLineFileType = { fg = colors.nord3 },
     StatusLineEncoding = { fg = colors.nord3 },
     StatlsLineLnum = { fg = colors.nord4 },
-    
+
     -- pmenu
     Pmenu = { fg = colors.nord4, bg = colors.nord2 },
     PmenuSel = { fg = colors.nord0, bg = colors.nord8, bold = true },
@@ -202,7 +201,7 @@ local function setcolor()
     PmenuKindSel = { fg = colors.nord0, bg = colors.nord8, bold = true },
     PmenuExtra = { fg = colors.nord4, bg = colors.nord2 },
     PmenuExtraSel = { fg = colors.nord0, bg = colors.nord8, bold = true },
-    
+
     -- cmp
     Cmp = { fg = colors.nord4 },
     CmpBorder = { fg = colors.nord8 },
@@ -303,7 +302,7 @@ local function setcolor()
     ['@macro'] = { link = 'Macro' },
     ['@structure'] = { link = 'Structure' },
     ['@lsp.type.class'] = { link = '@constructor' },
-    ['@lsp.type.comment'] = {}, 
+    ['@lsp.type.comment'] = {},
     ['@lsp.type.decorator'] = { link = '@parameter' },
     ['@lsp.type.enum'] = { link = '@type' },
     ['@lsp.type.enumMember'] = { link = '@constant' },

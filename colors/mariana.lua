@@ -8,7 +8,9 @@
 
 local function opt(name, default)
   local v = vim.g[name]
-  if v == nil then return default end
+  if v == nil then
+    return default
+  end
   return not (v == false or v == 0)
 end
 
@@ -21,42 +23,42 @@ local cfg = {
 
 -- 预计算的纯静态色板 (移除了冗长的 hsl 和 rgba 混合计算)
 local colors = {
-  black    = '#000000',
-  blue     = '#6699cc',
+  black = '#000000',
+  blue = '#6699cc',
   blue_vib = '#5c99d6', -- blue-vibrant / accent
-  blue2    = '#4d5c6b', -- 半透明选区/当前行色
-  blue3    = '#303841', -- background
-  blue4    = '#65737e', -- selection_border
-  blue5    = '#5fb3b3', -- cyan / active_guide
-  blue6    = '#a6acb9', -- comment / separator
-  green    = '#99c794',
-  grey     = '#333333', -- find_highlight_foreground
-  orange   = '#fac863', -- caret / number / parameter
-  orange2  = '#f59335', -- invalid.deprecated
-  orange3  = '#f9ae57', -- find_highlight
-  pink     = '#c594c5',
-  red      = '#ec5f67',
-  red2     = '#f97b58', -- keyword.operator
-  white    = '#ffffff', -- punctuation.section
-  white2   = '#f7f7f7', -- invalid 前景
-  white3   = '#d8dee9', -- foreground
+  blue2 = '#4d5c6b', -- 半透明选区/当前行色
+  blue3 = '#303841', -- background
+  blue4 = '#65737e', -- selection_border
+  blue5 = '#5fb3b3', -- cyan / active_guide
+  blue6 = '#a6acb9', -- comment / separator
+  green = '#99c794',
+  grey = '#333333', -- find_highlight_foreground
+  orange = '#fac863', -- caret / number / parameter
+  orange2 = '#f59335', -- invalid.deprecated
+  orange3 = '#f9ae57', -- find_highlight
+  pink = '#c594c5',
+  red = '#ec5f67',
+  red2 = '#f97b58', -- keyword.operator
+  white = '#ffffff', -- punctuation.section
+  white2 = '#f7f7f7', -- invalid 前景
+  white3 = '#d8dee9', -- foreground
 
   -- 合成背景衍生色
-  stack_guide    = '#47757a',
-  raw_bg         = '#3f4b57',
-  raw_bg_inline  = '#44515f',
-  diff_del       = '#493c44',
-  diff_del_char  = '#63424a',
-  diff_ins       = '#374b53',
-  diff_ins_char  = '#425f69',
+  stack_guide = '#47757a',
+  raw_bg = '#3f4b57',
+  raw_bg_inline = '#44515f',
+  diff_del = '#493c44',
+  diff_del_char = '#63424a',
+  diff_ins = '#374b53',
+  diff_ins_char = '#425f69',
   cursorline_dim = '#3e4953',
-  
+
   -- UI Chrome
-  ui_bar   = '#293038',
-  ui_deep  = '#21262b',
+  ui_bar = '#293038',
+  ui_deep = '#21262b',
   ui_light = '#3d4651',
-  ui_dim   = '#272d34',
-  guide    = '#424d56',
+  ui_dim = '#272d34',
+  guide = '#424d56',
 }
 
 -- 初始化
@@ -81,12 +83,12 @@ local function setcolor()
     NormalFloat = { fg = c.white3, bg = bg_float },
     FloatBorder = { fg = c.blue4, bg = bg_float },
     FloatTitle = { fg = c.blue_vib, bg = bg_float, bold = true },
-    
+
     Cursor = { fg = c.blue3, bg = c.orange },
     lCursor = { link = 'Cursor' },
     CursorIM = { link = 'Cursor' },
     TermCursor = { link = 'Cursor' },
-    
+
     CursorLine = { bg = cursorline },
     CursorColumn = { bg = cursorline },
     ColorColumn = { bg = c.ui_light },
@@ -94,27 +96,27 @@ local function setcolor()
     LineNr = { fg = c.blue4 },
     LineNrAbove = { fg = c.blue4 },
     LineNrBelow = { fg = c.blue4 },
-    
+
     SignColumn = { fg = c.blue4, bg = bg },
     FoldColumn = { fg = c.blue4, bg = bg },
     Folded = { fg = c.blue6, bg = c.ui_light },
     WinSeparator = { fg = c.ui_deep, bg = bg },
     VertSplit = { link = 'WinSeparator' },
-    
+
     NonText = { fg = '#4a545f' },
     Whitespace = { fg = '#4a545f' },
     SpecialKey = { fg = '#4a545f' },
     Conceal = { fg = c.blue4 },
     EndOfBuffer = { fg = cfg.transparent and c.blue3 or bg },
     MatchParen = { fg = c.orange, underline = true },
-    
+
     Visual = { bg = c.blue2 },
     VisualNOS = { bg = c.blue2 },
     Search = { fg = c.grey, bg = c.orange3 },
     IncSearch = { fg = c.grey, bg = c.orange3, bold = true },
     CurSearch = { link = 'IncSearch' },
     Substitute = { fg = c.grey, bg = c.red2 },
-    
+
     Directory = { fg = c.blue },
     Title = { fg = c.blue_vib, bold = true },
     ErrorMsg = { fg = c.red, bold = true },
@@ -128,15 +130,15 @@ local function setcolor()
     Ignore = { fg = c.blue4 },
     Error = { fg = c.white2, bg = c.red },
     Todo = { fg = c.grey, bg = c.orange3, bold = true },
-    
+
     SpellBad = { sp = c.red, undercurl = true },
     SpellCap = { sp = c.orange, undercurl = true },
     SpellLocal = { sp = c.blue5, undercurl = true },
     SpellRare = { sp = c.pink, undercurl = true },
 
     -- ─── UI Components ───────────────────────────────────────────────────
-    StatusLine = { fg = c.blue6, bg = c.ui_bar },
-    StatusLineNC = { fg = c.blue4, bg = c.ui_deep },
+    StatusLine = { fg = c.blue6, bg = bg },
+    StatusLineNC = { fg = c.blue4, bg = bg },
     TabLine = { fg = c.blue4, bg = c.ui_deep },
     TabLineFill = { bg = c.ui_deep },
     TabLineSel = { fg = c.white3, bg = c.blue3, bold = true },
@@ -211,7 +213,7 @@ local function setcolor()
     ['@string.special.url'] = { fg = c.blue },
     ['@character'] = { fg = c.green },
     ['@character.special'] = { fg = c.pink },
-    
+
     ['@boolean'] = { fg = c.red, italic = it },
     ['@number'] = { fg = c.orange },
     ['@number.float'] = { fg = c.orange },
@@ -321,7 +323,7 @@ local function setcolor()
     ['@lsp.type.type'] = { fg = c.orange },
     ['@lsp.type.typeParameter'] = { fg = c.orange },
     ['@lsp.type.variable'] = {},
-    
+
     ['@lsp.mod.deprecated'] = { strikethrough = true },
     ['@lsp.typemod.function.defaultLibrary'] = { fg = c.blue, italic = it },
     ['@lsp.typemod.method.defaultLibrary'] = { fg = c.blue, italic = it },
@@ -336,19 +338,19 @@ local function setcolor()
     DiagnosticInfo = { fg = c.blue },
     DiagnosticHint = { fg = c.blue5 },
     DiagnosticOk = { fg = c.green },
-    
-    DiagnosticVirtualTextError = { fg = c.red, bg = c.diff_del },
-    DiagnosticVirtualTextWarn = { fg = c.orange, bg = '#3d3a3a' },
-    DiagnosticVirtualTextInfo = { fg = c.blue, bg = '#333c48' },
-    DiagnosticVirtualTextHint = { fg = c.blue5, bg = c.diff_ins },
-    DiagnosticVirtualTextOk = { fg = c.green, bg = '#354037' },
-    
+
+    DiagnosticVirtualTextError = { fg = c.red, bg = 'NONE' },
+    DiagnosticVirtualTextWarn = { fg = c.orange, bg = 'NONE' },
+    DiagnosticVirtualTextInfo = { fg = c.blue, bg = 'NONE' },
+    DiagnosticVirtualTextHint = { fg = c.blue5, bg = 'NONE' },
+    DiagnosticVirtualTextOk = { fg = c.green, bg = 'NONE' },
+
     DiagnosticUnderlineError = { sp = c.red, undercurl = true },
     DiagnosticUnderlineWarn = { sp = c.orange, undercurl = true },
     DiagnosticUnderlineInfo = { sp = c.blue, undercurl = true },
     DiagnosticUnderlineHint = { sp = c.blue5, undercurl = true },
     DiagnosticUnderlineOk = { sp = c.green, undercurl = true },
-    
+
     DiagnosticUnnecessary = { fg = c.blue4 },
     DiagnosticDeprecated = { sp = c.blue4, strikethrough = true },
     DiagnosticFloatingError = { fg = c.red, bg = bg_float },
@@ -401,6 +403,8 @@ local function setcolor()
     IndentBlanklineChar = { fg = c.guide },
     IndentBlanklineContextChar = { fg = c.blue5 },
     MiniIndentscopeSymbol = { fg = c.blue5 },
+    IndentLine = { link = 'Comment' },
+    IndentLineCurrent = { fg = c.blue5 },
 
     -- Telescope
     TelescopeNormal = { fg = c.white3, bg = c.ui_bar },
@@ -449,7 +453,7 @@ local function setcolor()
     CmpItemKindEvent = { fg = c.orange },
     CmpItemKindOperator = { fg = c.red2 },
     CmpItemKindTypeParameter = { fg = c.orange },
-    
+
     BlinkCmpMenu = { link = 'Pmenu' },
     BlinkCmpMenuBorder = { link = 'FloatBorder' },
     BlinkCmpMenuSelection = { link = 'PmenuSel' },
@@ -475,7 +479,7 @@ local function setcolor()
     NvimTreeGitNew = { fg = c.green },
     NvimTreeGitDeleted = { fg = c.red },
     NvimTreeCursorLine = { bg = c.blue2 },
-    
+
     NeoTreeNormal = { fg = c.blue6, bg = c.ui_bar },
     NeoTreeNormalNC = { fg = c.blue6, bg = c.ui_bar },
     NeoTreeDirectoryName = { fg = c.blue6 },
