@@ -26,7 +26,7 @@ au('UIEnter', {
     startuptime()
     vim.schedule(function()
       -- colorscheme
-      vim.cmd.colorscheme('gruvbox')
+      vim.cmd.colorscheme('solarized')
 
       -- status ui
       require('internal.status')
