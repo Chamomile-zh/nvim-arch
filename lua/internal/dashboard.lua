@@ -156,7 +156,6 @@ local function render_dashboard(buf)
     table.insert(lines, '')
   end
 
-  -- ✨ 3. 渲染核心：支持逐字高亮的黑魔法
   for i, lambda_line in ipairs(selected_art) do
     local line_idx = config.layout.top_offset + i
     if line_idx <= #lines then
@@ -164,7 +163,6 @@ local function render_dashboard(buf)
       local new_line = string.rep(' ', offset) .. lambda_line
       lines[line_idx] = new_line
 
-      -- 检查全局变量 M.color_hl_map 中是否有当前行的高亮数据
       if M.color_hl_map and M.color_hl_map[i] then
         for _, hl_chunk in ipairs(M.color_hl_map[i]) do
           local hl_group = hl_chunk[1]
@@ -179,7 +177,6 @@ local function render_dashboard(buf)
           })
         end
       else
-        -- 退路：如果没有彩色数据，应用统一的单色高亮
         local lambda_byte_end = offset + #lambda_line
         table.insert(highlights_to_apply, {
           line = line_idx - 1,
@@ -343,7 +340,6 @@ function M.show()
     vim.o.laststatus = 2
     return
   end
-  -- 将摇号结果赋给全局供渲染器使用
   math.randomseed(os.time())
   local chosen_art = {}
 
@@ -358,11 +354,9 @@ function M.show()
         hl = c_art.opts.hl,
       }
     else
-      -- 防止脚本写错导致白屏，给出报错提示
       chosen_art = { val = { 'ERROR: Failed to load ' .. selected_mod_name }, hl = nil }
     end
   else
-    -- 防止文件夹为空导致白屏
     chosen_art = { val = { 'NO COLOR ART FOUND IN FOLDER!' }, hl = nil }
   end
   selected_art = chosen_art.val
