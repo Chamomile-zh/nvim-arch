@@ -99,36 +99,22 @@ local function mark_targets(targets)
     end
   end
 
-  state.on_key_func = function(char, typed)
-    if not state.active then
-      return
-    end
+  vim.cmd('redraw')
 
-    if char == '\27' then
-      cleanup()
-      return
-    end
+  local ok,char = pcall(function ()
+---@diagnostic disable-next-line: param-type-mismatch
+    return vim.fn.nr2char(vim.fn.getchar())
+  end)
 
-    local target = state.key_map[typed]
+  if ok and char and char ~= '' and char ~='\27' then
+    local target = state.key_map[char]
     if target then
-      vim.schedule(function()
-        api.nvim_win_set_cursor(0, { target.row + 1, target.col })
-      end)
-      cleanup()
-      return ''
+      api.nvim_win_set_cursor(0, {target.row+1,target.col})
     end
   end
 
-  vim.on_key(state.on_key_func, state.ns_id)
+  cleanup()
 
-  state.id = api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave', 'WinLeave' }, {
-    once = true,
-    callback = function()
-      if state.active then
-        cleanup()
-      end
-    end,
-  })
 end
 
 function M.char(direction)
