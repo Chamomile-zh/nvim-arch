@@ -157,6 +157,14 @@ au('InsertLeave', {
   end,
 })
 
+au('TextChangedI', {
+  group = group,
+  pattern = '*.md',
+  callback = function()
+    require('internal.markdown_table_format').format_markdown_table_lines()
+  end,
+})
+
 -- auto pairs
 au({ 'InsertEnter', 'CmdlineEnter' }, {
   group = group,

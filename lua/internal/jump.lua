@@ -102,7 +102,7 @@ local function mark_targets(targets)
   vim.cmd('redraw')
 
   local ok,char = pcall(function ()
----@diagnostic disable-next-line: param-type-mismatch
+  ---@diagnostic disable-next-line: param-type-mismatch
     return vim.fn.nr2char(vim.fn.getchar())
   end)
 

@@ -226,7 +226,7 @@ function pd.gitinfo(git_t)
   local result = {
     stl = gitsigns_data(git_t),
     name = 'git' .. git_t,
-    event = { 'User GitSignsUpdate', 'BufEnter','BufWritePost' },
+    event = { 'User GitSignsUpdate', 'BufEnter', 'BufWritePost' },
   }
   result.attr = stl_attr(git_t == 'head' and 'StatusLineBranch' or 'Diff' .. alias[git_t])
   result.attr.italic = true
