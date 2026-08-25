@@ -111,7 +111,11 @@ config.guard = function()
 end
 
 config.fzflua = function()
+  local actions = require('fzf-lua.actions')
   require('fzf-lua').setup({
+    actions = {
+      ['default'] = actions.file_edit,
+    },
     lsp = { symbols = { symbol_style = 3 } },
     grep = {
       rg_opts = "--column --line-number --no-heading --color=always --smart-case --colors 'path:fg:blue'",
@@ -127,7 +131,10 @@ config.fzflua = function()
         },
       },
     },
-    files = { file_icons = false, hidden = false },
+    files = {
+      file_icons = false,
+      hidden = false,
+    },
   })
 end
 
@@ -193,10 +200,10 @@ config.noice = function()
   })
 end
 
-config.image = function ()
+config.image = function()
   require('image').setup({
     bakcend = 'kitty',
-    processor = 'magick_cli'
+    processor = 'magick_cli',
   })
 end
 

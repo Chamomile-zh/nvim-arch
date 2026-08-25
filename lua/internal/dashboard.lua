@@ -60,9 +60,15 @@ local config = {
   },
 }
 
+local image_quotes = {
+  ['zdtr.png'] = "❤️ 就算是开玩笑也请不要这么说 ❤️",
+  ['__default__'] = "Hello,Chamomile",
+}
+
 -- 状态管理
 local selected_image_path = nil
 local current_img_instance = nil
+local selected_quote = ""
 
 local function center_left(text)
   local width = vim.fn.strdisplaywidth(text)
@@ -164,7 +170,7 @@ local function render_dashboard(buf)
     end
   end
 
-  local greeting_str = '就算是开玩笑也请不要这么说'
+  local greeting_str = selected_quote
   local greeting_left = center_left(greeting_str)
   if pos.greeting_line <= #lines then
     lines[pos.greeting_line] = string.rep(' ', greeting_left - 1) .. greeting_str
@@ -255,8 +261,8 @@ local function render_dashboard(buf)
   for _, hl in ipairs(highlights_to_apply) do
     pcall(vim.hl.range, buf, ns_id, hl.hl_group, { hl.line, hl.col_start }, { hl.line, hl.col_end })
   end
-  local has_image, image_api = pcall(require, 'image')
-  if has_image and selected_image_path then
+  local ok, image_api = pcall(require, 'image')
+  if ok and selected_image_path then
     vim.defer_fn(function()
       local win = vim.fn.bufwinid(buf)
       if win ~= -1 then
@@ -354,8 +360,11 @@ function M.show()
   -- 随机获取图片
   if #image_files > 0 then
     selected_image_path = image_files[math.random(#image_files)]
+    local filename = vim.fn.fnamemodify(selected_image_path, ":t")
+    selected_quote = image_quotes[filename] or image_quotes["__default__"]
   else
     selected_image_path = nil
+    selected_quote  = image_quotes["__default__"]
     vim.notify('Dashboard: No images found in lua/internal/util/images/', vim.log.levels.WARN)
   end
 
@@ -381,7 +390,7 @@ function M.show()
     end,
   })
 
-  vim.api.nvim_create_autocmd({ 'BufLeave', 'BufWipeout' }, {
+  vim.api.nvim_create_autocmd({ 'BufWinLeave', 'BufWipeout' }, {
     buffer = buf,
     group = group,
     callback = function()
