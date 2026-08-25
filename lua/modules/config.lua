@@ -193,4 +193,11 @@ config.noice = function()
   })
 end
 
+config.image = function ()
+  require('image').setup({
+    bakcend = 'kitty',
+    processor = 'magick_cli'
+  })
+end
+
 return config

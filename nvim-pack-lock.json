@@ -17,6 +17,10 @@
       "rev": "addb8d2f40662b8b62d60dd7d18f503beb2332e7",
       "src": "https://github.com/nvimdev/guard.nvim"
     },
+    "image.nvim": {
+      "rev": "5c6f29a5069e1f7bd5773ce5907454063b0f125d",
+      "src": "https://github.com/3rd/image.nvim"
+    },
     "indentmini.nvim": {
       "rev": "38572ce5a7a064a5deb89d6d861b7c40fc929ab1",
       "src": "https://github.com/nvimdev/indentmini.nvim"

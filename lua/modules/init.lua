@@ -70,6 +70,10 @@ local specs = {
       { 'rcarriga/nvim-notify' },
     },
   },
+  {
+    '3rd/image.nvim',
+    config = conf.image,
+  }
 }
 
 local function to_url(s)
