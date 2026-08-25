@@ -26,10 +26,13 @@ au('UIEnter', {
     startuptime()
     vim.schedule(function()
       -- colorscheme
-      vim.cmd.colorscheme('mariana')
+      vim.cmd.colorscheme('solarized')
 
       -- status ui
       require('internal.status')
+
+      -- Agenda
+      require('internal.agenda')
 
       -- dashboard
       require('internal.dashboard').show()

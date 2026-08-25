@@ -35,6 +35,7 @@ local config = {
       desc = 'Git Status',
       action = cmd('FzfLua git_status'),
     },
+    { key = 'm', desc = 'My Agenda', action = cmd('Agenda') },
     {
       key = 'u',
       desc = 'Pack Status',
@@ -217,7 +218,7 @@ local function render_dashboard(buf)
     })
   end
 
-  local plugins = vim.pack.get(nil,{info=false})
+  local plugins = vim.pack.get(nil, { info = false })
   local rtp_set = {}
   for _, path in ipairs(vim.opt.rtp:get()) do
     rtp_set[path] = true
@@ -229,8 +230,12 @@ local function render_dashboard(buf)
     end)
     :totable()
   local startup_time = vim.g.nvim_startup_time or '0'
-  local plugin_info_str =
-    string.format('Neovim loaded %d/%d plugins in %sms', #loaded_now or 0, #plugins or 0, startup_time)
+  local plugin_info_str = string.format(
+    'Neovim loaded %d/%d plugins in %sms',
+    #loaded_now or 0,
+    #plugins or 0,
+    startup_time
+  )
 
   local plugin_left = center_left(plugin_info_str)
 
