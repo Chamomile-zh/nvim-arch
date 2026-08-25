@@ -30,11 +30,11 @@ local config = {
       desc = 'Nvim Config',
       action = cmd('FzfLua files cwd=~/.config/nvim fd_opts=--type\\ f'),
     },
-    {
-      key = 'w',
-      desc = 'Git Status',
-      action = cmd('FzfLua git_status'),
-    },
+    -- {
+    --   key = 'w',
+    --   desc = 'Git Status',
+    --   action = cmd('FzfLua git_status'),
+    -- }, -- use lazygit instead
     { key = 'm', desc = 'My Agenda', action = cmd('Agenda') },
     { key = 'b', desc = 'Book Marks', action = cmd('lua require("internal.bookmark").show()') },
     {

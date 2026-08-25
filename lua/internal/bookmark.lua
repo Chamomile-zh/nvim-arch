@@ -92,6 +92,10 @@ function M.show()
     cb(nil)
   end
 
+  if not package.loaded['fzf-lua'] then
+    vim.cmd.packadd('fzf-lua')
+  end
+
   require('fzf-lua').fzf_exec(bookmark_provider, {
     prompt = '🔖 Bookmarks> ',
     previewer = 'builtin',

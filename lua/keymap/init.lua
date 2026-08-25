@@ -46,7 +46,7 @@ map.n({
   end, -- need to load the Fzflua
 
   -- bookmark
-  ['<leader>bm'] = function ()
+  ['<leader>m'] = function ()
     require('internal.bookmark').toggle()
   end,
 
