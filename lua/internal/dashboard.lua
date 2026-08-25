@@ -36,6 +36,7 @@ local config = {
       action = cmd('FzfLua git_status'),
     },
     { key = 'm', desc = 'My Agenda', action = cmd('Agenda') },
+    { key = 'b', desc = 'Bookmarks', action = cmd('lua require("internal.bookmark").show()') },
     {
       key = 'u',
       desc = 'Pack Status',

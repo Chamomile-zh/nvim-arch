@@ -45,6 +45,11 @@ map.n({
     vim.cmd('Noice fzf')
   end, -- need to load the Fzflua
 
+  -- bookmark
+  ['<leader>bm'] = function ()
+    require('internal.bookmark').toggle()
+  end,
+
   -- Shell
   ['<A-x>'] = cmd('Shell'),
 
