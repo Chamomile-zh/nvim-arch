@@ -10,6 +10,7 @@ local M = {}
 
 local state = {
   line_task_map = {},
+  line_date_map = {},
   tasks = {},
   restore_opts = {},
 }
@@ -202,7 +203,7 @@ local function build_week_view(tasks)
       day_kind = 'day'
     end
 
-    table.insert(rows, { kind = day_kind, text = day_text })
+    table.insert(rows, { kind = day_kind, text = day_text, date = day_str })
 
     -- Task entries for this day
     local entries = by_day[day_str] or {}
@@ -237,6 +238,7 @@ local function build_week_view(tasks)
         kind = 'task',
         text = line,
         task_id = task.id,
+        date = day_str,
         highlights = {
           { hl_group = 'AgendaTodoLabel', col_start = todo_start, col_end = todo_end },
           { hl_group = time_hl, col_start = time_start, col_end = time_end },
@@ -275,9 +277,14 @@ local function render_agenda(buf, tasks)
   local pad = string.rep(' ', margin)
 
   state.line_task_map[buf] = {}
+  state.line_date_map[buf] = {}
 
   for index, row in ipairs(rows) do
     lines[index] = row.text == '' and '' or (pad .. row.text)
+
+    if row.date then
+      state.line_date_map[buf][index] = row.date
+    end
 
     if row.kind == 'task' then
       state.line_task_map[buf][index] = row.task_id
@@ -504,8 +511,21 @@ local function setup_keymaps(buf)
   local opts = { buffer = buf }
 
   vim.keymap.set('n', 'n', function()
-    vim.ui.input({ prompt = 'New task: ' }, function(title)
-      M.add_task(title, nil, function()
+    -- 1. 获取光标当前的行号
+    local cursor_line = api.nvim_win_get_cursor(0)[1]
+
+    -- 2. 查表：看看光标这行属于哪一天。如果在表头/尾部查不到，默认 fallback 到今天
+    local target_date = state.line_date_map[buf] and state.line_date_map[buf][cursor_line]
+    if not target_date then
+      target_date = os.date('%Y-%m-%d')
+    end
+
+    vim.ui.input({ prompt = 'New task for ' .. target_date .. ': ' }, function(title)
+      if not title or title == '' then
+        return
+      end
+
+      M.add_task(title, { scheduled = target_date }, function()
         reload(buf)
       end)
     end)
