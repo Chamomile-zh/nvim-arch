@@ -213,18 +213,26 @@ au('TextYankPost', {
   end,
 })
 
+
+-- last place
+au('BufReadPost', {
+    group = group,
+    callback = function()
+      local pos = vim.fn.getpos('\'"')
+      if pos[2] > 0 and pos[2] <= vim.fn.line('$') then
+        pcall(vim.api.nvim_win_set_cursor, 0, { pos[2], pos[3] - 1 })
+      end
+    end,
+  })
+
+
 -- dont automatically comment for the next line
 au('BufEnter', {
-  group = group,
-  callback = function()
-    vim.cmd.setlocal('formatoptions-=cro')
-    -- last place
-    local pos = vim.fn.getpos('\'"')
-    if pos[2] > 0 and pos[2] <= vim.fn.line('$') then
-      vim.api.nvim_win_set_cursor(0, { pos[2], pos[3] - 1 })
-    end
-  end,
-})
+    group = group,
+    callback = function()
+      vim.cmd.setlocal('formatoptions-=cro')
+    end,
+  })
 
 au('BufWritePre', {
   pattern = '*',
