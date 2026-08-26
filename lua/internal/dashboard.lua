@@ -61,7 +61,9 @@ local config = {
 }
 
 local image_quotes = {
-  ['zdtr.png'] = "❤️ 就算是开玩笑也请不要这么说 ❤️",
+  ['Tomoyo.png'] = "❤️ 就算是开玩笑也请不要这么说 ❤️",
+  ['Tomoyo2.png'] = "如果离开了我的话，每天早上谁去叫你起床",
+  ['Tomoyo3.png'] = "能和我这样的女孩子交往，谢谢你",
   ['__default__'] = "Hello,Chamomile",
 }
 
@@ -390,7 +392,7 @@ function M.show()
     end,
   })
 
-  vim.api.nvim_create_autocmd({ 'BufWinLeave', 'BufWipeout' }, {
+  vim.api.nvim_create_autocmd({ 'BufLeave', 'BufWipeout' }, {
     buffer = buf,
     group = group,
     callback = function()
