@@ -1,4 +1,5 @@
 local opt = vim.opt
+opt.shortmess:append('I')
 opt.termguicolors = true
 opt.ttyfast = true
 opt.cursorline = true
