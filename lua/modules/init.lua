@@ -72,6 +72,7 @@ local specs = {
   },
   {
     '3rd/image.nvim',
+    ft = {'markdown','dashboard'},
     config = conf.image,
   }
 }
