@@ -46,7 +46,7 @@ map.n({
   end, -- need to load the Fzflua
 
   -- bookmark
-  ['<leader>m'] = function ()
+  ['<leader>m'] = function()
     require('internal.bookmark').toggle()
   end,
 
@@ -234,6 +234,56 @@ map.xo({
     require('nvim-treesitter-textobjects.select').select_textobject('@local.scope', 'locals')
   end,
 })
+
+-- remove comment
+map.x('<leader>rc', function()
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
+  vim.schedule(function()
+    local buf = vim.api.nvim_get_current_buf()
+    local sr = vim.fn.line("'<") - 1
+    local er = vim.fn.line("'>") - 1
+
+    local ok, parser = pcall(vim.treesitter.get_parser, buf)
+    if not ok or not parser then
+      print('not supported')
+      return
+    end
+    local tree = parser:parse()[1]
+    if not tree then
+      return
+    end
+    local root = tree:root()
+    local nodes_to_delete = {}
+    local function find_comments(node)
+      if not node then
+        return
+      end
+      local n_sr, n_sc, n_er, n_ec = node:range()
+      if n_sr > er or n_er < sr then
+        return
+      end
+      if node:type():lower():find('comment') then
+        if n_sr >= sr and n_er <= er then
+          table.insert(nodes_to_delete, { n_sr, n_sc, n_er, n_ec })
+        end
+        return
+      end
+      for child in node:iter_children() do
+        find_comments(child)
+      end
+    end
+    find_comments(root)
+    table.sort(nodes_to_delete, function(a, b)
+      if a[1] == b[1] then
+        return a[2] > b[2]
+      end
+      return a[1] > b[1]
+    end)
+    for _, range in ipairs(nodes_to_delete) do
+      pcall(vim.api.nvim_buf_set_text, buf, range[1], range[2], range[3], range[4], { '' })
+    end
+  end)
+end)
 
 -- gX: Web search
 map.n('gX', function()
