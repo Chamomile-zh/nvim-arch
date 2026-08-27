@@ -26,15 +26,18 @@ au('UIEnter', {
     startuptime()
     -- colorscheme
     vim.cmd.colorscheme('solarized')
-
-    -- dashboard
-    require('internal.dashboard').show()
     vim.schedule(function()
+      -- dashboard
+      require('internal.dashboard').show()
+
       -- Agenda
       require('internal.agenda')
 
       -- status ui
       require('internal.status')
+
+      -- rainbow-delimeters
+      require('internal.rainbow').setup()
 
       -- lsp
       require('internal.lsp')

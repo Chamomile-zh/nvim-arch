@@ -1,5 +1,3 @@
--- Sublime Text 4 default mariana theme (Refactored)
-
 -- Configuration options (可以写在你的 init.lua 中)
 -- vim.g.mariana_italic         = false
 -- vim.g.mariana_transparent    = true
@@ -361,6 +359,14 @@ local function setcolor()
     DiagnosticSignWarn = { fg = c.orange, bg = bg },
     DiagnosticSignInfo = { fg = c.blue, bg = bg },
     DiagnosticSignHint = { fg = c.blue5, bg = bg },
+
+    -- Rainbow delimeters
+    RainbowBracket1 = { fg = c.pink, bold = true },
+    RainbowBracket2 = { fg = c.blue, bold = true },
+    RainbowBracket3 = { fg = c.blue5, bold = true },
+    RainbowBracket4 = { fg = c.green, bold = true },
+    RainbowBracket5 = { fg = c.orange, bold = true },
+    RainbowBracket6 = { fg = c.red, bold = true },
 
     -- ─── Plugins ─────────────────────────────────────────────────────────
     -- Diff / Gitsigns

@@ -367,6 +367,14 @@ local function setcolor()
     DiagnosticUnderlineInfo = { undercurl = true, sp = c.blue },
     DiagnosticUnderlineHint = { undercurl = true, sp = c.cyan },
 
+    -- Rainbow delimiters
+    RainbowBracket1 = { fg = c.magenta, bold = true },
+    RainbowBracket2 = { fg = c.blue, bold = true },
+    RainbowBracket3 = { fg = c.cyan, bold = true },
+    RainbowBracket4 = { fg = c.green, bold = true },
+    RainbowBracket5 = { fg = c.yellow, bold = true },
+    RainbowBracket6 = { fg = c.orange, bold = true },
+
     YankHighlight = { fg = c.bg, bg = c.fg },
 
     -- Statusline Diagnostics

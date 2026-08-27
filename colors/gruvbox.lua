@@ -118,7 +118,7 @@ local function setcolor()
     SpellLocal = { undercurl = true, sp = colors.aqua },
     SpellRare = { undercurl = true, sp = colors.purple },
     Whitespace = { fg = colors.bg2 },
-    Delimiter = { fg = colors.orange },
+    -- Delimiter = { fg = colors.orange },
     -- SnippetTabstop = { link = 'Normal' },
     -- SnippetTabstop = { underline = true },
     -- SnippetTabstopActive = { underline = true },
@@ -152,6 +152,15 @@ local function setcolor()
     LspReferenceWrite = { fg = colors.orange, bold = true },
     LspCodeLens = { fg = colors.gray },
     LspSignatureActiveParameter = { link = 'Search' },
+
+    -- Rainbow delimiters
+    RainbowBracket1 = { fg = colors.purple, bold = true },
+    RainbowBracket2 = { fg = colors.dblue, bold = true },
+    RainbowBracket3 = { fg = colors.aqua, bold = true },
+    RainbowBracket4 = { fg = colors.green, bold = true },
+    RainbowBracket5 = { fg = colors.yellow, bold = true },
+    RainbowBracket6 = { fg = colors.orange, bold = true },
+
     -- gitcommit
     gitcommitSelectedFile = { fg = colors.green },
     gitcommitDiscardedFile = { fg = colors.red },
