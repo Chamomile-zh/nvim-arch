@@ -17,7 +17,6 @@ function M.setup()
       vim.api.nvim_set_hl(0, 'RainbowBracket' .. i, { link = target, default = true })
     end
     vim.api.nvim_set_hl(0, 'DIY_RainbowMatch', {
-      bold = true,
       -- reverse = true,
       underline = true,
     })
@@ -157,7 +156,7 @@ function M.setup()
     end
     timers[buf] = vim.uv.new_timer()
     timers[buf]:start(
-      100,
+      50,
       0,
       vim.schedule_wrap(function()
         timers[buf] = nil

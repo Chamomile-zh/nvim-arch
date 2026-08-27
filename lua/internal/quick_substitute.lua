@@ -113,8 +113,8 @@ local function quick_substitute()
     end
 
     vim.cmd(cmd_opt)
-    vim.cmd('normal! v')
     vim.cmd('noh')
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
   end
 end
 

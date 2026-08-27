@@ -118,7 +118,7 @@ local function setcolor()
     SpellLocal = { undercurl = true, sp = colors.aqua },
     SpellRare = { undercurl = true, sp = colors.purple },
     Whitespace = { fg = colors.bg2 },
-    -- Delimiter = { fg = colors.orange },
+    Delimiter = { fg = colors.orange },
     -- SnippetTabstop = { link = 'Normal' },
     -- SnippetTabstop = { underline = true },
     -- SnippetTabstopActive = { underline = true },

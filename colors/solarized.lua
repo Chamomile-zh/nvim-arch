@@ -176,11 +176,34 @@ local function setcolor()
     LspSagaWinbarSep = { fg = c.cyan }, -- 分隔符颜色（比如 > ）
     LspSagaWinbarFile = { fg = c.fg_emphasis }, -- 文件名
     LspSagaWinbarFolder = { fg = c.blue }, -- 文件夹
+    LspSagaCodeActionBorder = { fg = c.fg_comment },
+    LspSagaLspFinderBorder = { fg = c.fg_comment },
+    LspSagaDefPreviewBorder = { fg = c.blue },
+    LspSagaHoverBorder = { fg = c.orange },
+    LspSagaRenameBorder = { fg = c.blue },
+    LspSagaDiagnosticBorder = { fg = c.magenta },
+    LspSagaDiagnosticSource = { fg = c.orange },
+    LspSagaDiagnosticHeader = { fg = c.green },
+    LspSagaSignatureHelpBorder = { fg = c.green },
 
     -- Float & Borders
     NormalFloat = { bg = c.base02 },
     FloatBorder = { fg = blend(c.fg_comment, 0.40), bg = c.bg },
     Title = { fg = c.yellow, bold = true },
+    FloatWin = { fg = c.fg },
+    CursorColumn = { link = 'CursorLine' },
+    CursorWord = { underline = true },
+    VisualNOS = { link = 'Visual' },
+    Conceal = { fg = c.blue },
+    SpecialKey = { fg = c.fg_comment },
+    MoreMsg = { fg = c.yellow, bold = true },
+    SignColumn = { bg = c.bg },
+    Folded = { fg = c.fg_comment, bg = c.cursorline_bg, italic = true },
+    FoldColumn = { fg = c.fg_comment, bg = c.bg },
+    vCursor = { link = 'Cursor' },
+    iCursor = { link = 'Cursor' },
+    lCursor = { link = 'Cursor' },
+    Done = { fg = c.orange, bold = true, italic = true },
 
     -- Messages & Misc
     ErrorMsg = { fg = c.red, bold = true },
@@ -370,10 +393,10 @@ local function setcolor()
     -- Rainbow delimiters
     RainbowBracket1 = { fg = c.magenta },
     RainbowBracket2 = { fg = c.blue },
-    RainbowBracket3 = { fg = c.cyan },
-    RainbowBracket4 = { fg = c.green },
-    RainbowBracket5 = { fg = c.yellow },
-    RainbowBracket6 = { fg = c.orange },
+    RainbowBracket3 = { fg = c.green },
+    RainbowBracket4 = { fg = c.yellow },
+    RainbowBracket5 = { fg = c.orange },
+    RainbowBracket6 = { fg = c.violet },
 
     YankHighlight = { fg = c.bg, bg = c.fg },
 
