@@ -361,12 +361,12 @@ local function setcolor()
     DiagnosticSignHint = { fg = c.blue5, bg = bg },
 
     -- Rainbow delimeters
-    RainbowBracket1 = { fg = c.pink, bold = true },
-    RainbowBracket2 = { fg = c.blue, bold = true },
-    RainbowBracket3 = { fg = c.blue5, bold = true },
-    RainbowBracket4 = { fg = c.green, bold = true },
-    RainbowBracket5 = { fg = c.orange, bold = true },
-    RainbowBracket6 = { fg = c.red, bold = true },
+    RainbowBracket1 = { fg = c.pink },
+    RainbowBracket2 = { fg = c.blue },
+    RainbowBracket3 = { fg = c.blue5 },
+    RainbowBracket4 = { fg = c.green },
+    RainbowBracket5 = { fg = c.orange },
+    RainbowBracket6 = { fg = c.red },
 
     -- ─── Plugins ─────────────────────────────────────────────────────────
     -- Diff / Gitsigns

@@ -368,12 +368,12 @@ local function setcolor()
     DiagnosticUnderlineHint = { undercurl = true, sp = c.cyan },
 
     -- Rainbow delimiters
-    RainbowBracket1 = { fg = c.magenta, bold = true },
-    RainbowBracket2 = { fg = c.blue, bold = true },
-    RainbowBracket3 = { fg = c.cyan, bold = true },
-    RainbowBracket4 = { fg = c.green, bold = true },
-    RainbowBracket5 = { fg = c.yellow, bold = true },
-    RainbowBracket6 = { fg = c.orange, bold = true },
+    RainbowBracket1 = { fg = c.magenta },
+    RainbowBracket2 = { fg = c.blue },
+    RainbowBracket3 = { fg = c.cyan },
+    RainbowBracket4 = { fg = c.green },
+    RainbowBracket5 = { fg = c.yellow },
+    RainbowBracket6 = { fg = c.orange },
 
     YankHighlight = { fg = c.bg, bg = c.fg },
 

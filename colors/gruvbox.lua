@@ -154,12 +154,12 @@ local function setcolor()
     LspSignatureActiveParameter = { link = 'Search' },
 
     -- Rainbow delimiters
-    RainbowBracket1 = { fg = colors.purple, bold = true },
-    RainbowBracket2 = { fg = colors.dblue, bold = true },
-    RainbowBracket3 = { fg = colors.aqua, bold = true },
-    RainbowBracket4 = { fg = colors.green, bold = true },
-    RainbowBracket5 = { fg = colors.yellow, bold = true },
-    RainbowBracket6 = { fg = colors.orange, bold = true },
+    RainbowBracket1 = { fg = colors.purple },
+    RainbowBracket2 = { fg = colors.dblue },
+    RainbowBracket3 = { fg = colors.aqua },
+    RainbowBracket4 = { fg = colors.green },
+    RainbowBracket5 = { fg = colors.yellow },
+    RainbowBracket6 = { fg = colors.orange },
 
     -- gitcommit
     gitcommitSelectedFile = { fg = colors.green },

@@ -1,5 +1,7 @@
 local M = {}
 
+local global_bracket_maps = {}
+
 function M.setup()
   local hl_targets = {
     'Keyword',
@@ -16,8 +18,8 @@ function M.setup()
     end
     vim.api.nvim_set_hl(0, 'DIY_RainbowMatch', {
       bold = true,
+      -- reverse = true,
       underline = true,
-      reverse = true,
     })
   end
 
@@ -39,88 +41,28 @@ function M.setup()
     end
     vim.api.nvim_buf_clear_namespace(buf, match_ns, 0, -1)
 
-    local brackets = vim.b[buf].diy_brackets
-    if not brackets or #brackets == 0 then
+    local map = global_bracket_maps[buf]
+    if not map then
       return
     end
 
     local win = vim.api.nvim_get_current_win()
     local cursor = vim.api.nvim_win_get_cursor(win)
     local r, c = cursor[1] - 1, cursor[2]
-    local mode = vim.fn.mode():sub(1, 1)
 
-    local check_cols = mode == 'i' and { c, c - 1 } or { c }
-    local current_idx = nil
-
-    for _, col in ipairs(check_cols) do
-      if col < 0 then
-        goto continue
-      end
-      local left, right = 1, #brackets
-      while left <= right do
-        local mid = math.floor((left + right) / 2)
-        local b = brackets[mid]
-        if b.r == r and b.c == col then
-          current_idx = mid
-          break
-        elseif b.r < r or (b.r == r and b.c < col) then
-          left = mid + 1
-        else
-          right = mid - 1
-        end
-      end
-      if current_idx then
-        break
-      end
-      ::continue::
-    end
-
-    if not current_idx then
+    if not map[r] then
       return
     end
 
-    local cur_b = brackets[current_idx]
-    local target_char = pairs[cur_b.char]
-    local match_b = nil
-    local depth = 1
-
-    if opening[cur_b.char] then
-      for i = current_idx + 1, #brackets do
-        if brackets[i].char == cur_b.char then
-          depth = depth + 1
-        elseif brackets[i].char == target_char then
-          depth = depth - 1
-          if depth == 0 then
-            match_b = brackets[i]
-            break
-          end
-        end
-      end
-    else
-      for i = current_idx - 1, 1, -1 do
-        if brackets[i].char == cur_b.char then
-          depth = depth + 1
-        elseif brackets[i].char == target_char then
-          depth = depth - 1
-          if depth == 0 then
-            match_b = brackets[i]
-            break
-          end
-        end
-      end
+    local cur_b = map[r][c]
+    if not cur_b then
+      return
     end
 
-    if match_b then
-      local hl_group = 'DIY_RainbowMatch'
-      -- 不修改当前的光标位置,就注释掉这里
-      pcall(vim.api.nvim_buf_set_extmark, buf, match_ns, cur_b.r, cur_b.c, {
-        end_col = cur_b.c + 1,
-        hl_group = hl_group,
-        priority = 120,
-      })
-      pcall(vim.api.nvim_buf_set_extmark, buf, match_ns, match_b.r, match_b.c, {
-        end_col = match_b.c + 1,
-        hl_group = hl_group,
+    if cur_b.match_r and cur_b.match_c then
+      pcall(vim.api.nvim_buf_set_extmark, buf, match_ns, cur_b.match_r, cur_b.match_c, {
+        end_col = cur_b.match_c + 1,
+        hl_group = 'DIY_RainbowMatch',
         priority = 120,
       })
     end
@@ -150,24 +92,34 @@ function M.setup()
     vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
 
     local depth = 0
-    local brackets_cache = {}
+
+    local map_cache = {}
+
+    local stack = {}
 
     for id, node in query:iter_captures(root, buf, 0, -1) do
       local text = vim.treesitter.get_node_text(node, buf)
       local sr, sc, er, ec = node:range()
 
-      table.insert(brackets_cache, { r = sr, c = sc, char = text })
+      map_cache[sr] = map_cache[sr] or {}
 
-      if text and opening[text] then
+      local b_info = { char = text }
+      map_cache[sr][sc] = b_info
+
+      if opening[text] then
         depth = depth + 1
         local color_idx = (depth - 1) % #hl_targets + 1
+        b_info.color_idx = color_idx
+
+        table.insert(stack, { r = sr, c = sc, char = text })
+
         pcall(vim.api.nvim_buf_set_extmark, buf, ns, sr, sc, {
           end_row = er,
           end_col = ec,
           hl_group = 'RainbowBracket' .. color_idx,
           priority = 110,
         })
-      elseif text and pairs[text] then
+      elseif pairs[text] then
         local color_idx = (depth - 1) % #hl_targets + 1
         pcall(vim.api.nvim_buf_set_extmark, buf, ns, sr, sc, {
           end_row = er,
@@ -176,10 +128,21 @@ function M.setup()
           priority = 110,
         })
         depth = math.max(0, depth - 1)
+
+        for i = #stack, 1, -1 do
+          if stack[i].char == pairs[text] then
+            local match = table.remove(stack, i)
+            b_info.match_r = match.r
+            b_info.match_c = match.c
+            map_cache[match.r][match.c].match_r = sr
+            map_cache[match.r][match.c].match_c = sc
+            break
+          end
+        end
       end
     end
 
-    vim.b[buf].diy_brackets = brackets_cache
+    global_bracket_maps[buf] = map_cache
     update_match(buf)
   end
 
@@ -236,6 +199,13 @@ function M.setup()
       schedule_update(buf)
     end
   end
+
+  vim.api.nvim_create_autocmd('BufWipeout', {
+    group = augroup,
+    callback = function(args)
+      global_bracket_maps[args.buf] = nil
+    end,
+  })
 end
 
 return M

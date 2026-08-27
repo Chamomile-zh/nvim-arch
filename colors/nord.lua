@@ -140,12 +140,12 @@ local function setcolor()
     LspSignatureActiveParameter = { fg = colors.nord13, bold = true },
 
     -- Rainbow delimiters
-    RainbowBracket1 = { fg = colors.nord9, bold = true },
-    RainbowBracket2 = { fg = colors.nord8, bold = true },
-    RainbowBracket3 = { fg = colors.nord7, bold = true },
-    RainbowBracket4 = { fg = colors.nord14, bold = true },
-    RainbowBracket5 = { fg = colors.nord13, bold = true },
-    RainbowBracket6 = { fg = colors.nord15, bold = true },
+    RainbowBracket1 = { fg = colors.nord9 },
+    RainbowBracket2 = { fg = colors.nord8 },
+    RainbowBracket3 = { fg = colors.nord7 },
+    RainbowBracket4 = { fg = colors.nord14 },
+    RainbowBracket5 = { fg = colors.nord13 },
+    RainbowBracket6 = { fg = colors.nord15 },
 
     -- gitcommit
     gitcommitSelectedFile = { fg = colors.nord14 },

@@ -236,12 +236,12 @@ local function setcolor()
     DiagnosticHINT = { fg = c.sl_diag_hint },
 
     -- Rainbow delimiters
-    RainbowBracket1 = { fg = c.magenta, bold = true },
-    RainbowBracket2 = { fg = c.cyan, bold = true },
-    RainbowBracket3 = { fg = c.yellow, bold = true },
-    RainbowBracket4 = { fg = c.green, bold = true },
-    RainbowBracket5 = { fg = c.orange, bold = true },
-    RainbowBracket6 = { fg = c.blue, bold = true },
+    RainbowBracket1 = { fg = c.magenta },
+    RainbowBracket2 = { fg = c.cyan },
+    RainbowBracket3 = { fg = c.yellow },
+    RainbowBracket4 = { fg = c.green },
+    RainbowBracket5 = { fg = c.orange },
+    RainbowBracket6 = { fg = c.blue },
 
     -- Plugins Support
     LspReferenceText = { bg = c.selection_bg },
