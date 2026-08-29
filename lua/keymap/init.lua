@@ -90,6 +90,9 @@ map.n({
   ['<leader>ra'] = function()
     require('internal.yazi').yazi('edit')
   end,
+  ['<leader>lg'] = function ()
+    require('internal.lazygit').lazygit()
+  end,
   -- wiki
   ['<leader>ww'] = function()
     require('internal.wiki').open_wiki()

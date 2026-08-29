@@ -72,9 +72,9 @@ local specs = {
   },
   {
     '3rd/image.nvim',
-    ft = {'markdown','dashboard'},
+    ft = { 'markdown', 'dashboard' },
     config = conf.image,
-  }
+  },
 }
 
 local function to_url(s)
@@ -141,7 +141,7 @@ local function run_build(build, pkg_name)
   end
 end
 
-local function load(pkg_name, events, cmd,ft, config)
+local function load(pkg_name, events, cmd, ft, config)
   if not events and not cmd and not ft then -- directly load without events and cmd and ft
     return false
   end
@@ -191,14 +191,20 @@ local function load(pkg_name, events, cmd,ft, config)
       end
     end
     if cmd then
-      api.nvim_create_user_command(cmd, function(data)
-        api.nvim_del_user_command(cmd)
-        vim.cmd.packadd(pkg_name)
-        if config then
-          config()
-        end
-        vim.cmd(('%s %s'):format(cmd, data.args))
-      end, { nargs = '?' })
+      if type(cmd) == 'string' then
+        cmd = { cmd }
+      end
+      for _, c in ipairs(cmd) do
+        api.nvim_create_user_command(c, function(data)
+          api.nvim_del_user_command(c)
+          vim.cmd.packadd(pkg_name)
+          if config then
+            config()
+          end
+          local bang = data.bang and '!' or ''
+          vim.cmd(('%s%s %s'):format(c, bang, data.args))
+        end, { nargs = '*', bang = true })
+      end
     end
 
     if ft then
@@ -217,7 +223,6 @@ local function load(pkg_name, events, cmd,ft, config)
         end,
       })
     end
-
   end
 end
 
@@ -244,7 +249,7 @@ local function packadd(info)
     pkg_url,
     vim.tbl_extend(
       'keep',
-      { load = load(pkg_name, info.events, info.cmd, info.ft, info.config) } or {},
+      { load = load(pkg_name, info.events, info.cmd, info.ft, info.config) },
       { confirm = false }
     )
   )
