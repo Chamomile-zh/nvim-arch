@@ -25,7 +25,7 @@ au('UIEnter', {
   callback = function()
     startuptime()
     -- colorscheme
-    vim.cmd.colorscheme('tokyonight')
+    vim.cmd.colorscheme('solarized')
     vim.schedule(function()
       -- dashboard
       require('internal.dashboard').show()
