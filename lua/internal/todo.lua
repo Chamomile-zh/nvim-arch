@@ -3,12 +3,9 @@ local api = vim.api
 local uv = vim.uv or vim.loop
 local ffi = require('ffi')
 
-pcall(
-  ffi.cdef,
-  [[
+ffi.cdef([[
   char *strstr(const char *haystack, const char *needle);
-]]
-)
+]])
 
 local config = {
   TODO = { bg = '#E5C07B', fg = '#282C34', icon = ' ' },
@@ -16,7 +13,7 @@ local config = {
   NOTE = { bg = '#98C379', fg = '#282C34', icon = ' ' },
 }
 
-local ns = api.nvim_create_namespace('DIY_Todo_FFI')
+local ns = api.nvim_create_namespace('DIY_Todo')
 local timers = {}
 
 local function setup_highlights()
@@ -76,6 +73,8 @@ local function update_todos(buf)
               hl_group = 'DIYTodo_' .. kw,
               sign_text = opts.icon,
               sign_hl_group = 'DIYTodoSign_' .. kw,
+              virt_text = { { opts.icon, 'DIYTodoSign_' .. kw } },
+              virt_text_pos = 'inline',
               priority = 110,
             })
           end
@@ -85,27 +84,6 @@ local function update_todos(buf)
       end
     end
   end
-end
-
-local function schedule_update(buf)
-  if not api.nvim_buf_is_valid(buf) or vim.bo[buf].buftype ~= '' then
-    return
-  end
-  if timers[buf] then
-    timers[buf]:stop()
-    timers[buf]:close()
-  end
-  timers[buf] = uv.new_timer()
-  timers[buf]:start(
-    200,
-    0,
-    vim.schedule_wrap(function()
-      if timers[buf] then
-        timers[buf] = nil
-        update_todos(buf)
-      end
-    end)
-  )
 end
 
 local function async_update(buf)
@@ -146,7 +124,7 @@ end
 
 function M.setup()
   setup_highlights()
-  local group = api.nvim_create_augroup('DIY_Todo_FFI_Group', { clear = true })
+  local group = api.nvim_create_augroup('DIY_Todo_Group', { clear = true })
 
   api.nvim_create_autocmd('ColorScheme', { group = group, callback = setup_highlights })
 
