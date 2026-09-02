@@ -2,6 +2,7 @@ local au = vim.api.nvim_create_autocmd
 local uc = vim.api.nvim_create_user_command
 local group = vim.api.nvim_create_augroup('Chamomile.events', {})
 
+-- TODO
 ------------ auto commands ------------
 
 -- initialization
@@ -36,8 +37,6 @@ au('UIEnter', {
       -- status ui
       require('internal.status')
 
-      -- rainbow-delimeters
-      require('internal.rainbow').setup()
 
       -- lsp
       require('internal.lsp')
@@ -47,9 +46,6 @@ au('UIEnter', {
 
       -- keymap
       require('keymap')
-
-      -- cursor word
-      require('internal.cursor_word')
 
       require('internal.template').setup()
 
@@ -70,6 +66,19 @@ au('UIEnter', {
     end)
   end,
   desc = 'Initializer',
+})
+
+-- TODO
+-- text objects
+au('BufReadPost', {
+  group = group,
+  once = true,
+  callback = function()
+    require('internal.rainbow').setup()
+    require('internal.cursor_word')
+    require('internal.todo').setup()
+  end,
+  desc = 'Visual Enhancements Initializer',
 })
 
 -- im_switch

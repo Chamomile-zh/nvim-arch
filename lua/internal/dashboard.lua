@@ -36,8 +36,20 @@ local config = {
       desc = 'Nvim Config',
       action = cmd('FzfLua files cwd=~/.config/nvim fd_opts=--type\\ f'),
     },
-    { key = 'm', desc = 'My Agenda', action = cmd('Agenda') },
-    { key = 'b', desc = 'Book Marks', action = cmd('lua require("internal.bookmark").show()') },
+    {
+      key = 'b',
+      desc = 'Book Marks',
+      pre_action = function()
+        if require('internal.bookmark').is_empty() then
+          vim.notify('No bookmarks found.', vim.log.levels.WARN, { title = 'Bookmark' })
+          return false
+        end
+        return true
+      end,
+      action = function()
+        require('internal.bookmark').show()
+      end,
+    },
     { key = 'u', desc = 'Pack Status', action = cmd('PackStatus') },
     { key = 'q', desc = 'Quit', action = cmd('qa') },
   },
@@ -290,6 +302,11 @@ local function setup_keymaps(buf)
   local opts = { noremap = true, silent = true, buffer = buf }
   for _, shortcut in ipairs(config.shortcuts) do
     vim.keymap.set('n', shortcut.key, function()
+      if type(shortcut.pre_action) == 'function' then
+        if shortcut.pre_action() == false then
+          return
+        end
+      end
       -- 防止在执行fzflua的相关操作的时候图片仍在显示
       if current_img_instance then
         current_img_instance:clear()

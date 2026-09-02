@@ -28,6 +28,11 @@ local function save_bookmarks(data)
   end
 end
 
+function M.is_empty()
+  local bookmarks = load_bookmarks()
+  return #bookmarks == 0
+end
+
 -- 添加/取消书签
 function M.toggle()
   local file = api.nvim_buf_get_name(0)
@@ -72,12 +77,6 @@ end
 
 -- 使用 Fzf-Lua 展示书签
 function M.show()
-  local bookmarks = load_bookmarks()
-
-  if #bookmarks == 0 then
-    vim.notify('No bookmarks found.', vim.log.levels.WARN, { title = 'Bookmark' })
-    return
-  end
 
   -- 不传静态数组，而是传一个动态回调生成器
   local function bookmark_provider(cb)

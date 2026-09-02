@@ -52,7 +52,7 @@ local specs = {
 
   {
     'lewis6991/gitsigns.nvim',
-    events = { 'LspAttach', 'BufReadPre', 'User DashboardLoaded' },
+    events = { 'LspAttach', 'BufReadPost', 'User DashboardLoaded' },
     config = conf.gitsigens,
   },
 
