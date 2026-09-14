@@ -85,7 +85,7 @@ local function setcolor()
     WinSeparator = { fg = c.bg_highlight, bg = c.bg },
 
     -- Visual & Search
-    Visual = { bg = c.selection_bg },
+    Visual = { reverse = true },
     Search = { fg = c.bg, bg = c.cyan },
     IncSearch = { fg = c.bg, bg = c.orange },
 

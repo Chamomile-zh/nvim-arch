@@ -36,6 +36,11 @@ local config = {
       desc = 'Nvim Config',
       action = cmd('FzfLua files cwd=~/.config/nvim fd_opts=--type\\ f'),
     },
+    {
+      key = 'm',
+      desc = 'My Agenda',
+      action = cmd('Agenda')
+    },
     { key = 'u', desc = 'Pack Status', action = cmd('PackStatus') },
     { key = 'q', desc = 'Quit', action = cmd('qa') },
   },

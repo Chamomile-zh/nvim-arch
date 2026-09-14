@@ -121,7 +121,7 @@ local function setcolor()
     WinSeparator = { fg = c.bg_highlight, bg = c.bg },
 
     -- Visual & Search
-    Visual = { bg = c.selection_bg },
+    Visual = { reverse = true },
     Search = { fg = c.bg, bg = c.yellow },
     IncSearch = { fg = c.bg, bg = c.orange },
 
@@ -417,7 +417,7 @@ local function setcolor()
     LspSignatureActiveParameter = { link = 'LspReferenceText' },
 
     IndentLine = { link = 'Comment' },
-    IndentLineCurrent = { fg = c.cyan },
+    IndentLineCurrent = { fg = c.cyan,bold=true },
 
     GitSignsAdd = { fg = c.green },
     GitSignsChange = { fg = c.orange },

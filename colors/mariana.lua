@@ -108,7 +108,7 @@ local function setcolor()
     EndOfBuffer = { fg = cfg.transparent and c.blue3 or bg },
     MatchParen = { fg = c.orange, underline = true },
 
-    Visual = { bg = c.blue2 },
+    Visual = { reverse = true },
     VisualNOS = { bg = c.blue2 },
     Search = { fg = c.grey, bg = c.orange3 },
     IncSearch = { fg = c.grey, bg = c.orange3, bold = true },

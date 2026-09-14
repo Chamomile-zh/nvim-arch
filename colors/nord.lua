@@ -42,7 +42,7 @@ local function setcolor()
     CursorLineNr = { fg = colors.nord4, bg = colors.nord1, bold = true },
     NonText = { fg = colors.nord2 },
     SpecialKey = { fg = colors.nord3 },
-    Visual = { bg = colors.nord2 },
+    Visual = { reverse = true },
     VisualNOS = { link = 'Visual' },
     Search = { fg = colors.nord0, bg = colors.nord8 },
     IncSearch = { fg = colors.nord0, bg = colors.nord13, bold = true },

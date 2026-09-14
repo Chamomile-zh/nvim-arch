@@ -24,7 +24,7 @@ au('UIEnter', {
   once = true,
   callback = function()
     startuptime()
-    -- colorscheme
+    -- colorscheme use this instead of use :colorscheme
     vim.cmd.colorscheme('solarized')
     vim.schedule(function()
       -- dashboard
