@@ -36,20 +36,6 @@ local config = {
       desc = 'Nvim Config',
       action = cmd('FzfLua files cwd=~/.config/nvim fd_opts=--type\\ f'),
     },
-    {
-      key = 'b',
-      desc = 'Book Marks',
-      pre_action = function()
-        if require('internal.bookmark').is_empty() then
-          vim.notify('No bookmarks found.', vim.log.levels.WARN, { title = 'Bookmark' })
-          return false
-        end
-        return true
-      end,
-      action = function()
-        require('internal.bookmark').show()
-      end,
-    },
     { key = 'u', desc = 'Pack Status', action = cmd('PackStatus') },
     { key = 'q', desc = 'Quit', action = cmd('qa') },
   },
