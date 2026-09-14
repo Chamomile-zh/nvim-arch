@@ -53,6 +53,14 @@ map.n({
   -- Shell
   ['<A-x>'] = cmd('Shell'),
 
+  --todo
+  ['<leader>td'] = function ()
+    require('internal.todo').fzf_todo(true)
+  end,
+
+  ['<leader>tD'] = function ()
+    require('internal.todo').fzf_todo(false)
+  end,
   -- lspsaga
   ['<leader>pd'] = cmd('Lspsaga peek_definition'),
   ['<leader>gp'] = cmd('Lspsaga goto_definition'),

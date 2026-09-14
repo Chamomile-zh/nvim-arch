@@ -122,6 +122,80 @@ local function sync_update(buf)
   update_todos(buf)
 end
 
+function M.fzf_todo(buffer_only)
+  local ok, fzf = pcall(require, 'fzf-lua')
+  if not ok then
+    vim.notify('fzf-lua is not installed!', vim.log.levels.WARN)
+    return
+  end
+
+  local keys = {}
+  for kw, _ in pairs(config) do
+    table.insert(keys, kw)
+  end
+
+  if buffer_only then
+    local results = {}
+    local buf = api.nvim_get_current_buf()
+    local buf_name = api.nvim_buf_get_name(buf)
+    if buf_name == '' then
+      buf_name = '[No Name]'
+    end
+
+    local lines = api.nvim_buf_get_lines(buf, 0, -1, false)
+
+    for i, line in ipairs(lines) do
+      if line ~= '' then
+        local c_line = ffi.cast('const char*', line)
+        for _, kw in ipairs(keys) do
+          local c_kw = ffi.cast('const char*', kw)
+          local current_ptr = c_line
+
+          while true do
+            local match_ptr = ffi.C.strstr(current_ptr, c_kw)
+            if match_ptr == nil then
+              break
+            end
+
+            local col = tonumber(match_ptr - c_line)
+
+            if is_in_comment(buf, i - 1, col) then
+              table.insert(
+                results,
+                string.format('%s:%d:%d:%s', vim.fn.fnamemodify(buf_name, ':.'), i, col + 1, line)
+              )
+            end
+
+            current_ptr = match_ptr + #kw
+          end
+        end
+      end
+    end
+
+    if #results == 0 then
+      vim.notify('No TODOs found in current buffer comments.', vim.log.levels.INFO)
+      return
+    end
+
+    fzf.fzf_exec(results, {
+      prompt = 'Buf Todos> ',
+      previewer = 'builtin',
+      winopts = { title = ' Current Buffer TODOs ', title_pos = 'center' },
+    })
+  else
+    local comment_tokens = '(?:#|//|--|/\\*|\\*|<!--|"|%|;)'
+
+    local search_pattern = comment_tokens .. '.*?\\b(' .. table.concat(keys, '|') .. ')\\b'
+
+    fzf.grep({
+      search = search_pattern,
+      no_esc = true, -- 防止 fzf-lua 转义我们的高级正则表达式
+      prompt = 'Project Todos> ',
+      winopts = { title = ' Workspace TODOs ', title_pos = 'center' },
+    })
+  end
+end
+
 function M.setup()
   setup_highlights()
   local group = api.nvim_create_augroup('DIY_Todo_Group', { clear = true })

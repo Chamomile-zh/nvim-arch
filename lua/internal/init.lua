@@ -71,7 +71,7 @@ au('UIEnter', {
 })
 
 -- remove margins,maybe have another better solution
-vim.api.nvim_create_autocmd({ "UIEnter", "ColorScheme" }, {
+au({ "UIEnter", "ColorScheme" }, {
   group = vim.api.nvim_create_augroup("SyncTerminalBg", { clear = true }),
   callback = function()
     vim.schedule(function()
@@ -84,7 +84,7 @@ vim.api.nvim_create_autocmd({ "UIEnter", "ColorScheme" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd("VimLeave", {
+au("VimLeave", {
   group = vim.api.nvim_create_augroup("RestoreTerminalBg", { clear = true }),
   callback = function()
     io.write("\27]111\7")
