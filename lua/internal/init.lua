@@ -70,6 +70,27 @@ au('UIEnter', {
   desc = 'Initializer',
 })
 
+-- remove margins,maybe have another better solution
+vim.api.nvim_create_autocmd({ "UIEnter", "ColorScheme" }, {
+  group = vim.api.nvim_create_augroup("SyncTerminalBg", { clear = true }),
+  callback = function()
+    vim.schedule(function()
+      local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
+      if normal.bg then
+        local bg_hex = string.format("#%06x", normal.bg)
+        io.write(string.format("\27]11;%s\7", bg_hex))
+      end
+    end)
+  end,
+})
+
+vim.api.nvim_create_autocmd("VimLeave", {
+  group = vim.api.nvim_create_augroup("RestoreTerminalBg", { clear = true }),
+  callback = function()
+    io.write("\27]111\7")
+  end,
+})
+
 -- im_switch
 au('InsertLeave', {
   group = group,
