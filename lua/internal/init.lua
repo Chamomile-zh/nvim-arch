@@ -25,7 +25,7 @@ au('UIEnter', {
   callback = function()
     startuptime()
     -- colorscheme
-    vim.cmd.colorscheme('tokyonight')
+    vim.cmd.colorscheme('solarized')
     vim.schedule(function()
       -- dashboard
       require('internal.dashboard').show()
@@ -36,9 +36,6 @@ au('UIEnter', {
       -- status ui
       require('internal.status')
 
-      -- rainbow-delimeters
-      require('internal.rainbow').setup()
-
       -- lsp
       require('internal.lsp')
 
@@ -48,10 +45,11 @@ au('UIEnter', {
       -- keymap
       require('keymap')
 
-      -- cursor word
-      require('internal.cursor_word')
-
       require('internal.template').setup()
+
+      require('internal.rainbow').setup()
+      require('internal.cursor_word')
+      require('internal.todo').setup()
 
       -- if vim.version().minor >= 12 then -- conflict with noice cmdline
       --   require('vim._core.ui2').enable({ msg = { target = 'cmd' } })
@@ -70,6 +68,27 @@ au('UIEnter', {
     end)
   end,
   desc = 'Initializer',
+})
+
+-- remove margins,maybe have another better solution
+au({ "UIEnter", "ColorScheme" }, {
+  group = vim.api.nvim_create_augroup("SyncTerminalBg", { clear = true }),
+  callback = function()
+    vim.schedule(function()
+      local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
+      if normal.bg then
+        local bg_hex = string.format("#%06x", normal.bg)
+        io.write(string.format("\27]11;%s\7", bg_hex))
+      end
+    end)
+  end,
+})
+
+au("VimLeave", {
+  group = vim.api.nvim_create_augroup("RestoreTerminalBg", { clear = true }),
+  callback = function()
+    io.write("\27]111\7")
+  end,
 })
 
 -- im_switch

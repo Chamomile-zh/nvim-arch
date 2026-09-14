@@ -36,8 +36,6 @@ local config = {
       desc = 'Nvim Config',
       action = cmd('FzfLua files cwd=~/.config/nvim fd_opts=--type\\ f'),
     },
-    { key = 'm', desc = 'My Agenda', action = cmd('Agenda') },
-    { key = 'b', desc = 'Book Marks', action = cmd('lua require("internal.bookmark").show()') },
     { key = 'u', desc = 'Pack Status', action = cmd('PackStatus') },
     { key = 'q', desc = 'Quit', action = cmd('qa') },
   },
@@ -61,16 +59,16 @@ local config = {
 }
 
 local image_quotes = {
-  ['Tomoyo.png'] = "❤️ 就算是开玩笑也请不要这么说 ❤️",
-  ['Tomoyo2.png'] = "如果离开了我的话，每天早上谁去叫你起床",
-  ['Tomoyo3.png'] = "能和我这样的女孩子交往，谢谢你",
-  ['__default__'] = "Hello,Chamomile",
+  ['Tomoyo.png'] = '❤️ 就算是开玩笑也请不要这么说 ❤️',
+  ['Tomoyo2.png'] = '如果离开了我的话，每天早上谁去叫你起床',
+  ['Tomoyo3.png'] = '能和我这样的女孩子交往，谢谢你',
+  ['__default__'] = 'Hello,Chamomile',
 }
 
 -- 状态管理
 local selected_image_path = nil
 local current_img_instance = nil
-local selected_quote = ""
+local selected_quote = ''
 
 local function center_left(text)
   local width = vim.fn.strdisplaywidth(text)
@@ -290,6 +288,11 @@ local function setup_keymaps(buf)
   local opts = { noremap = true, silent = true, buffer = buf }
   for _, shortcut in ipairs(config.shortcuts) do
     vim.keymap.set('n', shortcut.key, function()
+      if type(shortcut.pre_action) == 'function' then
+        if shortcut.pre_action() == false then
+          return
+        end
+      end
       -- 防止在执行fzflua的相关操作的时候图片仍在显示
       if current_img_instance then
         current_img_instance:clear()
@@ -308,6 +311,14 @@ local function setup_keymaps(buf)
       elseif type(action) == 'function' then
         action()
       end
+
+      vim.defer_fn(function()
+        if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_get_current_buf() == buf then
+          if not current_img_instance then
+            render_dashboard(buf)
+          end
+        end
+      end, 50)
     end, opts)
   end
   local quit_fn = function()
@@ -362,11 +373,11 @@ function M.show()
   -- 随机获取图片
   if #image_files > 0 then
     selected_image_path = image_files[math.random(#image_files)]
-    local filename = vim.fn.fnamemodify(selected_image_path, ":t")
-    selected_quote = image_quotes[filename] or image_quotes["__default__"]
+    local filename = vim.fn.fnamemodify(selected_image_path, ':t')
+    selected_quote = image_quotes[filename] or image_quotes['__default__']
   else
     selected_image_path = nil
-    selected_quote  = image_quotes["__default__"]
+    selected_quote = image_quotes['__default__']
     vim.notify('Dashboard: No images found in lua/internal/util/images/', vim.log.levels.WARN)
   end
 

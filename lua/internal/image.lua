@@ -15,7 +15,13 @@ end
 
 local function paste()
   -- 获取当前文件所在目录，并拼接 /img/
-  local path = vim.fn.expand('%:p:h') .. '/img/'
+  local filename = vim.fn.expand('%:t:r')
+  if filename == '' then
+    vim.notify("Please save the current buffer first", vim.log.levels.WARN)
+    return
+  end
+  local asset_dir_name = filename .. '_assets'
+  local path = vim.fn.expand('%:p:h') .. '/' .. asset_dir_name .. '/'
 
   -- 如果没有 img 文件夹，自动创建
   if vim.fn.isdirectory(path) == 0 then
