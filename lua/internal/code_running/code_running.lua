@@ -3,7 +3,6 @@ local command = require('internal.code_running.code_running_commands').get_comma
 local api, expand = vim.api, vim.fn.expand
 local infos = {}
 
-
 ---get running command and running modus by filetype
 ---@param args string
 ---@param extra_args string? 用户在 vim.ui.input 中输入的额外参数
@@ -35,6 +34,17 @@ local function get_commands(args, extra_args)
 
   opt.command =
     opt.command:gsub('$filename', filename):gsub('$runfile', runfile):gsub('$workspace', workspace)
+
+  if args == 'zig' then
+    local has_build_file = vim.fn.findfile('build.zig', '.;') ~= ''
+    if has_build_file then
+      opt.command = 'zig build run'
+      if extra_args and extra_args ~= '' then
+        opt.command = opt.command .. ' ' .. extra_args
+      end
+    end
+  end
+
 
   return opt
 end
@@ -77,10 +87,10 @@ local function running_window(opt, center)
   local chan_id = vim.b[infos.bufnr].terminal_job_id
 
   if chan_id then
-    local success,pid = pcall(vim.fn.jobpid, chan_id)
+    local success, pid = pcall(vim.fn.jobpid, chan_id)
     if success then
-      api.nvim_win_set_config(infos.winid,{
-        title = string.format(' Code Running: %d ', pid)
+      api.nvim_win_set_config(infos.winid, {
+        title = string.format(' Code Running: %d ', pid),
       })
     end
   end
@@ -121,7 +131,6 @@ local function split_by_last_space(str)
 
   return first_part, second_part
 end
-
 
 ---quick running code
 ---@param args string

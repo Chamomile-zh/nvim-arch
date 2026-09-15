@@ -385,7 +385,6 @@ local function get_filesize()
     size = size / 1024
     idx = idx + 1
   end
-  vim.api.nvim_buf_get_name(0)
   return ('%.1f%s'):format(size, size_unit[idx])
 end
 

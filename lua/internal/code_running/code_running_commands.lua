@@ -75,6 +75,12 @@ local commands = {
   ['typescript'] = {
     command = 'deno run "$filename"',
   },
+  ['zig'] = {
+    command = 'zig run $filename', -- for single file
+  },
+  ['zig_build'] = {
+    command = 'zig build',
+  },
 }
 
 function running_commands.get_commands()

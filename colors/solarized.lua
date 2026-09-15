@@ -406,6 +406,17 @@ local function setcolor()
     DiagnosticINFO = { fg = c.sl_diag_info },
     DiagnosticHINT = { fg = c.sl_diag_hint },
 
+    -- Statusline
+    StatusLineMode = { fg = c.fg },
+    StatusLineFileInfo = { fg = c.fg },
+    StatusLineReadOnly = { fg = c.red, bold = true },
+    StatusLineBranch = { fg = c.violet },
+    StatusLineLsp = { fg = c.fg_comment },
+    StatusLineFilesize = { fg = c.fg_comment },
+    StatusLineFileType = { fg = c.fg_comment },
+    StatusLineEncoding = { fg = c.fg_comment },
+    StatusLineLnum = { fg = c.fg },
+
     -- Plugins Support
     LspReferenceText = { bg = c.selection_bg },
     LspReferenceRead = { bg = c.selection_bg },
@@ -417,11 +428,14 @@ local function setcolor()
     LspSignatureActiveParameter = { link = 'LspReferenceText' },
 
     IndentLine = { link = 'Comment' },
-    IndentLineCurrent = { fg = c.cyan,bold=true },
+    IndentLineCurrent = { fg = c.cyan, bold = true },
 
     GitSignsAdd = { fg = c.green },
     GitSignsChange = { fg = c.orange },
     GitSignsDelete = { fg = c.red },
+
+    SnippetTabstop = {}, -- set to null to avoid the function snippet highlight error
+    SnippetTabstopActive = {},
 
     DashboardHeader = { fg = c.green },
     ModeLineFileName = { fg = c.bg_highlight, bold = true },

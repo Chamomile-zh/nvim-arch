@@ -73,11 +73,9 @@ local function new_term()
   })
 
   if job_id > 0 then
-    -- 使用 pcall 防止进程闪退导致的抓取失败
     local ok, pid = pcall(vim.fn.jobpid, job_id)
     if ok then
       infos.pid = pid
-      -- 瞬间重写窗口的 config 把标题换上去
       pcall(api.nvim_win_set_config, infos.winid, { title = get_title() })
     end
   end
@@ -102,7 +100,7 @@ local function toggle_term(opt)
       if infos.prev_win and api.nvim_win_is_valid(infos.prev_win) then
         api.nvim_set_current_win(infos.prev_win)
       else
-        vim.cmd('wincmd p') -- 兜底方案
+        vim.cmd('wincmd p')
       end
       vim.cmd('stopinsert') -- 退出终端的插入模式
     else
@@ -115,14 +113,11 @@ local function toggle_term(opt)
   end
   if opt == 'kill' then
     if infos.bufnr and api.nvim_buf_is_valid(infos.bufnr) then
-      -- 1. 如果窗口还在，先安全关闭窗口
       if infos.winid and api.nvim_win_is_valid(infos.winid) then
         pcall(api.nvim_win_close, infos.winid, true)
       end
-      -- 2. 强制删除终端 Buffer（这会立刻杀死底层进程）
       pcall(api.nvim_buf_delete, infos.bufnr, { force = true })
     end
-    -- 3. 彻底清空所有状态，下次打开就像刚启动一样
     infos.bufnr = nil
     infos.winid = nil
     infos.pid = nil

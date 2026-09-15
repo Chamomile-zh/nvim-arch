@@ -25,7 +25,7 @@ au('UIEnter', {
   callback = function()
     startuptime()
     -- colorscheme use this instead of use :colorscheme
-    vim.cmd.colorscheme('solarized')
+    vim.cmd.colorscheme('gruvbox')
     vim.schedule(function()
       -- dashboard
       require('internal.dashboard').show()
@@ -212,7 +212,6 @@ au('InsertEnter', {
   end,
 })
 
--- au('TermOpen', { group = group, command = 'startinsert' })
 -- open term then insert
 au('TermOpen', {
   group = group,

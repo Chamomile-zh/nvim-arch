@@ -2,11 +2,14 @@ local keys = {
   ['('] = { pair = '()' },
   ['['] = { pair = '[]' },
   ['{'] = { pair = '{}' },
-  -- ['<'] = { pair = '<>' },
 
-  ['"'] = { pair = '""' },
-  ["'"] = { pair = "''" },
-  ['`'] = { pair = '``' },
+  [')'] = { close = true },
+  [']'] = { close = true },
+  ['}'] = { close = true },
+
+  ['"'] = { pair = '""', close = true },
+  ["'"] = { pair = "''", close = true },
+  ['`'] = { pair = '``', close = true },
 
   ['<cr>'] = {},
   ['<bs>'] = {},
@@ -27,7 +30,7 @@ end
 ---@return boolean
 local function is_pair(pair)
   for _, val in pairs(keys) do
-    if pair == val.pair then
+    if val.pair and pair == val.pair then
       return true
     end
   end
@@ -41,11 +44,14 @@ end
 local function update_pairs(key, val)
   local mode = vim.fn.mode()
   local pair = get_pair(mode)
+  local next_char = pair:sub(2, 2)
 
   if key == '<cr>' and mode == 'i' and is_pair(pair) then
     return '<cr><c-o>O'
   elseif key == '<bs>' and is_pair(pair) then
     return '<bs><del>'
+  elseif val.close and next_char == key then
+    return '<Right>'
   elseif val.pair then
     return val.pair .. '<Left>'
   end

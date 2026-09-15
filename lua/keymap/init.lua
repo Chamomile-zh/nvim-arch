@@ -45,20 +45,16 @@ map.n({
     vim.cmd('Noice fzf')
   end, -- need to load the Fzflua
 
-  -- bookmark
-  ['<leader>m'] = function()
-    require('internal.bookmark').toggle()
-  end,
 
   -- Shell
   ['<A-x>'] = cmd('Shell'),
 
   --todo
-  ['<leader>td'] = function ()
+  ['<leader>td'] = function()
     require('internal.todo').fzf_todo(true)
   end,
 
-  ['<leader>tD'] = function ()
+  ['<leader>tD'] = function()
     require('internal.todo').fzf_todo(false)
   end,
   -- lspsaga
@@ -98,7 +94,7 @@ map.n({
   ['<leader>ra'] = function()
     require('internal.yazi').yazi('edit')
   end,
-  ['<leader>lg'] = function ()
+  ['<leader>lg'] = function()
     require('internal.lazygit').lazygit()
   end,
   -- wiki
@@ -127,23 +123,6 @@ map.n({
   --invert word
   ['<leader>iw'] = function()
     require('internal.invert_word').inver_word()
-  end,
-
-  -- jump
-  ['f'] = {
-    rhs = function()
-      local j = require('internal.jump')
-      if j.charForward then
-        j.charForward()
-      end
-    end,
-    desc = 'jump to the character with a letter',
-  },
-  ['F'] = function()
-    local j = require('internal.jump')
-    if j.charBackward then
-      j.charBackward()
-    end
   end,
 
   -- template
@@ -203,7 +182,7 @@ map.v({
   end,
 })
 
-map.nx({
+map.nxo({
   -- guard
   [';f'] = cmd('Guard fmt'),
   --  quick_substitute
@@ -213,6 +192,22 @@ map.nx({
   -- wildfire
   ['<cr>'] = function()
     require('internal.wildfire').wildfire()
+  end,
+  -- jump
+  ['f'] = {
+    rhs = function()
+      local j = require('internal.jump')
+      if j.charForward then
+        j.charForward()
+      end
+    end,
+    desc = 'jump to the character with a letter',
+  },
+  ['F'] = function()
+    local j = require('internal.jump')
+    if j.charBackward then
+      j.charBackward()
+    end
   end,
 })
 
