@@ -1,9 +1,5 @@
-local api, fn, ffi = vim.api, vim.fn, require('ffi')
-
-ffi.cdef([[
-  typedef int32_t linenr_T;
-  char *ml_get(linenr_T lnum);
-]])
+local api, fn = vim.api, vim.fn
+local buffer = require('internal.util.buffer')
 
 local function table_insert(tab, cell, num)
   for _ = 1, num do
@@ -17,7 +13,7 @@ local function add_char_inline(line, char, pos)
 end
 
 local function check_line_is_table(line_number)
-  local line = ffi.string(ffi.C.ml_get(line_number))
+  local line = buffer.get_current_line(line_number - 1)
   return string.match(line, '^|.*|$')
 end
 

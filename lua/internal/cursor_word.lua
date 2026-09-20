@@ -1,13 +1,7 @@
-local api, ffi, expand = vim.api, require('ffi'), vim.fn.expand
+local api, expand = vim.api, vim.fn.expand
+local buffer = require('internal.util.buffer')
 local ns = api.nvim_create_namespace('cursor_word')
 local infos = {}
-
--- 定义底层 C 函数接口
-ffi.cdef([[
-  typedef int32_t linenr_T;
-  char *ml_get(linenr_T lnum);
-]])
-local ml_get = ffi.C.ml_get
 
 --- 寻找特定单词的位置闭包
 ---@param str string
@@ -56,12 +50,10 @@ local function on_win(_, winid, bufnr)
   infos.cword = expand('<cword>')
 
   local cursor_pos = api.nvim_win_get_cursor(winid)
+  local current_line = buffer.get_current_line(cursor_pos[1] - 1)
   if
     not infos.cword:find('[%w%z\192-\255]')
-    or not ffi
-      .string(ml_get(cursor_pos[1]))
-      :sub(cursor_pos[2] + 1, cursor_pos[2] + 1)
-      :match('[%w_]')
+    or not current_line:sub(cursor_pos[2] + 1, cursor_pos[2] + 1):match('[%w_]')
   then
     infos.cword = nil
     return false
@@ -72,7 +64,7 @@ local function on_win(_, winid, bufnr)
 end
 
 local function on_line(_, _, bufnr, row)
-  for col in find_pos(ffi.string(ml_get(row + 1)), infos.cword) do
+  for col in find_pos(buffer.get_current_line(row), infos.cword) do
     api.nvim_buf_set_extmark(bufnr, ns, row, col, {
       end_col = col + infos.len,
       end_row = row,

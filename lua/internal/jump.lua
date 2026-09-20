@@ -1,13 +1,7 @@
--- High-performance in-memory fast jump based on LuaJIT FFI
+-- High-performance in-memory fast jump
 local M = {}
 local api, FORWARD, BACKWARD = vim.api, 1, -1
-
-local ffi = require('ffi')
-ffi.cdef([[
-  typedef int32_t linenr_T;
-  char *ml_get(linenr_T lnum);
-]])
-local ml_get = ffi.C.ml_get
+local buffer = require('internal.util.buffer')
 
 local state = {
   active = false,
@@ -35,16 +29,14 @@ end
 
 local function dim_buffer(first_line, last_line)
   for lnum = first_line, last_line do
-    local ptr = ml_get(lnum + 1)
-    if ptr ~= nil and tonumber(ffi.cast("intptr_t",ptr)) ~= 0 then
-      local len = #ffi.string(ptr)
-      if len > 0 then
-        api.nvim_buf_set_extmark(0, state.ns_id, lnum, 0, {
-          end_col = len,
-          hl_group = 'JumpMotionDim',
-          priority = 200,
-        })
-      end
+    local line = buffer.get_current_line(lnum)
+    local len = #line
+    if len > 0 then
+      api.nvim_buf_set_extmark(0, state.ns_id, lnum, 0, {
+        end_col = len,
+        hl_group = 'JumpMotionDim',
+        priority = 200,
+      })
     end
   end
 end
@@ -115,27 +107,24 @@ function M.char(direction)
     local step = (direction == FORWARD) and 1 or -1
 
     for lnum = start_l, end_l, step do
-      local ptr = ml_get(lnum + 1)
-      if ptr ~= nil and tonumber(ffi.cast("intptr_t",ptr)) ~= 0 then
-        local line_str = ffi.string(ptr)
-        local start_c = 1
+      local line_str = buffer.get_current_line(lnum)
+      local start_c = 1
 
-        -- 如果是光标所在行，正向跳过光标前，反向跳过光标后
-        if lnum == curow then
-          if direction == FORWARD then
-            start_c = curcol + 2
-          end
+      -- 如果是光标所在行，正向跳过光标前，反向跳过光标后
+      if lnum == curow then
+        if direction == FORWARD then
+          start_c = curcol + 2
         end
+      end
 
-        local col_idx = line_str:find(char, start_c, true)
-        while col_idx do
-          -- 反向搜索时光标同行的边界防护
-          if not (lnum == curow and direction == BACKWARD and (col_idx - 1) >= curcol) then
-            table.insert(targets, { row = lnum, col = col_idx - 1 })
-            if #targets >= state.max_targets then break end
-          end
-          col_idx = line_str:find(char, col_idx + 1, true)
+      local col_idx = line_str:find(char, start_c, true)
+      while col_idx do
+        -- 反向搜索时光标同行的边界防护
+        if not (lnum == curow and direction == BACKWARD and (col_idx - 1) >= curcol) then
+          table.insert(targets, { row = lnum, col = col_idx - 1 })
+          if #targets >= state.max_targets then break end
         end
+        col_idx = line_str:find(char, col_idx + 1, true)
       end
       if #targets >= state.max_targets then break end
     end

@@ -1,10 +1,5 @@
 local pos = {}
-local ffi = require('ffi')
-ffi.cdef([[
-  typedef int32_t linenr_T;
-  char *ml_get(linenr_T lnum);
-]])
-local ml_get = ffi.C.ml_get
+local buffer = require('internal.util.buffer')
 
 pos.surround_char = {
   { '(', ')' },
@@ -20,11 +15,7 @@ local function find_char(current_line, current_col, charn, num, pre)
   local queue, lens = 0, 0
   local end_line, range = pre and 1 or vim.fn.line('$'), pre and -1 or 1
   for l = current_line, end_line, range do
-    -- local line = vim.api.nvim_buf_get_lines(0, l - 1, l, true)[1]
-    local line_ptr = ml_get(l)
-    local line = (line_ptr ~= nil and tonumber(ffi.cast('intptr_t', line_ptr)) ~= 0)
-        and ffi.string(line_ptr)
-      or ''
+    local line = buffer.get_current_line(l - 1)
     local start_col = (l == current_line) and current_col or (pre and #line or 1)
     local end_col = pre and 1 or #line
     for c = start_col, end_col, range do

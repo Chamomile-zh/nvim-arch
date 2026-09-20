@@ -1,11 +1,6 @@
 local M = {}
 local api = vim.api
 local uv = vim.uv or vim.loop
-local ffi = require('ffi')
-
-ffi.cdef([[
-  char *strstr(const char *haystack, const char *needle);
-]])
 
 local config = {
   TODO = { bg = '#E5C07B', fg = '#282C34', icon = ' ' },
@@ -15,6 +10,20 @@ local config = {
 
 local ns = api.nvim_create_namespace('DIY_Todo')
 local timers = {}
+
+local function each_plain_match(line, needle, callback)
+  local start_pos = 1
+
+  while start_pos <= #line do
+    local found = line:find(needle, start_pos, true)
+    if not found then
+      return
+    end
+
+    callback(found - 1)
+    start_pos = found + #needle
+  end
+end
 
 local function setup_highlights()
   for kw, opts in pairs(config) do
@@ -51,21 +60,8 @@ local function update_todos(buf)
   for i, line in ipairs(lines) do
     -- 空行直接跳过
     if line ~= '' then
-      -- 转换为 C 的字符指针
-      local c_line = ffi.cast('const char*', line)
-
       for kw, opts in pairs(config) do
-        local c_kw = ffi.cast('const char*', kw)
-        local current_ptr = c_line
-
-        while true do
-          local match_ptr = ffi.C.strstr(current_ptr, c_kw)
-          if match_ptr == nil then
-            break
-          end
-
-          local col = tonumber(match_ptr - c_line)
-
+        each_plain_match(line, kw, function(col)
           if is_in_comment(buf, i - 1, col) then
             api.nvim_buf_set_extmark(buf, ns, i - 1, col, {
               end_row = i - 1,
@@ -78,9 +74,7 @@ local function update_todos(buf)
               priority = 110,
             })
           end
-
-          current_ptr = match_ptr + #kw
-        end
+        end)
       end
     end
   end
@@ -146,28 +140,15 @@ function M.fzf_todo(buffer_only)
 
     for i, line in ipairs(lines) do
       if line ~= '' then
-        local c_line = ffi.cast('const char*', line)
         for _, kw in ipairs(keys) do
-          local c_kw = ffi.cast('const char*', kw)
-          local current_ptr = c_line
-
-          while true do
-            local match_ptr = ffi.C.strstr(current_ptr, c_kw)
-            if match_ptr == nil then
-              break
-            end
-
-            local col = tonumber(match_ptr - c_line)
-
+          each_plain_match(line, kw, function(col)
             if is_in_comment(buf, i - 1, col) then
               table.insert(
                 results,
                 string.format('%s:%d:%d:%s', vim.fn.fnamemodify(buf_name, ':.'), i, col + 1, line)
               )
             end
-
-            current_ptr = match_ptr + #kw
-          end
+          end)
         end
       end
     end
