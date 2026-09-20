@@ -1,6 +1,7 @@
 local api = vim.api
 local conf = require('modules.config')
 local group = vim.api.nvim_create_augroup('Chamomile.plugin', {})
+local activated = {}
 
 local specs = {
 
@@ -141,6 +142,17 @@ local function run_build(build, pkg_name)
   end
 end
 
+local function activate(pkg_name, config)
+  if activated[pkg_name] then
+    return
+  end
+  activated[pkg_name] = true
+  vim.cmd.packadd(pkg_name)
+  if config then
+    config()
+  end
+end
+
 local function load(pkg_name, events, cmd, ft, config)
   if not events and not cmd and not ft then -- directly load without events and cmd and ft
     return false
@@ -182,10 +194,7 @@ local function load(pkg_name, events, cmd, ft, config)
           group = group,
           once = true,
           callback = function()
-            vim.cmd.packadd(pkg_name)
-            if config then
-              config()
-            end
+            activate(pkg_name, config)
           end,
         })
       end
@@ -197,10 +206,7 @@ local function load(pkg_name, events, cmd, ft, config)
       for _, c in ipairs(cmd) do
         api.nvim_create_user_command(c, function(data)
           api.nvim_del_user_command(c)
-          vim.cmd.packadd(pkg_name)
-          if config then
-            config()
-          end
+          activate(pkg_name, config)
           local bang = data.bang and '!' or ''
           vim.cmd(('%s%s %s'):format(c, bang, data.args))
         end, { nargs = '*', bang = true })
@@ -216,10 +222,7 @@ local function load(pkg_name, events, cmd, ft, config)
         group = group,
         once = true,
         callback = function()
-          vim.cmd.packadd(pkg_name)
-          if config then
-            config()
-          end
+          activate(pkg_name, config)
         end,
       })
     end

@@ -202,7 +202,7 @@ end
 
 config.image = function()
   require('image').setup({
-    bakcend = 'kitty',
+    backend = 'kitty',
     processor = 'magick_cli',
   })
 end

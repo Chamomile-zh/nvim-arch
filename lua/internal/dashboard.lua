@@ -39,7 +39,7 @@ local config = {
     {
       key = 'm',
       desc = 'My Agenda',
-      action = cmd('Agenda')
+      action = cmd('Agenda'),
     },
     { key = 'u', desc = 'Pack Status', action = cmd('PackStatus') },
     { key = 'q', desc = 'Quit', action = cmd('qa') },
