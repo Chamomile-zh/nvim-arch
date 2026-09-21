@@ -162,7 +162,7 @@ function pd.modified()
     stl = '%{&modified?"[+]":""}',
     event = { 'BufModifiedSet' },
   }
-
+  result.attr = stl_attr('StatusLineFileInfo')
   return result
 end
 

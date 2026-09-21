@@ -2,9 +2,7 @@ local M = {}
 
 local api = vim.api
 
--------------------------------------------------------------------------------
 -- FFI
--------------------------------------------------------------------------------
 
 local ffi
 local ml_get
@@ -38,9 +36,6 @@ do
   end
 end
 
--------------------------------------------------------------------------------
--- internal helpers
--------------------------------------------------------------------------------
 
 ---@param buf? integer
 ---@return integer
@@ -81,9 +76,7 @@ local function get_line_ffi(row)
   return line
 end
 
--------------------------------------------------------------------------------
 -- state
--------------------------------------------------------------------------------
 
 ---@param buf? integer
 ---@return boolean
@@ -143,9 +136,6 @@ function M.is_editable(buf)
     and not vim.bo[buf].readonly
 end
 
--------------------------------------------------------------------------------
--- basic information
--------------------------------------------------------------------------------
 
 ---@param buf? integer
 ---@return integer
@@ -189,15 +179,8 @@ function M.changedtick(buf)
   return tick
 end
 
--------------------------------------------------------------------------------
--- line reading
--------------------------------------------------------------------------------
 
 ---读取当前 Buffer 的一行。
----
----这是高频路径：
----优先使用 ml_get()，失败时自动 fallback 到官方 API。
----
 ---@param row integer 0-based
 ---@return string
 function M.get_current_line(row)
@@ -215,9 +198,6 @@ function M.get_current_line(row)
     return ''
   end
 
-  ---------------------------------------------------------------------------
-  -- FFI fast path
-  ---------------------------------------------------------------------------
 
   local line = get_line_ffi(row)
 
@@ -225,9 +205,7 @@ function M.get_current_line(row)
     return line
   end
 
-  ---------------------------------------------------------------------------
   -- API fallback
-  ---------------------------------------------------------------------------
 
   local ok, lines = pcall(
     api.nvim_buf_get_lines,
@@ -245,9 +223,6 @@ function M.get_current_line(row)
 end
 
 ---读取任意 Buffer 的一行。
----
----如果读取的是当前 Buffer，会自动使用 FFI fast path。
----
 ---@param buf? integer
 ---@param row integer 0-based
 ---@return string
@@ -266,9 +241,6 @@ function M.get_line(buf, row)
     return ''
   end
 
-  ---------------------------------------------------------------------------
-  -- ml_get() 只能安全地用于当前 Buffer。
-  ---------------------------------------------------------------------------
 
   if buf == api.nvim_get_current_buf() then
     local line = get_line_ffi(row)
@@ -278,9 +250,6 @@ function M.get_line(buf, row)
     end
   end
 
-  ---------------------------------------------------------------------------
-  -- API path
-  ---------------------------------------------------------------------------
 
   local ok, lines = pcall(
     api.nvim_buf_get_lines,
@@ -301,13 +270,6 @@ end
 ---
 ---start_row: 0-based, inclusive
 ---end_row:   0-based, exclusive
----
----例如：
----
----  get_lines(buf, 10, 20)
----
----返回第 10 ~ 19 行。
----
 ---@param buf? integer
 ---@param start_row integer
 ---@param end_row integer
@@ -349,14 +311,7 @@ function M.get_lines(
   return lines
 end
 
--------------------------------------------------------------------------------
--- text reading
--------------------------------------------------------------------------------
-
 ---读取任意文本区间。
----
----所有 row / col 均为 0-based。
----
 ---@param buf? integer
 ---@param start_row integer
 ---@param start_col integer
@@ -393,15 +348,9 @@ function M.get_text(
   return text
 end
 
--------------------------------------------------------------------------------
--- writing
--------------------------------------------------------------------------------
-
 ---替换完整行。
----
 ---start_row: inclusive
 ---end_row:   exclusive
----
 ---@param buf? integer
 ---@param start_row integer
 ---@param end_row integer
@@ -436,9 +385,6 @@ function M.set_lines(
 end
 
 ---替换一个文本区域。
----
----所有 row / col 均为 0-based。
----
 ---@param buf? integer
 ---@param start_row integer
 ---@param start_col integer
@@ -477,12 +423,7 @@ function M.set_text(
   return ok
 end
 
--------------------------------------------------------------------------------
--- offsets
--------------------------------------------------------------------------------
-
 ---获取某一行相对于整个 Buffer 开头的 byte offset。
----
 ---@param buf? integer
 ---@param row integer 0-based
 ---@return integer
@@ -511,7 +452,6 @@ function M.byte_offset(buf, row)
 end
 
 ---把 (row, col) 转换成相对于整个 Buffer 的 byte offset。
----
 ---@param buf? integer
 ---@param row integer 0-based
 ---@param col integer 0-based byte column
@@ -531,37 +471,7 @@ function M.position_to_offset(
   return offset + (col or 0)
 end
 
--------------------------------------------------------------------------------
--- buffer attach
--------------------------------------------------------------------------------
-
 ---监听 Buffer 的实际文本变化。
----
----相比 TextChanged / TextChangedI，
----nvim_buf_attach() 可以直接得到具体发生变化的行范围。
----
----支持：
----
----  buffer.attach(buf, {
----    on_change = function(change)
----      print(change.first_row)
----      print(change.old_end_row)
----      print(change.new_end_row)
----    end,
----
----    on_bytes = function(change)
----      ...
----    end,
----
----    on_reload = function(buf)
----      ...
----    end,
----
----    on_detach = function(buf)
----      ...
----    end,
----  })
----
 ---@param buf? integer
 ---@param opts table
 ---@return boolean
@@ -575,9 +485,7 @@ function M.attach(buf, opts)
 
   local callbacks = {}
 
-  ---------------------------------------------------------------------------
   -- line-level changes
-  ---------------------------------------------------------------------------
 
   if opts.on_change then
     callbacks.on_lines = function(
@@ -628,9 +536,7 @@ function M.attach(buf, opts)
     end
   end
 
-  ---------------------------------------------------------------------------
   -- byte-level changes
-  ---------------------------------------------------------------------------
 
   if opts.on_bytes then
     callbacks.on_bytes = function(
@@ -700,9 +606,7 @@ function M.attach(buf, opts)
     end
   end
 
-  ---------------------------------------------------------------------------
   -- reload
-  ---------------------------------------------------------------------------
 
   if opts.on_reload then
     callbacks.on_reload = function(
@@ -729,9 +633,7 @@ function M.attach(buf, opts)
     end
   end
 
-  ---------------------------------------------------------------------------
   -- detach
-  ---------------------------------------------------------------------------
 
   if opts.on_detach then
     callbacks.on_detach = function(
@@ -772,9 +674,7 @@ function M.attach(buf, opts)
   return result == true
 end
 
--------------------------------------------------------------------------------
 -- ffi information
--------------------------------------------------------------------------------
 
 ---@return boolean
 function M.has_ffi_fast_path()

@@ -176,10 +176,7 @@ local function load(pkg_name, events, cmd, ft, config)
             group = group,
             once = true,
             callback = function()
-              vim.cmd.packadd(pkg_name)
-              if config then
-                config()
-              end
+              activate(pkg_name, config)
             end,
           })
         else
