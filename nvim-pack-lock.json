@@ -6,11 +6,11 @@
       "version": "1.0.0 - 2.0.0"
     },
     "fzf-lua": {
-      "rev": "237b7e7f2bd07becc83144933b6058cc15bef2dc",
+      "rev": "a8312697c30b4d3b110fa3dc56e3699107aed9a0",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "gitsigns.nvim": {
-      "rev": "eb60cc7b94c46005237fd34170d76f3a089a90aa",
+      "rev": "c0862d382a35b7b45757d8d151a6a634c09bf3ce",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "guard.nvim": {
@@ -18,7 +18,7 @@
       "src": "https://github.com/nvimdev/guard.nvim"
     },
     "image.nvim": {
-      "rev": "5c6f29a5069e1f7bd5773ce5907454063b0f125d",
+      "rev": "365e2ace0f619164ae6fd2f6f1d2807775dd6849",
       "src": "https://github.com/3rd/image.nvim"
     },
     "indentmini.nvim": {
@@ -26,7 +26,7 @@
       "src": "https://github.com/nvimdev/indentmini.nvim"
     },
     "lspsaga.nvim": {
-      "rev": "3e33a6a6c5d379f3d4fae77fae6b53b762a0a30f",
+      "rev": "cf6fc9473bba1d332eda9887855ea29ed9b37701",
       "src": "https://github.com/nvimdev/lspsaga.nvim"
     },
     "noice.nvim": {
@@ -34,7 +34,7 @@
       "src": "https://github.com/folke/noice.nvim"
     },
     "nui.nvim": {
-      "rev": "de740991c12411b663994b2860f1a4fd0937c130",
+      "rev": "10fc361835c856ba4233ef5ea135b919bf3dce97",
       "src": "https://github.com/MunifTanjim/nui.nvim"
     },
     "nvim-notify": {
@@ -42,12 +42,12 @@
       "src": "https://github.com/rcarriga/nvim-notify"
     },
     "nvim-treesitter": {
-      "rev": "4916d6592ede8c07973490d9322f187e07dfefac",
+      "rev": "37e52c733ada9d8d544d53a763140ef1ba404353",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
     "nvim-treesitter-textobjects": {
-      "rev": "851e865342e5a4cb1ae23d31caf6e991e1c99f1e",
+      "rev": "5c7b0263797dfd1bd6202f2b219f3b53a80b2187",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
       "version": "'main'"
     }
