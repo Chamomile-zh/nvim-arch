@@ -62,7 +62,16 @@ config.blink = function()
       accept = { auto_brackets = { enabled = true } },
       ghost_text = { enabled = true },
     },
-    sources = { default = { 'snippets', 'lsp', 'path', 'buffer' } },
+    sources = {
+      default = { 'snippets', 'lsp', 'path', 'buffer' },
+      providers = {
+        path = {
+          opts = {
+            show_hidden_files_by_default = true,
+          },
+        },
+      },
+    },
     cmdline = {
       completion = {
         menu = { auto_show = true },
