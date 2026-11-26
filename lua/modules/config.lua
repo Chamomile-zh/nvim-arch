@@ -111,6 +111,11 @@ config.guard = function()
     args = { '-' },
     stdin = true,
   })
+  ft('zig'):fmt({
+    cmd = 'zig',
+    args = {'fmt','--stdin'},
+    stdin = true,
+  })
   ft('go', 'html', 'css', 'javascript', 'json', 'rust'):fmt('lsp')
 
   vim.g.guard_config = {

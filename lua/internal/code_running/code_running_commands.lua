@@ -60,17 +60,15 @@ local commands = {
     modus = 'job',
   },
   ['rust'] = {
-    command =
-      -- {
-      --   'rustc "$filename" -o "$runfile"',
-      --   './"$runfile"',
-      --   'rm -rf "$runfile"',
-      -- },
-      'cargo run',
+    command = {
+      'rustc "$filename" --edition 2021 -o "$runfile"',
+      './"$runfile"',
+      'rm -f "$runfile"',
+    },
   },
 
   ['rust_build'] = {
-    command = 'cargo build --release',
+    command = 'rustc "$filename" --edition 2021 -o "$runfile"',
   },
   ['typescript'] = {
     command = 'deno run "$filename"',
