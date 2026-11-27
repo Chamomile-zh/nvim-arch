@@ -1,6 +1,14 @@
 local au = vim.api.nvim_create_autocmd
 local uc = vim.api.nvim_create_user_command
-local group = vim.api.nvim_create_augroup('Chamomile.events', {})
+local function augroup(name)
+  return vim.api.nvim_create_augroup(name, { clear = true })
+end
+
+local init_group = augroup('Chamomile.init')
+local edit_group = augroup('Chamomile.edit')
+local lsp_group = augroup('Chamomile.lsp')
+local ui_group = augroup('Chamomile.ui')
+local misc_group = augroup('Chamomile.misc')
 
 ------------ auto commands ------------
 
@@ -20,7 +28,7 @@ local function startuptime()
 end
 
 au('UIEnter', {
-  group = group,
+  group = init_group,
   once = true,
   callback = function()
     startuptime()
@@ -93,13 +101,13 @@ au('VimLeave', {
 
 -- im_switch
 au('InsertLeave', {
-  group = group,
+  group = misc_group,
   callback = function()
     require('internal.im_switch').change_to_en()
   end,
 })
 au('InsertEnter', {
-  group = group,
+  group = misc_group,
   pattern = { '*.md', '*.txt' },
   callback = function()
     if require('internal.im_switch').filetype_checke() then
@@ -110,7 +118,7 @@ au('InsertEnter', {
 
 -- image
 au('FileType', {
-  group = group,
+  group = ui_group,
   pattern = { 'markdown', 'md' },
   callback = function(ev)
     vim.keymap.set('n', '<leader>l', function()
@@ -122,7 +130,7 @@ au('FileType', {
 -- relativenumber toogle insert
 au({ 'InsertEnter' }, {
   desc = 'Disable the relative line number when enter insert mode',
-  group = group,
+  group = edit_group,
   callback = function()
     local buftype = vim.bo.buftype
 
@@ -134,7 +142,7 @@ au({ 'InsertEnter' }, {
 
 au({ 'InsertLeave' }, {
   desc = 'Enable relative line number when leave insert mode',
-  group = group,
+  group = edit_group,
   callback = function()
     local buftype = vim.bo.buftype
 
@@ -159,7 +167,7 @@ vim.filetype.add({
 
 -- Auto-resize splits when window is resized
 au('VimResized', {
-  group = group,
+  group = ui_group,
   pattern = '*',
   command = 'wincmd =',
   desc = 'Auto-resize splits',
@@ -167,14 +175,14 @@ au('VimResized', {
 
 -- not undo for temp file
 au('BufWritePre', {
-  group = group,
+  group = edit_group,
   pattern = { '/tmp/*', 'COMMIT_EDITMSG', 'MERGE_MSG', '*.tmp', '*.bak' },
   command = 'setlocal noundofile',
 })
 
 -- markdown_table_format
 au('InsertLeave', {
-  group = group,
+  group = edit_group,
   pattern = '*.md',
   callback = function()
     require('internal.markdown_table_format').format_markdown_table()
@@ -182,7 +190,7 @@ au('InsertLeave', {
 })
 
 au('TextChangedI', {
-  group = group,
+  group = edit_group,
   pattern = '*.md',
   callback = function()
     require('internal.markdown_table_format').format_markdown_table_lines()
@@ -191,7 +199,7 @@ au('TextChangedI', {
 
 -- auto pairs
 au({ 'InsertEnter', 'CmdlineEnter' }, {
-  group = group,
+  group = edit_group,
   once = true,
   callback = function()
     require('internal.pairs')
@@ -200,13 +208,13 @@ au({ 'InsertEnter', 'CmdlineEnter' }, {
 
 -- hlsearch
 au('CursorMoved', {
-  group = group,
+  group = edit_group,
   callback = function()
     require('internal.hlsearch').start_hl()
   end,
 })
 au('InsertEnter', {
-  group = group,
+  group = edit_group,
   callback = function()
     require('internal.hlsearch').stop_hl()
   end,
@@ -214,7 +222,7 @@ au('InsertEnter', {
 
 -- open term then insert
 au('TermOpen', {
-  group = group,
+  group = ui_group,
   callback = function()
     vim.opt_local.stc = ''
     vim.wo.number = false
@@ -224,7 +232,7 @@ au('TermOpen', {
 
 -- highlight the yank post for a while
 au('TextYankPost', {
-  group = group,
+  group = edit_group,
   callback = function()
     vim.hl.on_yank({ higroup = 'Visual', timeout = 200 })
     if vim.v.event.regname == '+' then
@@ -235,7 +243,7 @@ au('TextYankPost', {
 
 -- last place
 au('BufReadPost', {
-  group = group,
+  group = edit_group,
   callback = function()
     local pos = vim.fn.getpos('\'"')
     if pos[2] > 0 and pos[2] <= vim.fn.line('$') then
@@ -246,13 +254,14 @@ au('BufReadPost', {
 
 -- dont automatically comment for the next line
 au('BufEnter', {
-  group = group,
+  group = edit_group,
   callback = function()
     vim.cmd.setlocal('formatoptions-=cro')
   end,
 })
 
 au('BufWritePre', {
+  group = edit_group,
   pattern = '*',
   callback = function(args)
     local fname = vim.api.nvim_buf_get_name(args.buf)
@@ -267,7 +276,7 @@ au('BufWritePre', {
 })
 
 au('LspAttach', {
-  group = group,
+  group = lsp_group,
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if client and client.server_capabilities then
@@ -286,6 +295,7 @@ local function reset_timer()
 end
 
 au('LspDetach', {
+  group = lsp_group,
   callback = function(args)
     local client_id = args.data.client_id
     local client = vim.lsp.get_clients({ client_id = client_id })[1]
@@ -308,7 +318,7 @@ au('LspDetach', {
 })
 
 au('BufLeave', {
-  group = group,
+  group = edit_group,
   callback = function()
     if vim.bo.modified then
       vim.cmd('silent! write')
@@ -345,7 +355,7 @@ local ensure_installed = {
 }
 
 au('PackChanged', {
-  group = group,
+  group = lsp_group,
   once = true,
   pattern = ensure_installed,
   callback = function(ev)
@@ -362,7 +372,7 @@ au('PackChanged', {
 })
 
 au('FileType', {
-  group = group,
+  group = lsp_group,
   pattern = ensure_installed,
   callback = function(args)
     local buf = args.buf
