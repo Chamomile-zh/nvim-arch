@@ -77,7 +77,7 @@ end, {})
 local function setcolor()
   local groups = {
     -- Core Editor Surface
-    Normal = { fg = c.fg, bg = c.bg },
+    Normal = { fg = c.fg },
     EndOfBuffer = { fg = c.bg },
     CursorLine = { bg = c.cursorline_bg },
     CursorLineNr = { fg = c.orange, bold = true },
@@ -133,8 +133,8 @@ local function setcolor()
     PmenuBorder = { fg = c.bg_highlight },
 
     -- Winbar
-    WinBar = { fg = c.fg_comment, bg = c.bg },
-    WinBarNC = { fg = c.bg_highlight, bg = c.bg },
+    WinBar = { fg = c.fg_comment, bg = 'NONE' },
+    WinBarNC = { fg = c.bg_highlight, bg = 'NONE' },
 
     -- Float & Borders
     NormalFloat = { bg = c.float_bg },

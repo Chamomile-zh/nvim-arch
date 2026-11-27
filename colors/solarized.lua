@@ -113,7 +113,7 @@ end, {})
 local function setcolor()
   local groups = {
     -- Core Editor Surface
-    Normal = { fg = c.fg, bg = c.bg },
+    Normal = { fg = c.fg },
     EndOfBuffer = { fg = c.bg },
     CursorLine = { bg = c.cursorline_bg },
     CursorLineNr = { fg = c.base1, bold = true },
@@ -155,8 +155,8 @@ local function setcolor()
     Comment = { fg = c.fg_comment, italic = true },
 
     -- UI Components
-    StatusLine = { fg = c.fg_comment, bg = c.bg },
-    StatusLineNC = { fg = c.bg_highlight, bg = c.bg },
+    StatusLine = { fg = c.fg_comment, bg = 'NONE' },
+    StatusLineNC = { fg = c.bg_highlight, bg = 'NONE' },
     WildMenu = { fg = c.bg, bg = c.blue },
     ColorColumn = { bg = c.bg_highlight },
     WhiteSpace = { fg = c.base04 },
@@ -168,8 +168,8 @@ local function setcolor()
     PmenuThumb = { bg = c.base01 },
     PmenuBorder = { fg = c.fg_comment },
     -- Winbar
-    WinBar = { fg = c.fg_comment, bg = c.bg },
-    WinBarNC = { fg = c.bg_highlight, bg = c.bg },
+    WinBar = { fg = c.fg_comment, bg = 'NONE' },
+    WinBarNC = { fg = c.bg_highlight, bg = 'NONE' },
 
     -- Lspsaga Winbar
     LspSagaWinbarWord = { fg = c.fg }, -- 文字颜色

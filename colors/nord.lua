@@ -24,11 +24,11 @@ local colors = {
 local function setcolor()
   local groups = {
     -- Base groups
-    Normal = { fg = colors.nord4, bg = colors.nord0 },
+    Normal = { fg = colors.nord4 },
     NormalFloat = { fg = colors.nord4, bg = colors.nord1 },
     FloatWin = { fg = colors.nord4 },
     FloatBorder = { fg = colors.nord8, bg = colors.nord1 },
-    NormalNC = { fg = colors.nord4, bg = colors.nord0 },
+    NormalNC = { fg = colors.nord4 },
     CursorLine = { bg = colors.nord1 },
     CursorColumn = { link = 'CursorLine' },
     CursorWord = { underline = true },
@@ -49,10 +49,10 @@ local function setcolor()
     CurSearch = { link = 'IncSearch' },
     QuickFixLine = { fg = colors.nord8, bold = true },
     Underlined = { underline = true },
-    StatusLine = { fg = colors.nord4, bg = colors.nord0 },
-    StatusLineNC = { fg = colors.nord3, bg = colors.nord0 },
-    WinBar = { fg = colors.nord4, bg = colors.nord0 },
-    WinBarNC = { fg = colors.nord3, bg = colors.nord0 },
+    StatusLine = { fg = colors.nord4, bg = 'NONE' },
+    StatusLineNC = { fg = colors.nord3, bg = 'NONE' },
+    WinBar = { fg = colors.nord4, bg = 'NONE' },
+    WinBarNC = { fg = colors.nord3, bg = 'NONE' },
     WinSeparator = { fg = colors.nord2, bg = colors.nord0 },
     WildMenu = { fg = colors.nord0, bg = colors.nord8 },
     Directory = { fg = colors.nord8 },

@@ -76,8 +76,8 @@ local function setcolor()
 
   local groups = {
     -- ─── Base Editor ─────────────────────────────────────────────────────
-    Normal = { fg = c.white3, bg = bg },
-    NormalNC = { fg = c.white3, bg = cfg.dim_inactive and c.ui_dim or bg },
+    Normal = { fg = c.white3 },
+    NormalNC = { fg = c.white3 },
     NormalFloat = { fg = c.white3, bg = bg_float },
     FloatBorder = { fg = c.blue4, bg = bg_float },
     FloatTitle = { fg = c.blue_vib, bg = bg_float, bold = true },
@@ -135,13 +135,13 @@ local function setcolor()
     SpellRare = { sp = c.pink, undercurl = true },
 
     -- ─── UI Components ───────────────────────────────────────────────────
-    StatusLine = { fg = c.blue6, bg = bg },
-    StatusLineNC = { fg = c.blue4, bg = bg },
+    StatusLine = { fg = c.blue6, bg = 'NONE' },
+    StatusLineNC = { fg = c.blue4, bg = 'NONE' },
     TabLine = { fg = c.blue4, bg = c.ui_deep },
     TabLineFill = { bg = c.ui_deep },
     TabLineSel = { fg = c.white3, bg = c.blue3, bold = true },
-    WinBar = { fg = c.blue6, bg = bg },
-    WinBarNC = { fg = c.blue4, bg = bg },
+    WinBar = { fg = c.blue6, bg = 'NONE' },
+    WinBarNC = { fg = c.blue4, bg = 'NONE' },
 
     Pmenu = { fg = c.white3, bg = c.ui_bar },
     PmenuSel = { fg = c.white3, bg = c.blue2, bold = true },
