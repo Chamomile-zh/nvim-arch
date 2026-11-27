@@ -21,6 +21,10 @@ config.lspsaga = function()
       },
     },
   })
+
+  -- symbol_in_winbar 的面包屑背景透明，避免和代码区背景不一致
+  vim.api.nvim_set_hl(0, 'WinBar', { bg = 'NONE' })
+  vim.api.nvim_set_hl(0, 'WinBarNC', { bg = 'NONE' })
 end
 
 config.blink = function()
@@ -113,7 +117,7 @@ config.guard = function()
   })
   ft('zig'):fmt({
     cmd = 'zig',
-    args = {'fmt','--stdin'},
+    args = { 'fmt', '--stdin' },
     stdin = true,
   })
   ft('go', 'html', 'css', 'javascript', 'json', 'rust'):fmt('lsp')
