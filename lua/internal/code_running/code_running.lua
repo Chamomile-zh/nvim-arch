@@ -26,6 +26,17 @@ local function get_commands(args, ctx)
     cmd = args == 'rust' and 'cargo run' or 'cargo build --release'
   end
 
+  -- cpp: prefer the build system when the project has one
+  if args == 'cpp' or args == 'cpp_build' then
+    if vim.fn.findfile('CMakeLists.txt', '.;') ~= '' then
+      cmd = 'cmake -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build'
+      opt.modus = 'center'
+    elseif vim.fn.findfile('Makefile', '.;') ~= '' then
+      cmd = args == 'cpp' and 'make test' or 'make'
+      opt.modus = 'center'
+    end
+  end
+
   -- function replacements keep '%' and other magic chars from paths intact
   opt.command = cmd
     :gsub('%$filename', function()
